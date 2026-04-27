@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Bingo Card Generator</title>
+    <style id="printPageStyle">@page { size: letter; margin: 0; }</style>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="controls" aria-label="Bingo card settings">
+        <div class="brand-panel">
+          <p class="eyebrow">Text bingo maker</p>
+          <h1>Bingo Card Generator</h1>
+          <p>Create printable bingo cards from your own list. Paste songs, phrases, names, or prompts, then print at home or save as a PDF.</p>
+        </div>
+
+        <form id="bingoForm" class="form-grid">
+          <label>
+            Occasion line
+            <input id="occasionInput" type="text" value="Sarah's 40th Birthday" maxlength="60" />
+          </label>
+
+          <label>
+            Main header
+            <input id="titleInput" type="text" value="BINGO" maxlength="18" />
+          </label>
+
+          <label>
+            Number of cards
+            <input id="cardCount" type="number" min="1" max="100" value="12" />
+          </label>
+
+          <label class="full-span">
+            Paste your bingo list
+            <textarea id="itemList" rows="10" spellcheck="true">Dancing Queen
+Mr Brightside
+Sweet Caroline
+I Wanna Dance with Somebody
+Don't Stop Believin'
+September
+Uptown Funk
+Valerie
+Wonderwall
+Livin' on a Prayer
+Mamma Mia
+Shake It Off
+Bohemian Rhapsody
+Girls Just Want to Have Fun
+I Will Survive
+Hey Ya!
+Crazy in Love
+Can't Stop the Feeling!
+We Found Love
+Proud Mary
+Walking on Sunshine
+Footloose
+Teenage Dirtbag
+Wannabe
+Single Ladies
+Man! I Feel Like a Woman!
+Mr. Blue Sky
+Billie Jean
+Superstition
+Shut Up and Dance</textarea>
+            <span id="listHelp" class="hint">Add at least 24 unique items. Around 75 is ideal for lots of variety, especially if generating many cards.</span>
+          </label>
+
+          <fieldset class="full-span">
+            <legend>Free square</legend>
+            <p class="fieldset-hint">Use simple text, or upload an image/logo for the centre square.</p>
+            <div class="free-square-controls">
+              <label>
+                Text
+                <input id="freeText" type="text" value="FREE" maxlength="30" />
+              </label>
+              <label>
+                Image
+                <input id="freeImage" type="file" accept="image/*" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="full-span">
+            <legend>Color scheme</legend>
+            <p class="fieldset-hint">Pick a palette, then fine-tune any color below.</p>
+            <div class="scheme-grid" id="schemeGrid">
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="party" checked />
+                <span class="swatch party"></span>
+                Fiesta
+              </label>
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="primary" />
+                <span class="swatch primary"></span>
+                Primary
+              </label>
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="pastel" />
+                <span class="swatch pastel"></span>
+                Pastel Party
+              </label>
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="kids" />
+                <span class="swatch kids"></span>
+                Playful
+              </label>
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="teen" />
+                <span class="swatch teen"></span>
+                Neon Night
+              </label>
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="masculine" />
+                <span class="swatch masculine"></span>
+                Heritage
+              </label>
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="feminine" />
+                <span class="swatch feminine"></span>
+                Blush
+              </label>
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="earth" />
+                <span class="swatch earth"></span>
+                Meadow
+              </label>
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="coastal" />
+                <span class="swatch coastal"></span>
+                Seaside
+              </label>
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="luxury" />
+                <span class="swatch luxury"></span>
+                Luxe Noir
+              </label>
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="christmas" />
+                <span class="swatch christmas"></span>
+                Christmas
+              </label>
+              <label class="scheme-option">
+                <input type="radio" name="scheme" value="halloween" />
+                <span class="swatch halloween"></span>
+                Halloween
+              </label>
+            </div>
+            <div class="custom-colors">
+              <label>
+                Primary
+                <input id="primaryColor" type="color" value="#e33c2f" />
+              </label>
+              <label>
+                Highlight
+                <input id="highlightColor" type="color" value="#137b80" />
+              </label>
+              <label>
+                Title
+                <input id="titleColor" type="color" value="#a8221b" />
+              </label>
+              <label>
+                Occasion
+                <input id="occasionColor" type="color" value="#a8221b" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="full-span">
+            <legend>Design options</legend>
+            <p class="fieldset-hint">Adjust the heading, card style, and print layout. The small footer link is added automatically.</p>
+            <div class="design-grid">
+              <label>
+                Font style
+                <select id="fontStyle">
+                  <option value="editorial">Editorial</option>
+                  <option value="modern">Modern bold</option>
+                  <option value="retro">Retro party</option>
+                  <option value="elegant">Elegant serif</option>
+                </select>
+              </label>
+
+              <label>
+                Occasion font
+                <select id="occasionFont">
+                  <option value="bold">Bold caps</option>
+                  <option value="script">Script</option>
+                  <option value="serif">Elegant serif</option>
+                  <option value="modern">Modern</option>
+                </select>
+              </label>
+
+              <label class="slider-control">
+                Occasion size
+                <span><output id="occasionSizeValue">25</output>px</span>
+                <input id="occasionSize" type="range" min="16" max="48" value="25" />
+              </label>
+
+              <label class="slider-control">
+                BINGO size
+                <span><output id="titleSizeValue">98</output>px</span>
+                <input id="titleSize" type="range" min="58" max="126" value="98" />
+              </label>
+
+              <label>
+                Square style
+                <select id="gridStyle">
+                  <option value="crisp">Crisp</option>
+                  <option value="rounded">Rounded</option>
+                  <option value="checker">Checker</option>
+                  <option value="luxe">Luxe</option>
+                </select>
+              </label>
+
+              <label>
+                PDF page
+                <select id="pageSize">
+                  <option value="letter">Letter</option>
+                  <option value="a4">A4</option>
+                </select>
+              </label>
+
+              <label>
+                Cards per page
+                <select id="cardsPerPage">
+                  <option value="1">1 card</option>
+                  <option value="2">2 cards</option>
+                </select>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="actions full-span">
+            <button id="generateButton" type="submit">Generate cards</button>
+            <button id="printButton" type="button">Print or save PDF</button>
+          </div>
+
+          <p class="print-help full-span">Use “Print or save PDF” to open your browser print window. Choose your printer, or choose “Save as PDF” to download a PDF file.</p>
+          <p id="statusMessage" class="status" role="status"></p>
+        </form>
+      </section>
+
+      <section class="output" aria-label="Generated bingo cards">
+        <div class="output-toolbar">
+          <div>
+            <p class="eyebrow">Preview</p>
+            <h2 id="cardTotal">12 cards</h2>
+          </div>
+          <p class="preview-note">Preview matches print/PDF layout</p>
+        </div>
+        <div id="cards" class="cards-grid"></div>
+      </section>
+    </main>
+
+    <template id="cardTemplate">
+      <article class="bingo-card">
+        <header class="card-header">
+          <p class="occasion"></p>
+          <h3></h3>
+        </header>
+        <div class="bingo-grid" aria-label="Bingo squares"></div>
+        <footer></footer>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
