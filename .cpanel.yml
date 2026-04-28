@@ -1,9 +1,8 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/simpxlow/bingogenerator.alloccasionsprintables.com/
-    - /bin/cp index.html $DEPLOYPATH
-    - /bin/cp styles.css $DEPLOYPATH
-    - /bin/cp app.js $DEPLOYPATH
-    - /bin/cp robots.txt $DEPLOYPATH
-    - /bin/cp .htaccess $DEPLOYPATH
+    - /bin/cp index.html /home/simpxlow/bingogenerator.alloccasionsprintables.com/index.html
+    - /bin/cp styles.css /home/simpxlow/bingogenerator.alloccasionsprintables.com/styles.css
+    - /bin/cp app.js /home/simpxlow/bingogenerator.alloccasionsprintables.com/app.js
+    - /bin/cp robots.txt /home/simpxlow/bingogenerator.alloccasionsprintables.com/robots.txt
+    - /bin/cp .htaccess /home/simpxlow/bingogenerator.alloccasionsprintables.com/.htaccess
