@@ -1,6 +1,10 @@
 const form = document.querySelector("#bingoForm");
 const cardsContainer = document.querySelector("#cards");
+const extrasContainer = document.querySelector("#extras");
 const cardTemplate = document.querySelector("#cardTemplate");
+const instructionsTemplate = document.querySelector("#instructionsTemplate");
+const masterListTemplate = document.querySelector("#masterListTemplate");
+const markersTemplate = document.querySelector("#markersTemplate");
 const statusMessage = document.querySelector("#statusMessage");
 const cardTotal = document.querySelector("#cardTotal");
 const listHelp = document.querySelector("#listHelp");
@@ -30,6 +34,9 @@ const inputs = {
   count: document.querySelector("#cardCount"),
   items: document.querySelector("#itemList"),
   freeText: document.querySelector("#freeText"),
+  includeInstructions: document.querySelector("#includeInstructions"),
+  includeMasterList: document.querySelector("#includeMasterList"),
+  includeMarkers: document.querySelector("#includeMarkers"),
 };
 
 const centerIndex = 12;
@@ -193,11 +200,79 @@ function renderCards(cards) {
   updatePreviewScale();
 }
 
+function createExtraFrame(page) {
+  const frame = document.createElement("div");
+  frame.className = "extra-frame";
+  frame.append(page);
+  return frame;
+}
+
+function renderInstructions() {
+  return instructionsTemplate.content.firstElementChild.cloneNode(true);
+}
+
+function renderMasterList(items) {
+  const page = masterListTemplate.content.firstElementChild.cloneNode(true);
+  const list = page.querySelector(".master-list");
+  items.forEach((item, index) => {
+    const row = document.createElement("div");
+    row.className = "master-list-item";
+
+    const box = document.createElement("span");
+    box.className = "check-box";
+    box.setAttribute("aria-hidden", "true");
+
+    const number = document.createElement("span");
+    number.className = "master-number";
+    number.textContent = String(index + 1).padStart(2, "0");
+
+    const text = document.createElement("span");
+    text.className = "master-text";
+    text.textContent = item;
+
+    row.append(box, number, text);
+    list.append(row);
+  });
+  return page;
+}
+
+function renderMarkers() {
+  const page = markersTemplate.content.firstElementChild.cloneNode(true);
+  const grid = page.querySelector(".markers-grid");
+  for (let marker = 0; marker < 120; marker += 1) {
+    const token = document.createElement("span");
+    token.className = "marker-token";
+    token.textContent = "B";
+    grid.append(token);
+  }
+  return page;
+}
+
+function renderExtras(items) {
+  extrasContainer.replaceChildren();
+
+  if (inputs.includeInstructions.checked) {
+    extrasContainer.append(createExtraFrame(renderInstructions()));
+  }
+
+  if (inputs.includeMasterList.checked) {
+    extrasContainer.append(createExtraFrame(renderMasterList(items)));
+  }
+
+  if (inputs.includeMarkers.checked) {
+    extrasContainer.append(createExtraFrame(renderMarkers()));
+  }
+
+  updatePreviewScale();
+}
+
 function updatePreviewScale() {
   const [pageWidth, pageHeight] = pageDimensions[pageSize.value];
   const isTwoUp = cardsPerPage.value === "2";
   const cardWidth = isTwoUp ? pageHeight / 2 : pageWidth;
   const cardHeight = isTwoUp ? pageWidth : pageHeight;
+  const extraWidth = isTwoUp ? pageHeight : pageWidth;
+  const extraHeight = isTwoUp ? pageWidth : pageHeight;
   document.documentElement.style.setProperty("--screen-page-width", `${cardWidth}px`);
   document.documentElement.style.setProperty("--screen-page-height", `${cardHeight}px`);
 
@@ -207,6 +282,13 @@ function updatePreviewScale() {
       const scale = availableWidth > 0 ? availableWidth / cardWidth : 1;
       frame.style.setProperty("--preview-scale", scale.toFixed(4));
       frame.style.height = `${cardHeight * scale}px`;
+    });
+
+    document.querySelectorAll(".extra-frame").forEach((frame) => {
+      const availableWidth = frame.clientWidth;
+      const scale = availableWidth > 0 ? availableWidth / extraWidth : 1;
+      frame.style.setProperty("--preview-scale", scale.toFixed(4));
+      frame.style.height = `${extraHeight * scale}px`;
     });
   });
 }
@@ -219,6 +301,7 @@ function generateCards() {
 
   if (items.length < 24) {
     cardsContainer.replaceChildren();
+    extrasContainer.replaceChildren();
     cardTotal.textContent = "0 cards";
     setStatus("Add at least 24 unique list items for a 5 x 5 card with one free square.", true);
     return;
@@ -226,6 +309,7 @@ function generateCards() {
 
   const cards = makeUniqueCards(items, requestedCount);
   renderCards(cards);
+  renderExtras(items);
 
   const note = cards.length === requestedCount
     ? `Generated ${cards.length} unique card${cards.length === 1 ? "" : "s"} from ${items.length} items.`
@@ -277,6 +361,10 @@ schemeGrid.addEventListener("change", (event) => {
   control.addEventListener("change", () => {
     updateDesignSettings();
   });
+});
+
+[inputs.includeInstructions, inputs.includeMasterList, inputs.includeMarkers].forEach((control) => {
+  control.addEventListener("change", generateCards);
 });
 
 [occasionSize, titleSize].forEach((control) => {

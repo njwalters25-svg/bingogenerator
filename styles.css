@@ -46,6 +46,7 @@ body {
 button,
 input,
 output,
+select,
 textarea {
   font: inherit;
 }
@@ -196,10 +197,28 @@ textarea:focus {
 .scheme-grid,
 .custom-colors,
 .design-grid,
+.extras-grid,
 .actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+
+.check-option {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.check-option input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
 }
 
 .custom-colors {
@@ -370,7 +389,8 @@ button {
   align-items: start;
 }
 
-.card-frame {
+.card-frame,
+.extra-frame {
   --preview-scale: 0.5;
   overflow: hidden;
   width: 100%;
@@ -514,6 +534,160 @@ button {
   font-size: 17px;
   font-weight: 800;
   text-align: center;
+}
+
+.extras-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 430px), 1fr));
+  gap: 26px;
+  align-items: start;
+  margin-top: 26px;
+}
+
+.extra-page {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 24px;
+  width: var(--screen-page-width);
+  height: var(--screen-page-height);
+  padding: 54px 58px 38px;
+  border: 2px solid var(--accent-strong);
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(29, 24, 18, 0.14);
+  transform: scale(var(--preview-scale));
+  transform-origin: top left;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.extra-page header {
+  display: grid;
+  gap: 4px;
+  padding-bottom: 16px;
+  border-bottom: 5px solid var(--accent);
+  text-align: center;
+}
+
+.extra-kicker {
+  margin: 0;
+  color: var(--occasion-color);
+  font-family: var(--occasion-font);
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: var(--occasion-letter-spacing);
+  line-height: 1.15;
+  text-transform: var(--occasion-transform);
+}
+
+.extra-page h3 {
+  margin: 0;
+  color: var(--title-color);
+  font-family: var(--header-font);
+  font-size: 58px;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.extra-page h4 {
+  margin: 0 0 10px;
+  color: var(--accent-strong);
+  font-size: 24px;
+}
+
+.extra-page p,
+.extra-page li {
+  color: var(--ink);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.instructions-page ol {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding-left: 32px;
+}
+
+.instructions-page section {
+  align-self: end;
+  padding: 20px;
+  border: 2px solid var(--accent-2);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent-soft) 35%, #fff);
+}
+
+.instructions-page section p {
+  margin: 0;
+}
+
+.master-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 18px;
+  row-gap: 8px;
+  align-content: start;
+}
+
+.master-list-item {
+  display: grid;
+  grid-template-columns: 17px 25px 1fr;
+  align-items: start;
+  gap: 7px;
+  min-width: 0;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.12;
+}
+
+.check-box {
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid var(--accent-2);
+  border-radius: 3px;
+  background: #fff;
+}
+
+.master-number {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.master-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.markers-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 12px;
+  align-content: center;
+}
+
+.marker-token {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 2px dashed var(--accent-2);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-soft) 38%, #fff);
+  color: var(--accent-strong);
+  font-size: 22px;
+  font-weight: 950;
+}
+
+.extra-page footer {
+  display: grid;
+  place-items: center;
+  padding-top: 12px;
+  border-top: 2px solid var(--accent-2);
+  color: var(--muted);
+  font-size: 17px;
+  font-weight: 800;
 }
 
 body[data-scheme="primary"] {
@@ -726,6 +900,34 @@ body[data-cards-per-page="2"] .cards-grid {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
 }
 
+body[data-cards-per-page="2"] .extras-preview {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 430px), 1fr));
+}
+
+body[data-cards-per-page="2"] .extra-page {
+  width: var(--screen-page-height);
+  height: var(--screen-page-width);
+  padding: 38px 48px 28px;
+}
+
+body[data-cards-per-page="2"] .extra-page h3 {
+  font-size: 48px;
+}
+
+body[data-cards-per-page="2"] .extra-page p,
+body[data-cards-per-page="2"] .extra-page li {
+  font-size: 18px;
+}
+
+body[data-cards-per-page="2"] .master-list {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+body[data-cards-per-page="2"] .markers-grid {
+  grid-template-columns: repeat(12, 1fr);
+  gap: 9px;
+}
+
 body[data-cards-per-page="2"] .bingo-card {
   grid-template-rows: 105px 1fr 30px;
 }
@@ -796,6 +998,7 @@ body[data-cards-per-page="2"] .bingo-card footer {
   .scheme-grid,
   .custom-colors,
   .design-grid,
+  .extras-grid,
   .actions {
     grid-template-columns: 1fr;
   }
@@ -817,7 +1020,8 @@ body[data-cards-per-page="2"] .bingo-card footer {
 
   .app-shell,
   .output,
-  .cards-grid {
+  .cards-grid,
+  .extras-preview {
     display: block;
     overflow: visible;
     width: auto;
@@ -828,7 +1032,8 @@ body[data-cards-per-page="2"] .bingo-card footer {
     background: #fff;
   }
 
-  .card-frame {
+  .card-frame,
+  .extra-frame {
     display: block;
     overflow: visible;
     width: auto;
@@ -845,6 +1050,15 @@ body[data-cards-per-page="2"] .bingo-card footer {
     min-height: 0;
     margin: 0;
     border-radius: 0;
+    box-shadow: none;
+    transform: none;
+    page-break-after: always;
+  }
+
+  .extra-page {
+    width: var(--page-width);
+    height: var(--page-height);
+    margin: 0;
     box-shadow: none;
     transform: none;
     page-break-after: always;
@@ -886,6 +1100,11 @@ body[data-cards-per-page="2"] .bingo-card footer {
     width: calc(var(--page-height) / 2);
     height: var(--page-width);
     page-break-after: auto;
+  }
+
+  body[data-cards-per-page="2"] .extra-page {
+    width: var(--page-height);
+    height: var(--page-width);
   }
 
   body[data-cards-per-page="2"] .cards-grid {
