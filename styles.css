@@ -19,6 +19,7 @@
   --page-padding: 30px 42px 26px;
   --header-font: Georgia, "Times New Roman", serif;
   --title-size: 98px;
+  --title-line-height: 0.82;
   --occasion-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --occasion-size: 25px;
   --occasion-transform: uppercase;
@@ -65,6 +66,10 @@ textarea {
   top: 24px;
   display: grid;
   gap: 18px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-gutter: stable;
 }
 
 .brand-panel,
@@ -98,6 +103,17 @@ textarea {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.eyebrow a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.eyebrow a:hover,
+.eyebrow a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .form-grid {
@@ -400,7 +416,7 @@ button {
   --cell-size: minmax(0, 1fr);
   overflow: hidden;
   display: grid;
-  grid-template-rows: 145px 1fr 48px;
+  grid-template-rows: 205px 1fr 48px;
   width: var(--screen-page-width);
   height: var(--screen-page-height);
   padding: var(--page-padding);
@@ -421,9 +437,9 @@ button {
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
-  padding: 8px 28px 12px;
+  padding: 16px 28px 18px;
   border-radius: 0;
   background: #fff;
   color: var(--ink);
@@ -457,7 +473,7 @@ button {
   overflow-wrap: anywhere;
   font-family: var(--header-font);
   font-size: var(--title-size);
-  line-height: 0.82;
+  line-height: var(--title-line-height);
   letter-spacing: 0;
   color: var(--title-color);
   text-shadow: none;
@@ -468,8 +484,8 @@ button {
   display: grid;
   grid-template-columns: repeat(5, var(--cell-size));
   grid-template-rows: repeat(5, var(--cell-size));
-  gap: 14px;
-  padding: 28px 0 18px;
+  gap: 13px;
+  padding: 24px 0 16px;
 }
 
 .square {
@@ -486,8 +502,10 @@ button {
   font-size: 16px;
   font-weight: 780;
   line-height: 1.12;
-  overflow-wrap: anywhere;
-  hyphens: auto;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none;
+  text-wrap: balance;
 }
 
 .square.text-medium {
@@ -537,7 +555,7 @@ button {
 }
 
 .extras-preview {
-  display: none;
+  display: none !important;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 430px), 1fr));
   gap: 26px;
   align-items: start;
@@ -676,15 +694,21 @@ button {
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(7, 1fr);
   gap: 14px;
+  min-height: 0;
+  height: 100%;
   align-content: center;
+  justify-content: center;
 }
 
 .marker-token {
   display: grid;
   grid-template-rows: 1fr auto;
   place-items: center;
+  justify-self: center;
+  align-self: center;
   min-width: 0;
   min-height: 0;
+  width: min(100%, 105px);
   aspect-ratio: 1;
   border: 2px dashed var(--accent-2);
   border-radius: 999px;
@@ -888,6 +912,41 @@ body[data-font="elegant"] {
   --body-font: Optima, Candara, "Segoe UI", sans-serif;
 }
 
+body[data-font="fun"] {
+  --header-font: "Cooper Black", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+  --title-line-height: 0.86;
+  --body-font: "Trebuchet MS", Arial, sans-serif;
+}
+
+body[data-font="kids"] {
+  --header-font: "Arial Rounded MT Bold", "Chalkboard SE", "Comic Sans MS", Arial, sans-serif;
+  --title-line-height: 0.88;
+  --body-font: "Trebuchet MS", Arial, sans-serif;
+}
+
+body[data-font="groovy"] {
+  --header-font: "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
+  --title-line-height: 0.84;
+  --body-font: "Trebuchet MS", Arial, sans-serif;
+}
+
+body[data-font="handmade"] {
+  --header-font: "Marker Felt", "Comic Sans MS", "Trebuchet MS", sans-serif;
+  --title-line-height: 0.9;
+  --body-font: "Trebuchet MS", Arial, sans-serif;
+}
+
+body[data-font="fun"] .card-header h3,
+body[data-font="kids"] .card-header h3 {
+  text-shadow: 0 3px 0 color-mix(in srgb, var(--accent-2) 28%, transparent);
+}
+
+body[data-font="groovy"] .card-header h3 {
+  text-shadow:
+    0 3px 0 color-mix(in srgb, var(--accent-2) 55%, #fff),
+    0 6px 0 color-mix(in srgb, var(--accent-soft) 90%, #fff);
+}
+
 body[data-occasion-font="script"] {
   --occasion-font: "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive;
   --occasion-transform: none;
@@ -904,6 +963,24 @@ body[data-occasion-font="modern"] {
   --occasion-font: Arial, Helvetica, sans-serif;
   --occasion-transform: uppercase;
   --occasion-letter-spacing: 0.02em;
+}
+
+body[data-occasion-font="playful"] {
+  --occasion-font: "Arial Rounded MT Bold", "Chalkboard SE", "Comic Sans MS", Arial, sans-serif;
+  --occasion-transform: none;
+  --occasion-letter-spacing: 0.01em;
+}
+
+body[data-occasion-font="groovy"] {
+  --occasion-font: "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
+  --occasion-transform: uppercase;
+  --occasion-letter-spacing: 0.02em;
+}
+
+body[data-occasion-font="handwritten"] {
+  --occasion-font: "Marker Felt", "Noteworthy", "Comic Sans MS", cursive;
+  --occasion-transform: none;
+  --occasion-letter-spacing: 0;
 }
 
 body[data-grid="rounded"] .square {
@@ -965,6 +1042,7 @@ body[data-cards-per-page="2"] .markers-grid {
 }
 
 body[data-cards-per-page="2"] .marker-token {
+  width: min(100%, 58px);
   padding: 7px;
 }
 
@@ -979,12 +1057,12 @@ body[data-cards-per-page="2"] .marker-bingo {
 }
 
 body[data-cards-per-page="2"] .bingo-card {
-  grid-template-rows: 105px 1fr 30px;
+  grid-template-rows: 132px 1fr 30px;
 }
 
 body[data-cards-per-page="2"] .card-header {
-  gap: 2px;
-  padding: 2px 24px 8px;
+  gap: 3px;
+  padding: 7px 24px 9px;
   border-bottom-width: 4px;
 }
 
@@ -997,26 +1075,26 @@ body[data-cards-per-page="2"] .card-header h3 {
 }
 
 body[data-cards-per-page="2"] .bingo-grid {
-  gap: 10px;
-  padding: 18px 0 12px;
+  gap: 8px;
+  padding: 14px 0 10px;
 }
 
 body[data-cards-per-page="2"] .square {
   padding: 7px;
-  font-size: 12px;
-  line-height: 1.06;
+  font-size: 10.75px;
+  line-height: 1.08;
 }
 
 body[data-cards-per-page="2"] .square.text-medium {
-  font-size: 10.5px;
+  font-size: 9.75px;
 }
 
 body[data-cards-per-page="2"] .square.text-long {
-  font-size: 9.5px;
+  font-size: 8.75px;
 }
 
 body[data-cards-per-page="2"] .square.text-xlong {
-  font-size: 8.5px;
+  font-size: 8px;
 }
 
 body[data-cards-per-page="2"] .square.free {
@@ -1035,6 +1113,9 @@ body[data-cards-per-page="2"] .bingo-card footer {
 
   .controls {
     position: static;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
   }
 }
 
@@ -1072,7 +1153,7 @@ body[data-cards-per-page="2"] .bingo-card footer {
   .output,
   .cards-grid,
   .extras-preview {
-    display: block;
+    display: block !important;
     overflow: visible;
     width: auto;
     height: auto !important;
@@ -1152,9 +1233,59 @@ body[data-cards-per-page="2"] .bingo-card footer {
     page-break-after: auto;
   }
 
+  body[data-has-extras="true"] .bingo-card:last-child {
+    page-break-after: always;
+  }
+
   body[data-cards-per-page="2"] .extra-page {
     width: var(--page-height);
     height: var(--page-width);
+  }
+
+  .markers-page {
+    display: grid !important;
+    grid-template-rows: auto 1fr auto;
+    overflow: hidden;
+  }
+
+  .markers-page .markers-grid {
+    display: grid !important;
+    min-height: 0;
+    height: 100%;
+  }
+
+  body[data-cards-per-page="2"] .markers-page {
+    padding: 30px 38px 24px;
+    gap: 16px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page header {
+    padding-bottom: 10px;
+    border-bottom-width: 4px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page .extra-kicker {
+    font-size: 18px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page h3 {
+    font-size: 38px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page .markers-grid {
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+    grid-template-rows: repeat(9, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page .marker-token {
+    width: auto;
+    max-width: 56px;
+    height: auto;
+    max-height: 56px;
+    align-self: stretch;
+    justify-self: stretch;
+    padding: 6px;
   }
 
   body[data-cards-per-page="2"] .cards-grid {
@@ -1174,5 +1305,9 @@ body[data-cards-per-page="2"] .bingo-card footer {
 
   body[data-cards-per-page="2"] .card-frame:last-child .bingo-card {
     page-break-after: auto;
+  }
+
+  body[data-has-extras="true"][data-cards-per-page="2"] .card-frame:last-child .bingo-card {
+    page-break-after: always;
   }
 }
