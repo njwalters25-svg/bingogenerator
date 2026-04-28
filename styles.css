@@ -673,21 +673,46 @@ button {
 
 .markers-grid {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 14px;
   align-content: center;
 }
 
 .marker-token {
   display: grid;
+  grid-template-rows: 1fr auto;
   place-items: center;
+  min-width: 0;
+  min-height: 0;
   aspect-ratio: 1;
   border: 2px dashed var(--accent-2);
   border-radius: 999px;
   background: color-mix(in srgb, var(--accent-soft) 38%, #fff);
   color: var(--accent-strong);
-  font-size: 22px;
+  padding: 12px;
+  text-align: center;
+}
+
+.marker-occasion {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.05;
+  text-transform: uppercase;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.marker-bingo {
+  color: var(--accent-2);
+  font-family: var(--header-font);
+  font-size: 13px;
   font-weight: 950;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 .extra-page footer {
@@ -934,8 +959,23 @@ body[data-cards-per-page="2"] .master-list {
 }
 
 body[data-cards-per-page="2"] .markers-grid {
-  grid-template-columns: repeat(12, 1fr);
-  gap: 9px;
+  grid-template-columns: repeat(11, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  gap: 8px;
+}
+
+body[data-cards-per-page="2"] .marker-token {
+  padding: 7px;
+}
+
+body[data-cards-per-page="2"] .marker-occasion {
+  font-size: 7px;
+  line-height: 1;
+  -webkit-line-clamp: 3;
+}
+
+body[data-cards-per-page="2"] .marker-bingo {
+  font-size: 8px;
 }
 
 body[data-cards-per-page="2"] .bingo-card {

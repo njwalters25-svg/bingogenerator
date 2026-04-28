@@ -247,10 +247,22 @@ function renderMasterList(items) {
 function renderMarkers() {
   const page = markersTemplate.content.firstElementChild.cloneNode(true);
   const grid = page.querySelector(".markers-grid");
-  for (let marker = 0; marker < 120; marker += 1) {
+  const markerCount = cardsPerPage.value === "2" ? 99 : 42;
+  const occasion = inputs.occasion.value.trim() || "Bingo";
+
+  for (let marker = 0; marker < markerCount; marker += 1) {
     const token = document.createElement("span");
     token.className = "marker-token";
-    token.textContent = "B";
+
+    const occasionText = document.createElement("span");
+    occasionText.className = "marker-occasion";
+    occasionText.textContent = occasion;
+
+    const bingoText = document.createElement("span");
+    bingoText.className = "marker-bingo";
+    bingoText.textContent = inputs.title.value.trim() || "BINGO";
+
+    token.append(occasionText, bingoText);
     grid.append(token);
   }
   return page;
@@ -370,6 +382,8 @@ schemeGrid.addEventListener("change", (event) => {
     updateDesignSettings();
   });
 });
+
+cardsPerPage.addEventListener("change", generateCards);
 
 [inputs.includeInstructions, inputs.includeMasterList, inputs.includeMarkers].forEach((control) => {
   control.addEventListener("change", generateCards);
