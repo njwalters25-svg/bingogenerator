@@ -207,7 +207,7 @@ textarea:focus {
 .free-square-controls,
 .scheme-grid,
 .custom-colors,
-design-grid,
+.design-grid,
 .extras-grid,
 .actions {
   display: grid;
