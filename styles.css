@@ -19,6 +19,7 @@
   --page-padding: 30px 42px 26px;
   --header-font: Georgia, "Times New Roman", serif;
   --title-size: 98px;
+  --title-line-height: 0.82;
   --occasion-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --occasion-size: 25px;
   --occasion-transform: uppercase;
@@ -415,7 +416,7 @@ button {
   --cell-size: minmax(0, 1fr);
   overflow: hidden;
   display: grid;
-  grid-template-rows: 145px 1fr 48px;
+  grid-template-rows: 205px 1fr 48px;
   width: var(--screen-page-width);
   height: var(--screen-page-height);
   padding: var(--page-padding);
@@ -436,9 +437,9 @@ button {
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
-  padding: 8px 28px 12px;
+  padding: 16px 28px 18px;
   border-radius: 0;
   background: #fff;
   color: var(--ink);
@@ -472,7 +473,7 @@ button {
   overflow-wrap: anywhere;
   font-family: var(--header-font);
   font-size: var(--title-size);
-  line-height: 0.82;
+  line-height: var(--title-line-height);
   letter-spacing: 0;
   color: var(--title-color);
   text-shadow: none;
@@ -483,8 +484,8 @@ button {
   display: grid;
   grid-template-columns: repeat(5, var(--cell-size));
   grid-template-rows: repeat(5, var(--cell-size));
-  gap: 14px;
-  padding: 28px 0 18px;
+  gap: 13px;
+  padding: 24px 0 16px;
 }
 
 .square {
@@ -911,6 +912,41 @@ body[data-font="elegant"] {
   --body-font: Optima, Candara, "Segoe UI", sans-serif;
 }
 
+body[data-font="fun"] {
+  --header-font: "Cooper Black", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+  --title-line-height: 0.86;
+  --body-font: "Trebuchet MS", Arial, sans-serif;
+}
+
+body[data-font="kids"] {
+  --header-font: "Arial Rounded MT Bold", "Chalkboard SE", "Comic Sans MS", Arial, sans-serif;
+  --title-line-height: 0.88;
+  --body-font: "Trebuchet MS", Arial, sans-serif;
+}
+
+body[data-font="groovy"] {
+  --header-font: "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
+  --title-line-height: 0.84;
+  --body-font: "Trebuchet MS", Arial, sans-serif;
+}
+
+body[data-font="handmade"] {
+  --header-font: "Marker Felt", "Comic Sans MS", "Trebuchet MS", sans-serif;
+  --title-line-height: 0.9;
+  --body-font: "Trebuchet MS", Arial, sans-serif;
+}
+
+body[data-font="fun"] .card-header h3,
+body[data-font="kids"] .card-header h3 {
+  text-shadow: 0 3px 0 color-mix(in srgb, var(--accent-2) 28%, transparent);
+}
+
+body[data-font="groovy"] .card-header h3 {
+  text-shadow:
+    0 3px 0 color-mix(in srgb, var(--accent-2) 55%, #fff),
+    0 6px 0 color-mix(in srgb, var(--accent-soft) 90%, #fff);
+}
+
 body[data-occasion-font="script"] {
   --occasion-font: "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive;
   --occasion-transform: none;
@@ -927,6 +963,24 @@ body[data-occasion-font="modern"] {
   --occasion-font: Arial, Helvetica, sans-serif;
   --occasion-transform: uppercase;
   --occasion-letter-spacing: 0.02em;
+}
+
+body[data-occasion-font="playful"] {
+  --occasion-font: "Arial Rounded MT Bold", "Chalkboard SE", "Comic Sans MS", Arial, sans-serif;
+  --occasion-transform: none;
+  --occasion-letter-spacing: 0.01em;
+}
+
+body[data-occasion-font="groovy"] {
+  --occasion-font: "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
+  --occasion-transform: uppercase;
+  --occasion-letter-spacing: 0.02em;
+}
+
+body[data-occasion-font="handwritten"] {
+  --occasion-font: "Marker Felt", "Noteworthy", "Comic Sans MS", cursive;
+  --occasion-transform: none;
+  --occasion-letter-spacing: 0;
 }
 
 body[data-grid="rounded"] .square {
@@ -1003,12 +1057,12 @@ body[data-cards-per-page="2"] .marker-bingo {
 }
 
 body[data-cards-per-page="2"] .bingo-card {
-  grid-template-rows: 105px 1fr 30px;
+  grid-template-rows: 132px 1fr 30px;
 }
 
 body[data-cards-per-page="2"] .card-header {
-  gap: 2px;
-  padding: 2px 24px 8px;
+  gap: 3px;
+  padding: 7px 24px 9px;
   border-bottom-width: 4px;
 }
 
@@ -1021,8 +1075,8 @@ body[data-cards-per-page="2"] .card-header h3 {
 }
 
 body[data-cards-per-page="2"] .bingo-grid {
-  gap: 10px;
-  padding: 18px 0 12px;
+  gap: 8px;
+  padding: 14px 0 10px;
 }
 
 body[data-cards-per-page="2"] .square {
