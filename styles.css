@@ -547,7 +547,7 @@ button {
 .extra-page {
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: 24px;
+  gap: 28px;
   width: var(--screen-page-width);
   height: var(--screen-page-height);
   padding: 54px 58px 38px;
@@ -565,7 +565,7 @@ button {
 .extra-page header {
   display: grid;
   gap: 4px;
-  padding-bottom: 16px;
+  padding-bottom: 18px;
   border-bottom: 5px solid var(--accent);
   text-align: center;
 }
@@ -588,6 +588,14 @@ button {
   font-size: 58px;
   line-height: 0.95;
   text-transform: uppercase;
+}
+
+.extra-subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.25;
 }
 
 .extra-page h4 {
@@ -626,26 +634,27 @@ button {
 .master-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  column-gap: 18px;
-  row-gap: 8px;
+  column-gap: 28px;
+  row-gap: 10px;
   align-content: start;
+  padding: 10px 6px 0;
 }
 
 .master-list-item {
   display: grid;
-  grid-template-columns: 17px 25px 1fr;
+  grid-template-columns: 19px 28px 1fr;
   align-items: start;
-  gap: 7px;
+  gap: 8px;
   min-width: 0;
   color: var(--ink);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 800;
-  line-height: 1.12;
+  line-height: 1.18;
 }
 
 .check-box {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   border: 1.5px solid var(--accent-2);
   border-radius: 3px;
   background: #fff;
@@ -653,7 +662,8 @@ button {
 
 .master-number {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
 
 .master-text {
