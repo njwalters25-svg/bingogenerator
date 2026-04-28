@@ -232,7 +232,7 @@ function renderMasterList(items) {
 
     const number = document.createElement("span");
     number.className = "master-number";
-    number.textContent = String(rowPosition + 1).padStart(2, "0");
+    number.textContent = String(index + 1).padStart(2, "0");
 
     const text = document.createElement("span");
     text.className = "master-text";
