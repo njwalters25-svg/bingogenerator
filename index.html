@@ -232,6 +232,25 @@ Shut Up and Dance</textarea>
             </div>
           </fieldset>
 
+          <fieldset class="full-span">
+            <legend>Printable extras</legend>
+            <p class="fieldset-hint">Add helpful pages for hosting the game. These print after the bingo cards.</p>
+            <div class="extras-grid">
+              <label class="check-option">
+                <input id="includeInstructions" type="checkbox" checked />
+                Instructions
+              </label>
+              <label class="check-option">
+                <input id="includeMasterList" type="checkbox" checked />
+                Master checklist
+              </label>
+              <label class="check-option">
+                <input id="includeMarkers" type="checkbox" />
+                Bingo markers
+              </label>
+            </div>
+          </fieldset>
+
           <div class="actions full-span">
             <button id="generateButton" type="submit">Generate cards</button>
             <button id="printButton" type="button">Print or save PDF</button>
@@ -251,6 +270,7 @@ Shut Up and Dance</textarea>
           <p class="preview-note">Preview matches print/PDF layout</p>
         </div>
         <div id="cards" class="cards-grid"></div>
+        <div id="extras" class="extras-preview"></div>
       </section>
     </main>
 
@@ -262,6 +282,49 @@ Shut Up and Dance</textarea>
         </header>
         <div class="bingo-grid" aria-label="Bingo squares"></div>
         <footer></footer>
+      </article>
+    </template>
+
+    <template id="instructionsTemplate">
+      <article class="extra-page instructions-page">
+        <header>
+          <p class="extra-kicker">Game guide</p>
+          <h3>How to play</h3>
+        </header>
+        <ol>
+          <li>Print the bingo cards and give one card to each player.</li>
+          <li>Print the master checklist for the host to use as the call sheet.</li>
+          <li>Call out each item at random and tick it off on the checklist.</li>
+          <li>Players mark matching squares on their card.</li>
+          <li>The first player to complete the agreed pattern calls &ldquo;Bingo!&rdquo;</li>
+        </ol>
+        <section>
+          <h4>Common winning patterns</h4>
+          <p>One full row, one full column, a diagonal line, four corners, or a full house.</p>
+        </section>
+        <footer>alloccasionprints.etsy.com</footer>
+      </article>
+    </template>
+
+    <template id="masterListTemplate">
+      <article class="extra-page master-list-page">
+        <header>
+          <p class="extra-kicker">Host sheet</p>
+          <h3>Master checklist</h3>
+        </header>
+        <div class="master-list"></div>
+        <footer>alloccasionprints.etsy.com</footer>
+      </article>
+    </template>
+
+    <template id="markersTemplate">
+      <article class="extra-page markers-page">
+        <header>
+          <p class="extra-kicker">Player markers</p>
+          <h3>Bingo markers</h3>
+        </header>
+        <div class="markers-grid"></div>
+        <footer>alloccasionprints.etsy.com</footer>
       </article>
     </template>
 
