@@ -1179,9 +1179,59 @@ body[data-cards-per-page="2"] .bingo-card footer {
     page-break-after: auto;
   }
 
+  body[data-has-extras="true"] .bingo-card:last-child {
+    page-break-after: always;
+  }
+
   body[data-cards-per-page="2"] .extra-page {
     width: var(--page-height);
     height: var(--page-width);
+  }
+
+  .markers-page {
+    display: grid !important;
+    grid-template-rows: auto 1fr auto;
+    overflow: hidden;
+  }
+
+  .markers-page .markers-grid {
+    display: grid !important;
+    min-height: 0;
+    height: 100%;
+  }
+
+  body[data-cards-per-page="2"] .markers-page {
+    padding: 30px 38px 24px;
+    gap: 16px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page header {
+    padding-bottom: 10px;
+    border-bottom-width: 4px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page .extra-kicker {
+    font-size: 18px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page h3 {
+    font-size: 38px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page .markers-grid {
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+    grid-template-rows: repeat(9, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page .marker-token {
+    width: auto;
+    max-width: 56px;
+    height: auto;
+    max-height: 56px;
+    align-self: stretch;
+    justify-self: stretch;
+    padding: 6px;
   }
 
   body[data-cards-per-page="2"] .cards-grid {
@@ -1201,5 +1251,9 @@ body[data-cards-per-page="2"] .bingo-card footer {
 
   body[data-cards-per-page="2"] .card-frame:last-child .bingo-card {
     page-break-after: auto;
+  }
+
+  body[data-has-extras="true"][data-cards-per-page="2"] .card-frame:last-child .bingo-card {
+    page-break-after: always;
   }
 }
