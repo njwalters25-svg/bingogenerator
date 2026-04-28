@@ -501,8 +501,10 @@ button {
   font-size: 16px;
   font-weight: 780;
   line-height: 1.12;
-  overflow-wrap: anywhere;
-  hyphens: auto;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none;
+  text-wrap: balance;
 }
 
 .square.text-medium {
@@ -691,15 +693,21 @@ button {
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(7, 1fr);
   gap: 14px;
+  min-height: 0;
+  height: 100%;
   align-content: center;
+  justify-content: center;
 }
 
 .marker-token {
   display: grid;
   grid-template-rows: 1fr auto;
   place-items: center;
+  justify-self: center;
+  align-self: center;
   min-width: 0;
   min-height: 0;
+  width: min(100%, 105px);
   aspect-ratio: 1;
   border: 2px dashed var(--accent-2);
   border-radius: 999px;
@@ -980,6 +988,7 @@ body[data-cards-per-page="2"] .markers-grid {
 }
 
 body[data-cards-per-page="2"] .marker-token {
+  width: min(100%, 58px);
   padding: 7px;
 }
 
@@ -1018,20 +1027,20 @@ body[data-cards-per-page="2"] .bingo-grid {
 
 body[data-cards-per-page="2"] .square {
   padding: 7px;
-  font-size: 12px;
-  line-height: 1.06;
+  font-size: 10.75px;
+  line-height: 1.08;
 }
 
 body[data-cards-per-page="2"] .square.text-medium {
-  font-size: 10.5px;
+  font-size: 9.75px;
 }
 
 body[data-cards-per-page="2"] .square.text-long {
-  font-size: 9.5px;
+  font-size: 8.75px;
 }
 
 body[data-cards-per-page="2"] .square.text-xlong {
-  font-size: 8.5px;
+  font-size: 8px;
 }
 
 body[data-cards-per-page="2"] .square.free {
