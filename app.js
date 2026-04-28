@@ -270,6 +270,7 @@ function renderMarkers() {
 
 function renderExtras(items) {
   extrasContainer.replaceChildren();
+  document.body.dataset.hasExtras = "false";
 
   if (inputs.includeInstructions.checked) {
     extrasContainer.append(createExtraFrame(renderInstructions()));
@@ -281,6 +282,10 @@ function renderExtras(items) {
 
   if (inputs.includeMarkers.checked) {
     extrasContainer.append(createExtraFrame(renderMarkers()));
+  }
+
+  if (extrasContainer.children.length > 0) {
+    document.body.dataset.hasExtras = "true";
   }
 
   updatePreviewScale();
