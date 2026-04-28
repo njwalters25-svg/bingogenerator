@@ -214,9 +214,17 @@ function renderInstructions() {
 function renderMasterList(items) {
   const page = masterListTemplate.content.firstElementChild.cloneNode(true);
   const list = page.querySelector(".master-list");
-  items.forEach((item, index) => {
+  const sortedItems = [...items].sort((first, second) => first.localeCompare(second, undefined, { sensitivity: "base" }));
+  const columnCount = cardsPerPage.value === "2" ? 4 : 3;
+  const rowCount = Math.ceil(sortedItems.length / columnCount);
+
+  sortedItems.forEach((item, index) => {
+    const column = Math.floor(index / rowCount);
+    const rowPosition = index % rowCount;
     const row = document.createElement("div");
     row.className = "master-list-item";
+    row.style.gridColumn = String(column + 1);
+    row.style.gridRow = String(rowPosition + 1);
 
     const box = document.createElement("span");
     box.className = "check-box";
@@ -224,7 +232,7 @@ function renderMasterList(items) {
 
     const number = document.createElement("span");
     number.className = "master-number";
-    number.textContent = String(index + 1).padStart(2, "0");
+    number.textContent = String(rowPosition + 1).padStart(2, "0");
 
     const text = document.createElement("span");
     text.className = "master-text";
