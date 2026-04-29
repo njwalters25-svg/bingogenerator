@@ -1063,16 +1063,19 @@ body[data-cards-per-page="2"] .bingo-card {
 
 body[data-cards-per-page="2"] .card-header {
   gap: 3px;
+  overflow: hidden;
   padding: 7px 24px 9px;
   border-bottom-width: 4px;
 }
 
 body[data-cards-per-page="2"] .occasion {
-  font-size: calc(var(--occasion-size) * 0.72);
+  font-size: min(calc(var(--occasion-size) * 0.72), 30px);
+  line-height: 1.05;
 }
 
 body[data-cards-per-page="2"] .card-header h3 {
-  font-size: calc(var(--title-size) * 0.72);
+  font-size: min(calc(var(--title-size) * 0.72), 76px);
+  line-height: 0.82;
 }
 
 body[data-cards-per-page="2"] .bingo-grid {
@@ -1228,4 +1231,87 @@ body[data-cards-per-page="2"] .bingo-card footer {
     page-break-after: auto;
   }
 
-  body[data-cards-per-page=
+  body[data-cards-per-page="2"] .bingo-card {
+    width: calc(var(--page-height) / 2);
+    height: var(--page-width);
+    page-break-after: auto;
+  }
+
+  body[data-has-extras="true"] .bingo-card:last-child {
+    page-break-after: always;
+  }
+
+  body[data-cards-per-page="2"] .extra-page {
+    width: var(--page-height);
+    height: var(--page-width);
+  }
+
+  .markers-page {
+    display: grid !important;
+    grid-template-rows: auto 1fr auto;
+    overflow: hidden;
+  }
+
+  .markers-page .markers-grid {
+    display: grid !important;
+    min-height: 0;
+    height: 100%;
+  }
+
+  body[data-cards-per-page="2"] .markers-page {
+    padding: 30px 38px 24px;
+    gap: 16px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page header {
+    padding-bottom: 10px;
+    border-bottom-width: 4px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page .extra-kicker {
+    font-size: 18px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page h3 {
+    font-size: 38px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page .markers-grid {
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+    grid-template-rows: repeat(9, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  body[data-cards-per-page="2"] .markers-page .marker-token {
+    width: auto;
+    max-width: 56px;
+    height: auto;
+    max-height: 56px;
+    align-self: stretch;
+    justify-self: stretch;
+    padding: 6px;
+  }
+
+  body[data-cards-per-page="2"] .cards-grid {
+    font-size: 0;
+  }
+
+  body[data-cards-per-page="2"] .card-frame {
+    display: inline-block;
+    width: 50%;
+    font-size: 1rem;
+    vertical-align: top;
+  }
+
+  body[data-cards-per-page="2"] .card-frame:nth-child(2n) .bingo-card {
+    page-break-after: always;
+  }
+
+  body[data-cards-per-page="2"] .card-frame:last-child .bingo-card {
+    page-break-after: auto;
+  }
+
+  body[data-has-extras="true"][data-cards-per-page="2"] .card-frame:last-child .bingo-card {
+    page-break-after: always;
+  }
+}
