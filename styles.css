@@ -509,17 +509,19 @@ button {
 }
 
 .square.text-medium {
-  font-size: 14px;
+  font-size: 13.5px;
+  line-height: 1.08;
 }
 
 .square.text-long {
-  font-size: 12.5px;
+  font-size: 11.75px;
   line-height: 1.08;
 }
 
 .square.text-xlong {
-  font-size: 11px;
+  font-size: 10.25px;
   line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
 .square.free {
@@ -1085,20 +1087,20 @@ body[data-cards-per-page="2"] .bingo-grid {
 
 body[data-cards-per-page="2"] .square {
   padding: 7px;
-  font-size: 10.75px;
+  font-size: 10.25px;
   line-height: 1.08;
 }
 
 body[data-cards-per-page="2"] .square.text-medium {
-  font-size: 9.75px;
+  font-size: 9px;
 }
 
 body[data-cards-per-page="2"] .square.text-long {
-  font-size: 8.75px;
+  font-size: 8px;
 }
 
 body[data-cards-per-page="2"] .square.text-xlong {
-  font-size: 8px;
+  font-size: 7.25px;
 }
 
 body[data-cards-per-page="2"] .square.free {
