@@ -168,6 +168,9 @@ function createSquare(value) {
   }
 
   square.textContent = value;
+  if (value.split(/\s+/).some((word) => word.length > 12)) {
+    square.classList.add("text-tight");
+  }
   if (value.length > 42) {
     square.classList.add("text-xlong");
   } else if (value.length > 30) {
