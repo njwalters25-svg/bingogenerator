@@ -59,6 +59,15 @@ const schemeColors = {
   christmas: ["#b91c1c", "#166534", "#7f1212", "#d4af37"],
   halloween: ["#111111", "#f97316", "#7e22ce", "#111111"],
 };
+const occasionFontMaxSizes = {
+  bold: 48,
+  script: 65,
+  serif: 62,
+  modern: 54,
+  playful: 58,
+  groovy: 64,
+  handwritten: 58,
+};
 
 function parseItems(value) {
   return [...new Set(
@@ -123,6 +132,12 @@ function updateListHelp() {
 }
 
 function updateDesignSettings() {
+  const occasionMaxSize = occasionFontMaxSizes[occasionFont.value] || 60;
+  occasionSize.max = occasionMaxSize;
+  if (Number(occasionSize.value) > occasionMaxSize) {
+    occasionSize.value = occasionMaxSize;
+  }
+
   document.body.dataset.font = fontStyle.value;
   document.body.dataset.occasionFont = occasionFont.value;
   document.body.dataset.grid = gridStyle.value;
