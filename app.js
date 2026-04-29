@@ -168,11 +168,11 @@ function createSquare(value) {
   }
 
   square.textContent = value;
-  if (value.length > 48) {
+  if (value.length > 42) {
     square.classList.add("text-xlong");
-  } else if (value.length > 36) {
+  } else if (value.length > 30) {
     square.classList.add("text-long");
-  } else if (value.length > 24) {
+  } else if (value.length > 18) {
     square.classList.add("text-medium");
   }
   return square;
