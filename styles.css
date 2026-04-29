@@ -1143,6 +1143,10 @@ body[data-cards-per-page="2"] .bingo-card footer {
   }
 }
 
+@page {
+  margin: 0;
+}
+
 @media print {
   body {
     background: #fff;
@@ -1232,8 +1236,9 @@ body[data-cards-per-page="2"] .bingo-card footer {
   }
 
   body[data-cards-per-page="2"] .bingo-card {
-    width: calc(var(--page-height) / 2);
-    height: var(--page-width);
+    width: calc((var(--page-height) / 2) - 0.08in);
+    height: calc(var(--page-width) - 0.12in);
+    margin: 0.06in 0.04in;
     page-break-after: auto;
   }
 
