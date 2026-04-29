@@ -60,13 +60,24 @@ const schemeColors = {
   halloween: ["#111111", "#f97316", "#7e22ce", "#111111"],
 };
 const occasionFontMaxSizes = {
-  bold: 48,
-  script: 65,
-  serif: 62,
-  modern: 54,
-  playful: 58,
-  groovy: 64,
-  handwritten: 58,
+  1: {
+    bold: 48,
+    script: 65,
+    serif: 62,
+    modern: 54,
+    playful: 58,
+    groovy: 64,
+    handwritten: 58,
+  },
+  2: {
+    bold: 36,
+    script: 46,
+    serif: 44,
+    modern: 40,
+    playful: 42,
+    groovy: 46,
+    handwritten: 42,
+  },
 };
 
 function parseItems(value) {
@@ -132,7 +143,8 @@ function updateListHelp() {
 }
 
 function updateDesignSettings() {
-  const occasionMaxSize = occasionFontMaxSizes[occasionFont.value] || 60;
+  const occasionMaxSizes = occasionFontMaxSizes[cardsPerPage.value] || occasionFontMaxSizes[1];
+  const occasionMaxSize = occasionMaxSizes[occasionFont.value] || 48;
   occasionSize.max = occasionMaxSize;
   if (Number(occasionSize.value) > occasionMaxSize) {
     occasionSize.value = occasionMaxSize;
@@ -159,10 +171,13 @@ function updateCustomColors() {
 }
 
 function applyCurrentColors() {
-  document.documentElement.style.setProperty("--accent", primaryColor.value);
-  document.documentElement.style.setProperty("--accent-2", highlightColor.value);
-  document.documentElement.style.setProperty("--title-color", titleColor.value);
-  document.documentElement.style.setProperty("--occasion-color", occasionColor.value);
+  const colorTargets = [document.documentElement, document.body];
+  colorTargets.forEach((target) => {
+    target.style.setProperty("--accent", primaryColor.value);
+    target.style.setProperty("--accent-2", highlightColor.value);
+    target.style.setProperty("--title-color", titleColor.value);
+    target.style.setProperty("--occasion-color", occasionColor.value);
+  });
 }
 
 function createSquare(value) {
