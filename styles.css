@@ -513,6 +513,10 @@ button {
   line-height: 1.08;
 }
 
+.square.text-tight {
+  overflow-wrap: anywhere;
+}
+
 .square.text-long {
   font-size: 11.75px;
   line-height: 1.08;
