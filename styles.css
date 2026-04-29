@@ -913,7 +913,7 @@ body[data-font="elegant"] {
 }
 
 body[data-font="fun"] {
-  --header-font: "Cooper Black", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+  --header-font: "Chewy", "Cooper Black", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
   --title-line-height: 0.86;
   --body-font: "Trebuchet MS", Arial, sans-serif;
 }
@@ -925,8 +925,8 @@ body[data-font="kids"] {
 }
 
 body[data-font="groovy"] {
-  --header-font: "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
-  --title-line-height: 0.84;
+  --header-font: "Cherry Bomb One", "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
+  --title-line-height: 0.9;
   --body-font: "Trebuchet MS", Arial, sans-serif;
 }
 
@@ -943,8 +943,9 @@ body[data-font="kids"] .card-header h3 {
 
 body[data-font="groovy"] .card-header h3 {
   text-shadow:
-    0 3px 0 color-mix(in srgb, var(--accent-2) 55%, #fff),
-    0 6px 0 color-mix(in srgb, var(--accent-soft) 90%, #fff);
+    0 2px 0 color-mix(in srgb, var(--accent-2) 75%, #fff),
+    0 5px 0 color-mix(in srgb, var(--accent-soft) 88%, #fff),
+    0 8px 0 color-mix(in srgb, var(--accent) 28%, transparent);
 }
 
 body[data-occasion-font="script"] {
@@ -972,9 +973,9 @@ body[data-occasion-font="playful"] {
 }
 
 body[data-occasion-font="groovy"] {
-  --occasion-font: "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
-  --occasion-transform: uppercase;
-  --occasion-letter-spacing: 0.02em;
+  --occasion-font: "Cherry Bomb One", "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
+  --occasion-transform: none;
+  --occasion-letter-spacing: 0;
 }
 
 body[data-occasion-font="handwritten"] {
@@ -1227,87 +1228,4 @@ body[data-cards-per-page="2"] .bingo-card footer {
     page-break-after: auto;
   }
 
-  body[data-cards-per-page="2"] .bingo-card {
-    width: calc(var(--page-height) / 2);
-    height: var(--page-width);
-    page-break-after: auto;
-  }
-
-  body[data-has-extras="true"] .bingo-card:last-child {
-    page-break-after: always;
-  }
-
-  body[data-cards-per-page="2"] .extra-page {
-    width: var(--page-height);
-    height: var(--page-width);
-  }
-
-  .markers-page {
-    display: grid !important;
-    grid-template-rows: auto 1fr auto;
-    overflow: hidden;
-  }
-
-  .markers-page .markers-grid {
-    display: grid !important;
-    min-height: 0;
-    height: 100%;
-  }
-
-  body[data-cards-per-page="2"] .markers-page {
-    padding: 30px 38px 24px;
-    gap: 16px;
-  }
-
-  body[data-cards-per-page="2"] .markers-page header {
-    padding-bottom: 10px;
-    border-bottom-width: 4px;
-  }
-
-  body[data-cards-per-page="2"] .markers-page .extra-kicker {
-    font-size: 18px;
-  }
-
-  body[data-cards-per-page="2"] .markers-page h3 {
-    font-size: 38px;
-  }
-
-  body[data-cards-per-page="2"] .markers-page .markers-grid {
-    grid-template-columns: repeat(11, minmax(0, 1fr));
-    grid-template-rows: repeat(9, minmax(0, 1fr));
-    gap: 7px;
-  }
-
-  body[data-cards-per-page="2"] .markers-page .marker-token {
-    width: auto;
-    max-width: 56px;
-    height: auto;
-    max-height: 56px;
-    align-self: stretch;
-    justify-self: stretch;
-    padding: 6px;
-  }
-
-  body[data-cards-per-page="2"] .cards-grid {
-    font-size: 0;
-  }
-
-  body[data-cards-per-page="2"] .card-frame {
-    display: inline-block;
-    width: 50%;
-    font-size: 1rem;
-    vertical-align: top;
-  }
-
-  body[data-cards-per-page="2"] .card-frame:nth-child(2n) .bingo-card {
-    page-break-after: always;
-  }
-
-  body[data-cards-per-page="2"] .card-frame:last-child .bingo-card {
-    page-break-after: auto;
-  }
-
-  body[data-has-extras="true"][data-cards-per-page="2"] .card-frame:last-child .bingo-card {
-    page-break-after: always;
-  }
-}
+  body[data-cards-per-page=
