@@ -8,6 +8,7 @@ const markersTemplate = document.querySelector("#markersTemplate");
 const statusMessage = document.querySelector("#statusMessage");
 const cardTotal = document.querySelector("#cardTotal");
 const listHelp = document.querySelector("#listHelp");
+const qualityWarnings = document.querySelector("#qualityWarnings");
 const freeImageInput = document.querySelector("#freeImage");
 const printButton = document.querySelector("#printButton");
 const schemeGrid = document.querySelector("#schemeGrid");
@@ -27,6 +28,9 @@ const titleColor = document.querySelector("#titleColor");
 const occasionColor = document.querySelector("#occasionColor");
 
 let freeImageData = "";
+let isRestoringSettings = false;
+
+const storageKey = "allOccasionsBingoSettings";
 
 const inputs = {
   occasion: document.querySelector("#occasionInput"),
@@ -131,6 +135,76 @@ function setStatus(message, isError = false) {
   statusMessage.classList.toggle("error", isError);
 }
 
+function getSettingsSnapshot() {
+  return {
+    occasion: inputs.occasion.value,
+    title: inputs.title.value,
+    count: inputs.count.value,
+    items: inputs.items.value,
+    freeText: inputs.freeText.value,
+    includeInstructions: inputs.includeInstructions.checked,
+    includeMasterList: inputs.includeMasterList.checked,
+    includeMarkers: inputs.includeMarkers.checked,
+    fontStyle: fontStyle.value,
+    occasionFont: occasionFont.value,
+    occasionSize: occasionSize.value,
+    titleSize: titleSize.value,
+    gridStyle: gridStyle.value,
+    pageSize: pageSize.value,
+    cardsPerPage: cardsPerPage.value,
+    primaryColor: primaryColor.value,
+    highlightColor: highlightColor.value,
+    titleColor: titleColor.value,
+    occasionColor: occasionColor.value,
+  };
+}
+
+function saveSettings() {
+  if (isRestoringSettings) {
+    return;
+  }
+
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(getSettingsSnapshot()));
+  } catch {
+    // If browser storage is unavailable, the generator should still work normally.
+  }
+}
+
+function restoreSettings() {
+  try {
+    const savedSettings = JSON.parse(localStorage.getItem(storageKey));
+    if (!savedSettings) {
+      return;
+    }
+
+    isRestoringSettings = true;
+    inputs.occasion.value = savedSettings.occasion ?? inputs.occasion.value;
+    inputs.title.value = savedSettings.title || inputs.title.value;
+    inputs.count.value = savedSettings.count || inputs.count.value;
+    inputs.items.value = savedSettings.items ?? inputs.items.value;
+    inputs.freeText.value = savedSettings.freeText || inputs.freeText.value;
+    inputs.includeInstructions.checked = savedSettings.includeInstructions ?? inputs.includeInstructions.checked;
+    inputs.includeMasterList.checked = savedSettings.includeMasterList ?? inputs.includeMasterList.checked;
+    inputs.includeMarkers.checked = savedSettings.includeMarkers ?? inputs.includeMarkers.checked;
+    fontStyle.value = savedSettings.fontStyle || fontStyle.value;
+    occasionFont.value = savedSettings.occasionFont || occasionFont.value;
+    occasionSize.value = savedSettings.occasionSize || occasionSize.value;
+    titleSize.value = savedSettings.titleSize || titleSize.value;
+    gridStyle.value = savedSettings.gridStyle || gridStyle.value;
+    pageSize.value = savedSettings.pageSize || pageSize.value;
+    cardsPerPage.value = savedSettings.cardsPerPage || cardsPerPage.value;
+    primaryColor.value = savedSettings.primaryColor || primaryColor.value;
+    highlightColor.value = savedSettings.highlightColor || highlightColor.value;
+    titleColor.value = savedSettings.titleColor || titleColor.value;
+    occasionColor.value = savedSettings.occasionColor || occasionColor.value;
+  } catch {
+    localStorage.removeItem(storageKey);
+  } finally {
+    isRestoringSettings = false;
+  }
+}
+
 function updateListHelp() {
   const itemCount = parseItems(inputs.items.value).length;
   if (itemCount === 0) {
@@ -142,6 +216,46 @@ function updateListHelp() {
   } else {
     listHelp.textContent = `${itemCount} unique items added. Great list size. Around 75 is ideal when generating lots of cards.`;
   }
+}
+
+function getHelpfulChecks(items, requestedCount) {
+  if (items.length < 24) {
+    return [];
+  }
+
+  const checks = [];
+  const longestItem = items.reduce((longest, item) => item.length > longest.length ? item : longest, "");
+  const hasVeryLongWord = items.some((item) => item.split(/\s+/).some((word) => word.length > 16));
+  const freeLabel = inputs.freeText.value.trim();
+
+  if (items.length < 50) {
+    checks.push("For better variety across lots of cards, 50-75 items works better than a short list.");
+  }
+
+  if (requestedCount > 30 && items.length < 60) {
+    checks.push("You are making quite a few cards from this list. Add more items if you want the cards to feel more different.");
+  }
+
+  if (longestItem.length > 52) {
+    checks.push("Some items are very long and may print smaller. Shorten long titles or remove extra featuring details if needed.");
+  } else if (hasVeryLongWord) {
+    checks.push("Some long words or artist names may need extra space. Check the preview before printing.");
+  }
+
+  if (cardsPerPage.value === "2" && freeLabel.length > 16 && !freeImageData) {
+    checks.push("The free square is much smaller in 2-per-page mode, so short free-square text will print best.");
+  }
+
+  return checks;
+}
+
+function renderHelpfulChecks(checks) {
+  qualityWarnings.replaceChildren();
+  checks.forEach((check) => {
+    const item = document.createElement("li");
+    item.textContent = check;
+    qualityWarnings.append(item);
+  });
 }
 
 function updateDesignSettings() {
@@ -173,6 +287,7 @@ function updateDesignSettings() {
   };
   printPageStyle.textContent = `@page { size: ${printSizes[pageSize.value][cardsPerPage.value]}; margin: 0; }`;
   updatePreviewScale();
+  fitAllSquareText();
 }
 
 function updateCustomColors() {
@@ -227,6 +342,28 @@ function applyTextFitClasses(square, value) {
   }
 }
 
+function fitSquareText(square) {
+  if (square.querySelector("img")) {
+    return;
+  }
+
+  square.style.fontSize = "";
+  const baseSize = Number.parseFloat(getComputedStyle(square).fontSize);
+  const minimumSize = cardsPerPage.value === "2" ? 5.8 : 8;
+  let size = baseSize;
+
+  while (size > minimumSize && (square.scrollHeight > square.clientHeight || square.scrollWidth > square.clientWidth)) {
+    size -= 0.5;
+    square.style.fontSize = `${size}px`;
+  }
+}
+
+function fitAllSquareText() {
+  requestAnimationFrame(() => {
+    document.querySelectorAll(".square").forEach(fitSquareText);
+  });
+}
+
 function renderCards(cards) {
   cardsContainer.replaceChildren();
 
@@ -246,6 +383,7 @@ function renderCards(cards) {
   });
 
   cardTotal.textContent = `${cards.length} card${cards.length === 1 ? "" : "s"}`;
+  fitAllSquareText();
   updatePreviewScale();
 }
 
@@ -378,6 +516,7 @@ function generateCards() {
   if (items.length < 24) {
     cardsContainer.replaceChildren();
     extrasContainer.replaceChildren();
+    renderHelpfulChecks([]);
     cardTotal.textContent = "0 cards";
     setStatus(items.length === 0
       ? "Paste your bingo list to get started."
@@ -389,11 +528,13 @@ function generateCards() {
   const cards = makeUniqueCards(items, requestedCount);
   renderCards(cards);
   renderExtras(items);
+  renderHelpfulChecks(getHelpfulChecks(items, requestedCount));
 
   const note = cards.length === requestedCount
     ? `Generated ${cards.length} unique card${cards.length === 1 ? "" : "s"} from ${items.length} items.`
     : `Generated ${cards.length} unique cards before combinations ran out. Add more items for more variety.`;
   setStatus(note);
+  saveSettings();
 }
 
 form.addEventListener("submit", (event) => {
@@ -401,7 +542,10 @@ form.addEventListener("submit", (event) => {
   generateCards();
 });
 
-inputs.items.addEventListener("input", updateListHelp);
+inputs.items.addEventListener("input", () => {
+  updateListHelp();
+  saveSettings();
+});
 
 freeImageInput.addEventListener("change", () => {
   const file = freeImageInput.files[0];
@@ -429,16 +573,21 @@ schemeGrid.addEventListener("change", (event) => {
     occasionColor.value = occasion;
     document.body.dataset.customColors = "false";
     applyCurrentColors();
+    saveSettings();
   }
 });
 
 [primaryColor, highlightColor, titleColor, occasionColor].forEach((control) => {
-  control.addEventListener("input", updateCustomColors);
+  control.addEventListener("input", () => {
+    updateCustomColors();
+    saveSettings();
+  });
 });
 
 [fontStyle, occasionFont, gridStyle, pageSize, cardsPerPage].forEach((control) => {
   control.addEventListener("change", () => {
     updateDesignSettings();
+    saveSettings();
   });
 });
 
@@ -449,7 +598,14 @@ cardsPerPage.addEventListener("change", generateCards);
 });
 
 [occasionSize, titleSize].forEach((control) => {
-  control.addEventListener("input", updateDesignSettings);
+  control.addEventListener("input", () => {
+    updateDesignSettings();
+    saveSettings();
+  });
+});
+
+[inputs.occasion, inputs.title, inputs.count, inputs.freeText].forEach((control) => {
+  control.addEventListener("input", saveSettings);
 });
 
 printButton.addEventListener("click", () => {
@@ -461,6 +617,7 @@ printButton.addEventListener("click", () => {
 window.addEventListener("resize", updatePreviewScale);
 
 document.body.dataset.scheme = "party";
+restoreSettings();
 applyCurrentColors();
 updateDesignSettings();
 updateListHelp();

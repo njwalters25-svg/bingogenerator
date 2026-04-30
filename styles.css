@@ -169,6 +169,24 @@ fieldset {
   background: color-mix(in srgb, var(--accent-soft) 24%, #fff);
 }
 
+.quality-warnings {
+  display: none;
+  gap: 7px;
+  margin: 0;
+  padding: 12px 14px 12px 30px;
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent-soft) 30%, #fff);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.quality-warnings:not(:empty) {
+  display: grid;
+}
+
 legend {
   padding: 0 6px;
 }
@@ -511,6 +529,7 @@ button {
   font-weight: 780;
   line-height: 1.12;
   overflow-wrap: break-word;
+  overflow: hidden;
   word-break: normal;
   hyphens: none;
   text-wrap: balance;
