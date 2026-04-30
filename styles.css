@@ -1108,7 +1108,25 @@ body[data-cards-per-page="2"] .square.text-xlong {
 }
 
 body[data-cards-per-page="2"] .square.free {
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-width: 1.5px;
+  font-size: 13px;
+  line-height: 1.04;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+body[data-cards-per-page="2"] .square.free.text-medium {
+  font-size: 10.5px;
+}
+
+body[data-cards-per-page="2"] .square.free.text-long,
+body[data-cards-per-page="2"] .square.free.text-xlong {
+  font-size: 9px;
+  line-height: 1.02;
 }
 
 body[data-cards-per-page="2"] .bingo-card footer {
