@@ -41,6 +41,10 @@
         font-size: 7.4px;
         line-height: 1;
       }
+
+      body[data-cards-per-page="2"] .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+      }
     </style>
   </head>
   <body>

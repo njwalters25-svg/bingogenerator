@@ -1024,7 +1024,7 @@ body[data-cards-per-page="2"] {
 }
 
 body[data-cards-per-page="2"] .cards-grid {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
 }
 
 body[data-cards-per-page="2"] .extras-preview {
