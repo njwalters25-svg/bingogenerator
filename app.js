@@ -159,9 +159,17 @@ function updateDesignSettings() {
   titleSizeValue.value = titleSize.value;
   document.documentElement.style.setProperty("--occasion-size", `${occasionSize.value}px`);
   document.documentElement.style.setProperty("--title-size", `${titleSize.value}px`);
-  const printSize = pageSize.value === "a4" ? "A4" : "letter";
-  const orientation = cardsPerPage.value === "2" ? " landscape" : "";
-  printPageStyle.textContent = `@page { size: ${printSize}${orientation}; margin: 0; }`;
+  const printSizes = {
+    letter: {
+      1: "8.5in 11in",
+      2: "11in 8.5in",
+    },
+    a4: {
+      1: "210mm 297mm",
+      2: "297mm 210mm",
+    },
+  };
+  printPageStyle.textContent = `@page { size: ${printSizes[pageSize.value][cardsPerPage.value]}; margin: 0; }`;
   updatePreviewScale();
 }
 
