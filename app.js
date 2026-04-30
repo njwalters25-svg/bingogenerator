@@ -192,12 +192,19 @@ function createSquare(value) {
       image.alt = inputs.freeText.value.trim() || "Free square";
       square.append(image);
     } else {
-      square.textContent = inputs.freeText.value.trim() || "FREE";
+      const freeLabel = inputs.freeText.value.trim() || "FREE";
+      square.textContent = freeLabel;
+      applyTextFitClasses(square, freeLabel);
     }
     return square;
   }
 
   square.textContent = value;
+  applyTextFitClasses(square, value);
+  return square;
+}
+
+function applyTextFitClasses(square, value) {
   if (value.split(/\s+/).some((word) => word.length > 12)) {
     square.classList.add("text-tight");
   }
@@ -208,7 +215,6 @@ function createSquare(value) {
   } else if (value.length > 18) {
     square.classList.add("text-medium");
   }
-  return square;
 }
 
 function renderCards(cards) {
