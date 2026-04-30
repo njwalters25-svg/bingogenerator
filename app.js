@@ -133,7 +133,9 @@ function setStatus(message, isError = false) {
 
 function updateListHelp() {
   const itemCount = parseItems(inputs.items.value).length;
-  if (itemCount < 24) {
+  if (itemCount === 0) {
+    listHelp.textContent = "Paste one item per line. Commas also work, but one per line is easiest to check.";
+  } else if (itemCount < 24) {
     listHelp.textContent = `${itemCount} unique item${itemCount === 1 ? "" : "s"} added. Add at least 24 for a full card with one free square.`;
   } else if (itemCount < 50) {
     listHelp.textContent = `${itemCount} unique items added. This works, but 50-75 gives better variety across multiple cards.`;
@@ -377,7 +379,10 @@ function generateCards() {
     cardsContainer.replaceChildren();
     extrasContainer.replaceChildren();
     cardTotal.textContent = "0 cards";
-    setStatus("Add at least 24 unique list items for a 5 x 5 card with one free square.", true);
+    setStatus(items.length === 0
+      ? "Paste your bingo list to get started."
+      : "Add at least 24 unique list items for a 5 x 5 card with one free square.",
+    true);
     return;
   }
 
