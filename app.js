@@ -345,8 +345,10 @@ function updatePreviewScale() {
   const cardHeight = isTwoUp ? pageWidth : pageHeight;
   const extraWidth = isTwoUp ? pageHeight : pageWidth;
   const extraHeight = isTwoUp ? pageWidth : pageHeight;
-  document.documentElement.style.setProperty("--screen-page-width", `${cardWidth}px`);
-  document.documentElement.style.setProperty("--screen-page-height", `${cardHeight}px`);
+  [document.documentElement, document.body].forEach((target) => {
+    target.style.setProperty("--screen-page-width", `${cardWidth}px`);
+    target.style.setProperty("--screen-page-height", `${cardHeight}px`);
+  });
 
   requestAnimationFrame(() => {
     document.querySelectorAll(".card-frame").forEach((frame) => {
