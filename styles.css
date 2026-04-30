@@ -239,10 +239,15 @@ textarea:focus {
 .scheme-grid,
 .custom-colors,
 .design-grid,
-.extras-grid,
-.actions {
+.extras-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr;
   gap: 12px;
 }
 
@@ -386,6 +391,16 @@ button {
   border: 1px solid var(--line);
   background: #fff;
   color: var(--ink);
+}
+
+#downloadPdfButton {
+  background: var(--accent-2);
+  color: #fff;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.68;
 }
 
 .status {
@@ -780,6 +795,35 @@ button {
   color: var(--muted);
   font-size: 17px;
   font-weight: 800;
+}
+
+.pdf-export-area {
+  position: fixed;
+  top: 0;
+  left: -20000px;
+  z-index: -1;
+  display: grid;
+  gap: 0;
+  background: #fff;
+  pointer-events: none;
+}
+
+.pdf-export-sheet {
+  display: grid;
+  overflow: hidden;
+  background: #fff;
+  page-break-after: always;
+}
+
+.pdf-export-sheet.two-up {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.pdf-export-area .bingo-card,
+.pdf-export-area .extra-page {
+  margin: 0;
+  box-shadow: none;
+  transform: none;
 }
 
 body[data-scheme="primary"] {

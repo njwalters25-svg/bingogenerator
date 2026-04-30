@@ -11,6 +11,7 @@ const listHelp = document.querySelector("#listHelp");
 const qualityWarnings = document.querySelector("#qualityWarnings");
 const freeImageInput = document.querySelector("#freeImage");
 const printButton = document.querySelector("#printButton");
+const downloadPdfButton = document.querySelector("#downloadPdfButton");
 const schemeGrid = document.querySelector("#schemeGrid");
 const fontStyle = document.querySelector("#fontStyle");
 const occasionFont = document.querySelector("#occasionFont");
@@ -364,6 +365,138 @@ function fitAllSquareText() {
   });
 }
 
+function getCurrentPageSize() {
+  const [pageWidth, pageHeight] = pageDimensions[pageSize.value];
+  const isTwoUp = cardsPerPage.value === "2";
+  return {
+    pageWidth,
+    pageHeight,
+    sheetWidth: isTwoUp ? pageHeight : pageWidth,
+    sheetHeight: isTwoUp ? pageWidth : pageHeight,
+    cardWidth: isTwoUp ? pageHeight / 2 : pageWidth,
+    cardHeight: isTwoUp ? pageWidth : pageHeight,
+    orientation: isTwoUp ? "landscape" : "portrait",
+  };
+}
+
+function cloneForPdf(page, width, height) {
+  const clone = page.cloneNode(true);
+  clone.style.width = `${width}px`;
+  clone.style.height = `${height}px`;
+  clone.style.margin = "0";
+  clone.style.transform = "none";
+  clone.style.boxShadow = "none";
+  clone.style.setProperty("--preview-scale", "1");
+  return clone;
+}
+
+function createPdfSheet(width, height, isTwoUp = false) {
+  const sheet = document.createElement("div");
+  sheet.className = `pdf-export-sheet${isTwoUp ? " two-up" : ""}`;
+  sheet.style.width = `${width}px`;
+  sheet.style.height = `${height}px`;
+  return sheet;
+}
+
+function createPdfExportArea() {
+  const sizing = getCurrentPageSize();
+  const exportArea = document.createElement("div");
+  exportArea.className = "pdf-export-area";
+  exportArea.style.width = `${sizing.sheetWidth}px`;
+  exportArea.style.setProperty("--screen-page-width", `${sizing.cardWidth}px`);
+  exportArea.style.setProperty("--screen-page-height", `${sizing.cardHeight}px`);
+
+  const cards = [...cardsContainer.querySelectorAll(".bingo-card")];
+  for (let index = 0; index < cards.length; index += cardsPerPage.value === "2" ? 2 : 1) {
+    const sheet = createPdfSheet(sizing.sheetWidth, sizing.sheetHeight, cardsPerPage.value === "2");
+    sheet.append(cloneForPdf(cards[index], sizing.cardWidth, sizing.cardHeight));
+    if (cardsPerPage.value === "2" && cards[index + 1]) {
+      sheet.append(cloneForPdf(cards[index + 1], sizing.cardWidth, sizing.cardHeight));
+    }
+    exportArea.append(sheet);
+  }
+
+  [...extrasContainer.querySelectorAll(".extra-page")].forEach((page) => {
+    const sheet = createPdfSheet(sizing.sheetWidth, sizing.sheetHeight);
+    sheet.append(cloneForPdf(page, sizing.sheetWidth, sizing.sheetHeight));
+    exportArea.append(sheet);
+  });
+
+  return { exportArea, sizing };
+}
+
+function getPdfFilename() {
+  const occasion = inputs.occasion.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return `${occasion || "bingo"}-cards.pdf`;
+}
+
+function setPdfBusy(isBusy) {
+  downloadPdfButton.disabled = isBusy;
+  printButton.disabled = isBusy;
+  form.querySelector("#generateButton").disabled = isBusy;
+  downloadPdfButton.textContent = isBusy ? "Making PDF..." : "Download PDF";
+}
+
+async function downloadPdf() {
+  generateCards();
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+  if (!cardsContainer.querySelector(".bingo-card")) {
+    setStatus("Add at least 24 unique list items before downloading a PDF.", true);
+    return;
+  }
+
+  if (!window.html2canvas || !window.jspdf?.jsPDF) {
+    setStatus("The PDF maker is still loading. Please try again in a moment.", true);
+    return;
+  }
+
+  setPdfBusy(true);
+  setStatus("Creating your PDF...");
+
+  const { exportArea, sizing } = createPdfExportArea();
+  document.body.append(exportArea);
+
+  try {
+    if (document.fonts?.ready) {
+      await document.fonts.ready;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: sizing.orientation,
+      unit: "px",
+      format: [sizing.sheetWidth, sizing.sheetHeight],
+      compress: true,
+    });
+    const sheets = [...exportArea.querySelectorAll(".pdf-export-sheet")];
+
+    for (const [index, sheet] of sheets.entries()) {
+      if (index > 0) {
+        pdf.addPage([sizing.sheetWidth, sizing.sheetHeight], sizing.orientation);
+      }
+
+      const canvas = await html2canvas(sheet, {
+        backgroundColor: "#ffffff",
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+      const image = canvas.toDataURL("image/jpeg", 0.95);
+      pdf.addImage(image, "JPEG", 0, 0, sizing.sheetWidth, sizing.sheetHeight);
+    }
+
+    pdf.save(getPdfFilename());
+    setStatus(`Downloaded ${sheets.length} PDF page${sheets.length === 1 ? "" : "s"}.`);
+  } catch (error) {
+    console.error(error);
+    setStatus("The PDF could not be created. Please use Print or save PDF instead.", true);
+  } finally {
+    exportArea.remove();
+    setPdfBusy(false);
+  }
+}
+
 function renderCards(cards) {
   cardsContainer.replaceChildren();
 
@@ -613,6 +746,8 @@ printButton.addEventListener("click", () => {
   generateCards();
   requestAnimationFrame(() => window.print());
 });
+
+downloadPdfButton.addEventListener("click", downloadPdf);
 
 window.addEventListener("resize", updatePreviewScale);
 

@@ -271,10 +271,11 @@
 
           <div class="actions full-span">
             <button id="generateButton" type="submit">Generate cards</button>
+            <button id="downloadPdfButton" type="button">Download PDF</button>
             <button id="printButton" type="button">Print or save PDF</button>
           </div>
 
-          <p class="print-help full-span">Use “Print or save PDF” to open your browser print window. Choose your printer, or choose “Save as PDF” to download a PDF file.</p>
+          <p class="print-help full-span">Use “Download PDF” for a ready-made file, or “Print or save PDF” if you prefer your browser print window.</p>
           <ul id="qualityWarnings" class="quality-warnings full-span" aria-live="polite"></ul>
           <p id="statusMessage" class="status" role="status"></p>
         </form>
@@ -350,6 +351,8 @@
       </article>
     </template>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="app.js"></script>
   </body>
 </html>
