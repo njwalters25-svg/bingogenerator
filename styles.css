@@ -142,6 +142,7 @@ fieldset {
 
 .hint,
 .fieldset-hint,
+.list-tip,
 .print-help {
   margin: 0;
   color: var(--muted);
@@ -152,6 +153,13 @@ fieldset {
 
 .fieldset-hint {
   margin-top: -2px;
+}
+
+.list-tip {
+  padding: 11px 12px;
+  border-left: 4px solid var(--accent-2);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent-soft) 20%, #fff);
 }
 
 .print-help {
@@ -210,7 +218,7 @@ textarea:focus {
 }
 
 .free-square-controls,
-.scheme-grid,
+scheme-grid,
 .custom-colors,
 .design-grid,
 .extras-grid,
@@ -1223,7 +1231,6 @@ body[data-cards-per-page="2"] .bingo-card footer {
     height: var(--page-height);
     margin: 0;
     box-shadow: none;
-    transform: none;
     page-break-after: always;
   }
 
