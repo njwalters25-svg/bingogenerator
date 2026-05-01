@@ -385,6 +385,76 @@ function getPdfFilename() {
   return `${occasion || "bingo"}-cards.pdf`;
 }
 
+function cloneForPdf(page, width, height) {
+  const clone = page.cloneNode(true);
+  clone.style.width = `${width}px`;
+  clone.style.height = `${height}px`;
+  clone.style.margin = "0";
+  clone.style.transform = "none";
+  clone.style.boxShadow = "none";
+  clone.style.setProperty("--preview-scale", "1");
+  return clone;
+}
+
+function createPdfSheet(width, height, isTwoUp = false) {
+  const sheet = document.createElement("div");
+  sheet.className = `pdf-export-sheet${isTwoUp ? " two-up" : ""}`;
+  sheet.style.width = `${width}px`;
+  sheet.style.height = `${height}px`;
+  return sheet;
+}
+
+function createPdfExportArea() {
+  const sizing = getCurrentPageSize();
+  const exportArea = document.createElement("div");
+  exportArea.className = "pdf-export-area";
+  exportArea.style.width = `${sizing.sheetWidth}px`;
+  exportArea.style.setProperty("--screen-page-width", `${sizing.cardWidth}px`);
+  exportArea.style.setProperty("--screen-page-height", `${sizing.cardHeight}px`);
+
+  const cards = [...cardsContainer.querySelectorAll(".bingo-card")];
+  for (let index = 0; index < cards.length; index += cardsPerPage.value === "2" ? 2 : 1) {
+    const sheet = createPdfSheet(sizing.sheetWidth, sizing.sheetHeight, cardsPerPage.value === "2");
+    sheet.append(cloneForPdf(cards[index], sizing.cardWidth, sizing.cardHeight));
+    if (cardsPerPage.value === "2" && cards[index + 1]) {
+      sheet.append(cloneForPdf(cards[index + 1], sizing.cardWidth, sizing.cardHeight));
+    }
+    exportArea.append(sheet);
+  }
+
+  [...extrasContainer.querySelectorAll(".extra-page")].forEach((page) => {
+    const sheet = createPdfSheet(sizing.sheetWidth, sizing.sheetHeight);
+    sheet.append(cloneForPdf(page, sizing.sheetWidth, sizing.sheetHeight));
+    exportArea.append(sheet);
+  });
+
+  return { exportArea, sizing };
+}
+
+function addPdfExportOverrides(clonedDocument) {
+  const style = clonedDocument.createElement("style");
+  style.textContent = `
+    .pdf-export-area, .pdf-export-area * {
+      box-shadow: none !important;
+    }
+
+    .pdf-export-area .card-header {
+      background: #fff !important;
+      background-image: none !important;
+    }
+
+    .pdf-export-area .square.free {
+      background: ${mixWithWhite(highlightColor.value, 0.82).join(",").replace(/^/, "rgb(").replace(/$/, ")")} !important;
+    }
+
+    .pdf-export-area .instructions-page section,
+    .pdf-export-area .marker-token {
+      background: #fff !important;
+    }
+  `;
+  clonedDocument.head.append(style);
+}
+
 function hexToRgb(hex) {
   const clean = hex.replace("#", "");
   const value = Number.parseInt(clean.length === 3
@@ -678,7 +748,7 @@ async function downloadPdf() {
     return;
   }
 
-  if (!window.jspdf?.jsPDF) {
+  if (!window.html2canvas || !window.jspdf?.jsPDF) {
     setStatus("The PDF maker is still loading. Please try again in a moment.", true);
     return;
   }
@@ -686,9 +756,14 @@ async function downloadPdf() {
   setPdfBusy(true);
   setStatus("Creating your PDF...");
 
+  const { exportArea, sizing } = createPdfExportArea();
+  document.body.append(exportArea);
+
   try {
-    const items = parseItems(inputs.items.value);
-    const sizing = getCurrentPageSize();
+    if (document.fonts?.ready) {
+      await document.fonts.ready;
+    }
+
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({
       orientation: sizing.orientation,
@@ -696,38 +771,32 @@ async function downloadPdf() {
       format: [sizing.sheetWidth, sizing.sheetHeight],
       compress: true,
     });
-    let pageIndex = 0;
+    const sheets = [...exportArea.querySelectorAll(".pdf-export-sheet")];
 
-    for (let index = 0; index < currentCards.length; index += cardsPerPage.value === "2" ? 2 : 1) {
-      addPdfPage(pdf, sizing, pageIndex);
-      drawBingoCardPdf(pdf, currentCards[index], 0, 0, sizing.cardWidth, sizing.cardHeight);
-      if (cardsPerPage.value === "2" && currentCards[index + 1]) {
-        drawBingoCardPdf(pdf, currentCards[index + 1], sizing.cardWidth, 0, sizing.cardWidth, sizing.cardHeight);
+    for (const [index, sheet] of sheets.entries()) {
+      if (index > 0) {
+        pdf.addPage([sizing.sheetWidth, sizing.sheetHeight], sizing.orientation);
       }
-      pageIndex += 1;
-    }
 
-    if (inputs.includeInstructions.checked) {
-      drawInstructionsPdf(pdf, sizing, pageIndex);
-      pageIndex += 1;
-    }
-
-    if (inputs.includeMasterList.checked) {
-      drawMasterListPdf(pdf, sizing, pageIndex, items);
-      pageIndex += 1;
-    }
-
-    if (inputs.includeMarkers.checked) {
-      drawMarkersPdf(pdf, sizing, pageIndex);
-      pageIndex += 1;
+      const canvas = await html2canvas(sheet, {
+        backgroundColor: "#ffffff",
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        onclone: addPdfExportOverrides,
+      });
+      const image = canvas.toDataURL("image/jpeg", 0.95);
+      pdf.addImage(image, "JPEG", 0, 0, sizing.sheetWidth, sizing.sheetHeight);
     }
 
     pdf.save(getPdfFilename());
-    setStatus(`Downloaded ${pageIndex} PDF page${pageIndex === 1 ? "" : "s"}.`);
+    setStatus(`Downloaded ${sheets.length} PDF page${sheets.length === 1 ? "" : "s"}.`);
   } catch (error) {
     console.error(error);
     setStatus("The PDF could not be created. Please use Print or save PDF instead.", true);
   } finally {
+    exportArea.remove();
     setPdfBusy(false);
   }
 }

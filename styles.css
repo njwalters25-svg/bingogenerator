@@ -797,6 +797,35 @@ button:disabled {
   font-weight: 800;
 }
 
+.pdf-export-area {
+  position: fixed;
+  top: 0;
+  left: -1400px;
+  z-index: -1;
+  display: grid;
+  gap: 0;
+  background: #fff;
+  pointer-events: none;
+}
+
+.pdf-export-sheet {
+  display: grid;
+  overflow: hidden;
+  background: #fff;
+  page-break-after: always;
+}
+
+.pdf-export-sheet.two-up {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.pdf-export-area .bingo-card,
+.pdf-export-area .extra-page {
+  margin: 0;
+  box-shadow: none;
+  transform: none;
+}
+
 body[data-scheme="primary"] {
   --bg: #f3f6fb;
   --panel: #ffffff;
