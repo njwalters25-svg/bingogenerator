@@ -1146,8 +1146,15 @@ body[data-cards-per-page="2"] .card-header {
 }
 
 body[data-cards-per-page="2"] .occasion {
-  font-size: min(calc(var(--occasion-size) * 0.72), 30px);
+  font-size: min(calc(var(--occasion-size) * 0.88), 48px);
   line-height: 1.05;
+}
+
+body[data-cards-per-page="2"][data-occasion-font="script"] .occasion,
+body[data-cards-per-page="2"][data-occasion-font="groovy"] .occasion,
+body[data-cards-per-page="2"][data-occasion-font="handwritten"] .occasion {
+  font-size: min(calc(var(--occasion-size) * 0.95), 56px);
+  line-height: 0.98;
 }
 
 body[data-cards-per-page="2"] .card-header h3 {

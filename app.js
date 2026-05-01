@@ -76,13 +76,13 @@ const occasionFontMaxSizes = {
     handwritten: 58,
   },
   2: {
-    bold: 36,
-    script: 46,
-    serif: 44,
-    modern: 40,
-    playful: 42,
-    groovy: 46,
-    handwritten: 42,
+    bold: 46,
+    script: 64,
+    serif: 56,
+    modern: 50,
+    playful: 54,
+    groovy: 60,
+    handwritten: 54,
   },
 };
 
