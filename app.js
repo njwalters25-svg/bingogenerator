@@ -30,6 +30,7 @@ const occasionColor = document.querySelector("#occasionColor");
 
 let freeImageData = "";
 let isRestoringSettings = false;
+let currentCards = [];
 
 const storageKey = "allOccasionsBingoSettings";
 
@@ -379,55 +380,286 @@ function getCurrentPageSize() {
   };
 }
 
-function cloneForPdf(page, width, height) {
-  const clone = page.cloneNode(true);
-  clone.style.width = `${width}px`;
-  clone.style.height = `${height}px`;
-  clone.style.margin = "0";
-  clone.style.transform = "none";
-  clone.style.boxShadow = "none";
-  clone.style.setProperty("--preview-scale", "1");
-  return clone;
-}
-
-function createPdfSheet(width, height, isTwoUp = false) {
-  const sheet = document.createElement("div");
-  sheet.className = `pdf-export-sheet${isTwoUp ? " two-up" : ""}`;
-  sheet.style.width = `${width}px`;
-  sheet.style.height = `${height}px`;
-  return sheet;
-}
-
-function createPdfExportArea() {
-  const sizing = getCurrentPageSize();
-  const exportArea = document.createElement("div");
-  exportArea.className = "pdf-export-area";
-  exportArea.style.width = `${sizing.sheetWidth}px`;
-  exportArea.style.setProperty("--screen-page-width", `${sizing.cardWidth}px`);
-  exportArea.style.setProperty("--screen-page-height", `${sizing.cardHeight}px`);
-
-  const cards = [...cardsContainer.querySelectorAll(".bingo-card")];
-  for (let index = 0; index < cards.length; index += cardsPerPage.value === "2" ? 2 : 1) {
-    const sheet = createPdfSheet(sizing.sheetWidth, sizing.sheetHeight, cardsPerPage.value === "2");
-    sheet.append(cloneForPdf(cards[index], sizing.cardWidth, sizing.cardHeight));
-    if (cardsPerPage.value === "2" && cards[index + 1]) {
-      sheet.append(cloneForPdf(cards[index + 1], sizing.cardWidth, sizing.cardHeight));
-    }
-    exportArea.append(sheet);
-  }
-
-  [...extrasContainer.querySelectorAll(".extra-page")].forEach((page) => {
-    const sheet = createPdfSheet(sizing.sheetWidth, sizing.sheetHeight);
-    sheet.append(cloneForPdf(page, sizing.sheetWidth, sizing.sheetHeight));
-    exportArea.append(sheet);
-  });
-
-  return { exportArea, sizing };
-}
-
 function getPdfFilename() {
   const occasion = inputs.occasion.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   return `${occasion || "bingo"}-cards.pdf`;
+}
+
+function hexToRgb(hex) {
+  const clean = hex.replace("#", "");
+  const value = Number.parseInt(clean.length === 3
+    ? clean.split("").map((letter) => letter + letter).join("")
+    : clean, 16);
+  return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+}
+
+function mixWithWhite(hex, amount = 0.85) {
+  const [red, green, blue] = hexToRgb(hex);
+  return [
+    Math.round(red + (255 - red) * amount),
+    Math.round(green + (255 - green) * amount),
+    Math.round(blue + (255 - blue) * amount),
+  ];
+}
+
+function setPdfColor(pdf, method, color) {
+  const rgb = Array.isArray(color) ? color : hexToRgb(color);
+  pdf[method](rgb[0], rgb[1], rgb[2]);
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function drawFittedText(pdf, text, x, y, width, height, options = {}) {
+  const {
+    align = "center",
+    valign = "middle",
+    maxSize = 14,
+    minSize = 6,
+    font = "helvetica",
+    style = "bold",
+    color = "#191714",
+    lineHeight = 1.12,
+  } = options;
+  let fontSize = maxSize;
+  let lines = [];
+
+  pdf.setFont(font, style);
+  setPdfColor(pdf, "setTextColor", color);
+
+  do {
+    pdf.setFontSize(fontSize);
+    lines = pdf.splitTextToSize(text, width);
+    if (lines.length * fontSize * lineHeight <= height) {
+      break;
+    }
+    fontSize -= 0.5;
+  } while (fontSize > minSize);
+
+  const renderedHeight = lines.length * fontSize * lineHeight;
+  const startY = valign === "top"
+    ? y + fontSize
+    : y + ((height - renderedHeight) / 2) + fontSize;
+  const textX = align === "left" ? x : x + width / 2;
+
+  lines.forEach((line, index) => {
+    pdf.text(line, textX, startY + index * fontSize * lineHeight, { align });
+  });
+}
+
+function drawBingoCardPdf(pdf, cardItems, x, y, width, height) {
+  const primary = primaryColor.value;
+  const highlight = highlightColor.value;
+  const title = titleColor.value;
+  const occasion = occasionColor.value;
+  const muted = "#70685f";
+  const scale = width / 816;
+  const paddingX = width * 0.052;
+  const paddingTop = height * 0.028;
+  const paddingBottom = height * 0.022;
+  const headerHeight = height * 0.19;
+  const footerHeight = height * 0.045;
+  const gridGap = width * 0.016;
+  const gridTop = y + paddingTop + headerHeight + height * 0.02;
+  const gridHeight = height - paddingTop - paddingBottom - headerHeight - footerHeight - height * 0.04;
+  const gridWidth = width - paddingX * 2;
+  const cellSize = Math.min((gridWidth - gridGap * 4) / 5, (gridHeight - gridGap * 4) / 5);
+  const gridX = x + (width - (cellSize * 5 + gridGap * 4)) / 2;
+  const footerY = gridTop + cellSize * 5 + gridGap * 4 + height * 0.018;
+
+  setPdfColor(pdf, "setDrawColor", primary);
+  pdf.setLineWidth(Math.max(1, 2 * scale));
+  pdf.rect(x, y, width, height);
+
+  pdf.setFont("times", "bolditalic");
+  drawFittedText(pdf, inputs.occasion.value.trim(), x + paddingX, y + paddingTop, width - paddingX * 2, headerHeight * 0.28, {
+    maxSize: clamp(Number(occasionSize.value) * scale, 10, 40),
+    minSize: 7,
+    font: "times",
+    style: "bolditalic",
+    color: occasion,
+  });
+
+  drawFittedText(pdf, inputs.title.value.trim() || "BINGO", x + paddingX, y + paddingTop + headerHeight * 0.24, width - paddingX * 2, headerHeight * 0.58, {
+    maxSize: clamp(Number(titleSize.value) * scale, 24, 92),
+    minSize: 16,
+    font: "times",
+    style: "bold",
+    color: title,
+    lineHeight: 0.95,
+  });
+
+  setPdfColor(pdf, "setDrawColor", primary);
+  pdf.setLineWidth(Math.max(2, 4 * scale));
+  pdf.line(x + paddingX, y + paddingTop + headerHeight, x + width - paddingX, y + paddingTop + headerHeight);
+
+  cardItems.forEach((value, index) => {
+    const col = index % 5;
+    const row = Math.floor(index / 5);
+    const cellX = gridX + col * (cellSize + gridGap);
+    const cellY = gridTop + row * (cellSize + gridGap);
+    const isFree = value === "__FREE__";
+
+    setPdfColor(pdf, "setDrawColor", isFree ? primary : highlight);
+    setPdfColor(pdf, "setFillColor", isFree ? mixWithWhite(highlight, 0.83) : "#ffffff");
+    pdf.setLineWidth(Math.max(0.6, isFree ? 2 * scale : 1 * scale));
+    pdf.roundedRect(cellX, cellY, cellSize, cellSize, 5 * scale, 5 * scale, "FD");
+
+    if (isFree && freeImageData) {
+      try {
+        const imageFormat = freeImageData.includes("image/jpeg") || freeImageData.includes("image/jpg") ? "JPEG" : "PNG";
+        pdf.addImage(freeImageData, imageFormat, cellX + cellSize * 0.14, cellY + cellSize * 0.14, cellSize * 0.72, cellSize * 0.72);
+      } catch {
+        drawFittedText(pdf, inputs.freeText.value.trim() || "FREE", cellX + 6, cellY + 6, cellSize - 12, cellSize - 12, {
+          maxSize: 18 * scale,
+          minSize: 6,
+          color: primary,
+        });
+      }
+      return;
+    }
+
+    drawFittedText(pdf, isFree ? (inputs.freeText.value.trim() || "FREE") : value, cellX + 7 * scale, cellY + 7 * scale, cellSize - 14 * scale, cellSize - 14 * scale, {
+      maxSize: isFree ? 20 * scale : 15.5 * scale,
+      minSize: cardsPerPage.value === "2" ? 5.5 : 7.5,
+      color: isFree ? primary : "#191714",
+      lineHeight: 1.1,
+    });
+  });
+
+  setPdfColor(pdf, "setDrawColor", highlight);
+  pdf.setLineWidth(Math.max(1, 1.5 * scale));
+  pdf.line(x + paddingX, footerY, x + width - paddingX, footerY);
+  drawFittedText(pdf, storeFooter, x + paddingX, footerY + footerHeight * 0.18, width - paddingX * 2, footerHeight * 0.55, {
+    maxSize: clamp(15 * scale, 6, 16),
+    minSize: 5,
+    color: muted,
+  });
+}
+
+function addPdfPage(pdf, sizing, pageIndex) {
+  if (pageIndex > 0) {
+    pdf.addPage([sizing.sheetWidth, sizing.sheetHeight], sizing.orientation);
+  }
+}
+
+function drawInstructionsPdf(pdf, sizing, pageIndex) {
+  addPdfPage(pdf, sizing, pageIndex);
+  const margin = sizing.sheetWidth * 0.08;
+  let y = sizing.sheetHeight * 0.11;
+  drawFittedText(pdf, "Game guide", margin, y, sizing.sheetWidth - margin * 2, 34, {
+    maxSize: 20,
+    color: occasionColor.value,
+    font: "helvetica",
+  });
+  y += 40;
+  drawFittedText(pdf, "How to play", margin, y, sizing.sheetWidth - margin * 2, 64, {
+    maxSize: 48,
+    minSize: 24,
+    font: "times",
+    style: "bold",
+    color: titleColor.value,
+  });
+  y += 90;
+  const steps = [
+    "Print the bingo cards and give one card to each player.",
+    "Print the master checklist for the host to use as the call sheet.",
+    "Choose your winning pattern before the game starts.",
+    "Call items in any order and tick each one off as it is used.",
+    "Players cover matching squares with markers, counters, or a pen.",
+    "The first player to complete the chosen pattern calls Bingo.",
+  ];
+  steps.forEach((step, index) => {
+    drawFittedText(pdf, `${index + 1}. ${step}`, margin, y, sizing.sheetWidth - margin * 2, 34, {
+      align: "left",
+      valign: "top",
+      maxSize: 18,
+      minSize: 10,
+      style: "normal",
+    });
+    y += 42;
+  });
+  y += 18;
+  drawFittedText(pdf, "Common winning patterns", margin, y, sizing.sheetWidth - margin * 2, 32, {
+    align: "left",
+    maxSize: 22,
+    color: primaryColor.value,
+  });
+  y += 34;
+  drawFittedText(pdf, "One row, one column, a diagonal line, four corners, or a full house.", margin, y, sizing.sheetWidth - margin * 2, 50, {
+    align: "left",
+    maxSize: 18,
+    style: "normal",
+  });
+}
+
+function drawMasterListPdf(pdf, sizing, pageIndex, items) {
+  addPdfPage(pdf, sizing, pageIndex);
+  const margin = sizing.sheetWidth * 0.055;
+  const sortedItems = [...items].sort((first, second) => first.localeCompare(second, undefined, { sensitivity: "base" }));
+  drawFittedText(pdf, "Master checklist", margin, 42, sizing.sheetWidth - margin * 2, 54, {
+    maxSize: 40,
+    font: "times",
+    style: "bold",
+    color: titleColor.value,
+  });
+  const columns = cardsPerPage.value === "2" ? 4 : 3;
+  const rows = Math.ceil(sortedItems.length / columns);
+  const top = 120;
+  const columnWidth = (sizing.sheetWidth - margin * 2) / columns;
+  const rowHeight = Math.min(24, (sizing.sheetHeight - top - 60) / rows);
+
+  sortedItems.forEach((item, index) => {
+    const column = Math.floor(index / rows);
+    const row = index % rows;
+    const x = margin + column * columnWidth;
+    const y = top + row * rowHeight;
+    setPdfColor(pdf, "setDrawColor", highlightColor.value);
+    pdf.rect(x, y + 4, 10, 10);
+    drawFittedText(pdf, `${String(index + 1).padStart(2, "0")}  ${item}`, x + 16, y, columnWidth - 20, rowHeight, {
+      align: "left",
+      maxSize: 11,
+      minSize: 6,
+      style: "bold",
+    });
+  });
+}
+
+function drawMarkersPdf(pdf, sizing, pageIndex) {
+  addPdfPage(pdf, sizing, pageIndex);
+  const across = cardsPerPage.value === "2" ? 11 : 6;
+  const down = cardsPerPage.value === "2" ? 9 : 7;
+  const margin = sizing.sheetWidth * 0.05;
+  const top = 105;
+  const gap = 8;
+  const token = Math.min((sizing.sheetWidth - margin * 2 - gap * (across - 1)) / across, (sizing.sheetHeight - top - 50 - gap * (down - 1)) / down);
+  drawFittedText(pdf, "Bingo markers", margin, 42, sizing.sheetWidth - margin * 2, 50, {
+    maxSize: 38,
+    font: "times",
+    style: "bold",
+    color: titleColor.value,
+  });
+  for (let index = 0; index < across * down; index += 1) {
+    const col = index % across;
+    const row = Math.floor(index / across);
+    const x = margin + col * (token + gap);
+    const y = top + row * (token + gap);
+    setPdfColor(pdf, "setDrawColor", highlightColor.value);
+    setPdfColor(pdf, "setFillColor", mixWithWhite(highlightColor.value, 0.86));
+    pdf.circle(x + token / 2, y + token / 2, token / 2, "FD");
+    drawFittedText(pdf, inputs.occasion.value.trim() || "Bingo", x + token * 0.12, y + token * 0.16, token * 0.76, token * 0.45, {
+      maxSize: token * 0.12,
+      minSize: 4,
+      color: primaryColor.value,
+    });
+    drawFittedText(pdf, inputs.title.value.trim() || "BINGO", x + token * 0.16, y + token * 0.6, token * 0.68, token * 0.22, {
+      maxSize: token * 0.13,
+      minSize: 4,
+      color: highlightColor.value,
+      font: "times",
+    });
+  }
 }
 
 function setPdfBusy(isBusy) {
@@ -441,12 +673,12 @@ async function downloadPdf() {
   generateCards();
   await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
-  if (!cardsContainer.querySelector(".bingo-card")) {
+  if (currentCards.length === 0) {
     setStatus("Add at least 24 unique list items before downloading a PDF.", true);
     return;
   }
 
-  if (!window.html2canvas || !window.jspdf?.jsPDF) {
+  if (!window.jspdf?.jsPDF) {
     setStatus("The PDF maker is still loading. Please try again in a moment.", true);
     return;
   }
@@ -454,14 +686,9 @@ async function downloadPdf() {
   setPdfBusy(true);
   setStatus("Creating your PDF...");
 
-  const { exportArea, sizing } = createPdfExportArea();
-  document.body.append(exportArea);
-
   try {
-    if (document.fonts?.ready) {
-      await document.fonts.ready;
-    }
-
+    const items = parseItems(inputs.items.value);
+    const sizing = getCurrentPageSize();
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({
       orientation: sizing.orientation,
@@ -469,30 +696,38 @@ async function downloadPdf() {
       format: [sizing.sheetWidth, sizing.sheetHeight],
       compress: true,
     });
-    const sheets = [...exportArea.querySelectorAll(".pdf-export-sheet")];
+    let pageIndex = 0;
 
-    for (const [index, sheet] of sheets.entries()) {
-      if (index > 0) {
-        pdf.addPage([sizing.sheetWidth, sizing.sheetHeight], sizing.orientation);
+    for (let index = 0; index < currentCards.length; index += cardsPerPage.value === "2" ? 2 : 1) {
+      addPdfPage(pdf, sizing, pageIndex);
+      drawBingoCardPdf(pdf, currentCards[index], 0, 0, sizing.cardWidth, sizing.cardHeight);
+      if (cardsPerPage.value === "2" && currentCards[index + 1]) {
+        drawBingoCardPdf(pdf, currentCards[index + 1], sizing.cardWidth, 0, sizing.cardWidth, sizing.cardHeight);
       }
+      pageIndex += 1;
+    }
 
-      const canvas = await html2canvas(sheet, {
-        backgroundColor: "#ffffff",
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-      const image = canvas.toDataURL("image/jpeg", 0.95);
-      pdf.addImage(image, "JPEG", 0, 0, sizing.sheetWidth, sizing.sheetHeight);
+    if (inputs.includeInstructions.checked) {
+      drawInstructionsPdf(pdf, sizing, pageIndex);
+      pageIndex += 1;
+    }
+
+    if (inputs.includeMasterList.checked) {
+      drawMasterListPdf(pdf, sizing, pageIndex, items);
+      pageIndex += 1;
+    }
+
+    if (inputs.includeMarkers.checked) {
+      drawMarkersPdf(pdf, sizing, pageIndex);
+      pageIndex += 1;
     }
 
     pdf.save(getPdfFilename());
-    setStatus(`Downloaded ${sheets.length} PDF page${sheets.length === 1 ? "" : "s"}.`);
+    setStatus(`Downloaded ${pageIndex} PDF page${pageIndex === 1 ? "" : "s"}.`);
   } catch (error) {
     console.error(error);
     setStatus("The PDF could not be created. Please use Print or save PDF instead.", true);
   } finally {
-    exportArea.remove();
     setPdfBusy(false);
   }
 }
@@ -647,6 +882,7 @@ function generateCards() {
   inputs.count.value = requestedCount;
 
   if (items.length < 24) {
+    currentCards = [];
     cardsContainer.replaceChildren();
     extrasContainer.replaceChildren();
     renderHelpfulChecks([]);
@@ -659,6 +895,7 @@ function generateCards() {
   }
 
   const cards = makeUniqueCards(items, requestedCount);
+  currentCards = cards;
   renderCards(cards);
   renderExtras(items);
   renderHelpfulChecks(getHelpfulChecks(items, requestedCount));
