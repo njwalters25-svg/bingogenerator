@@ -874,14 +874,22 @@ function renderInstructions() {
   return instructionsTemplate.content.firstElementChild.cloneNode(true);
 }
 
-function renderMasterList(items) {
+function getMasterListPageSize() {
+  return cardsPerPage.value === "2" ? 48 : 42;
+}
+
+function renderMasterListPage(items, startIndex, pageIndex, pageCount) {
   const page = masterListTemplate.content.firstElementChild.cloneNode(true);
   const list = page.querySelector(".master-list");
-  const sortedItems = [...items].sort((first, second) => first.localeCompare(second, undefined, { sensitivity: "base" }));
+  const subtitle = page.querySelector(".extra-subtitle");
   const columnCount = cardsPerPage.value === "2" ? 4 : 3;
-  const rowCount = Math.ceil(sortedItems.length / columnCount);
+  const rowCount = Math.ceil(items.length / columnCount);
 
-  sortedItems.forEach((item, index) => {
+  if (pageCount > 1) {
+    subtitle.textContent = `Call items in any order and tick them off as you go. Page ${pageIndex + 1} of ${pageCount}.`;
+  }
+
+  items.forEach((item, index) => {
     const column = Math.floor(index / rowCount);
     const rowPosition = index % rowCount;
     const row = document.createElement("div");
@@ -895,7 +903,7 @@ function renderMasterList(items) {
 
     const number = document.createElement("span");
     number.className = "master-number";
-    number.textContent = String(index + 1).padStart(2, "0");
+    number.textContent = String(startIndex + index + 1).padStart(2, "0");
 
     const text = document.createElement("span");
     text.className = "master-text";
@@ -905,6 +913,24 @@ function renderMasterList(items) {
     list.append(row);
   });
   return page;
+}
+
+function renderMasterList(items) {
+  const sortedItems = [...items].sort((first, second) => first.localeCompare(second, undefined, { sensitivity: "base" }));
+  const pageSize = getMasterListPageSize();
+  const pageCount = Math.ceil(sortedItems.length / pageSize);
+  const pages = [];
+
+  for (let startIndex = 0; startIndex < sortedItems.length; startIndex += pageSize) {
+    pages.push(renderMasterListPage(
+      sortedItems.slice(startIndex, startIndex + pageSize),
+      startIndex,
+      pages.length,
+      pageCount,
+    ));
+  }
+
+  return pages;
 }
 
 function renderMarkers() {
@@ -940,7 +966,9 @@ function renderExtras(items) {
   }
 
   if (inputs.includeMasterList.checked) {
-    extrasContainer.append(createExtraFrame(renderMasterList(items)));
+    renderMasterList(items).forEach((page) => {
+      extrasContainer.append(createExtraFrame(page));
+    });
   }
 
   if (inputs.includeMarkers.checked) {
