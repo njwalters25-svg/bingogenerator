@@ -875,15 +875,29 @@ function renderInstructions() {
 }
 
 function getMasterListPageSize() {
-  return cardsPerPage.value === "2" ? 48 : 42;
+  return cardsPerPage.value === "2" ? 90 : 84;
+}
+
+function getMasterListColumnCount(itemCount) {
+  if (cardsPerPage.value === "2") {
+    return itemCount > 72 ? 5 : 4;
+  }
+  return itemCount > 60 ? 4 : 3;
 }
 
 function renderMasterListPage(items, startIndex, pageIndex, pageCount) {
   const page = masterListTemplate.content.firstElementChild.cloneNode(true);
   const list = page.querySelector(".master-list");
   const subtitle = page.querySelector(".extra-subtitle");
-  const columnCount = cardsPerPage.value === "2" ? 4 : 3;
+  const columnCount = getMasterListColumnCount(items.length);
   const rowCount = Math.ceil(items.length / columnCount);
+
+  list.style.setProperty("--master-list-columns", columnCount);
+  if (items.length > 76) {
+    page.classList.add("master-list-ultra-compact");
+  } else if (items.length > 54) {
+    page.classList.add("master-list-compact");
+  }
 
   if (pageCount > 1) {
     subtitle.textContent = `Call items in any order and tick them off as you go. Page ${pageIndex + 1} of ${pageCount}.`;
