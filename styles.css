@@ -96,6 +96,17 @@ textarea {
   line-height: 1.5;
 }
 
+.brand-panel .usage-note {
+  padding: 11px 12px;
+  border-left: 4px solid var(--accent-2);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 750;
+  line-height: 1.38;
+}
+
 .eyebrow {
   margin: 0 0 6px;
   color: var(--accent-strong);
