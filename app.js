@@ -345,6 +345,11 @@ function applyCurrentColors() {
   });
 }
 
+function resetTextFitClasses(square) {
+  square.classList.remove("text-tight", "text-medium", "text-long", "text-xlong");
+  square.style.fontSize = "";
+}
+
 function createSquare(value) {
   const square = document.createElement("div");
   square.className = "square";
@@ -888,6 +893,27 @@ function updateHeadingPreview() {
   });
 }
 
+function updateFreeSquarePreview() {
+  const freeLabel = inputs.freeText.value.trim() || "FREE";
+
+  cardsContainer.querySelectorAll(".square.free").forEach((square) => {
+    const image = square.querySelector("img");
+    if (image) {
+      image.alt = freeLabel;
+      return;
+    }
+
+    resetTextFitClasses(square);
+    square.textContent = freeLabel;
+    applyTextFitClasses(square, freeLabel);
+    fitSquareText(square);
+  });
+
+  const items = parseItems(inputs.items.value);
+  const requestedCount = Math.min(Math.max(Number(inputs.count.value) || 1, 1), 100);
+  renderHelpfulChecks(getHelpfulChecks(items, requestedCount));
+}
+
 function renderInstructions() {
   return instructionsTemplate.content.firstElementChild.cloneNode(true);
 }
@@ -1149,7 +1175,14 @@ cardsPerPage.addEventListener("change", generateCards);
   });
 });
 
-[inputs.count, inputs.freeText].forEach((control) => {
+[inputs.freeText].forEach((control) => {
+  control.addEventListener("input", () => {
+    updateFreeSquarePreview();
+    saveSettings();
+  });
+});
+
+[inputs.count].forEach((control) => {
   control.addEventListener("input", saveSettings);
 });
 
