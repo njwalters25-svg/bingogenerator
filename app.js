@@ -12,6 +12,7 @@ const qualityWarnings = document.querySelector("#qualityWarnings");
 const freeImageInput = document.querySelector("#freeImage");
 const printButton = document.querySelector("#printButton");
 const downloadPdfButton = document.querySelector("#downloadPdfButton");
+const resetButton = document.querySelector("#resetButton");
 const schemeGrid = document.querySelector("#schemeGrid");
 const fontStyle = document.querySelector("#fontStyle");
 const occasionFont = document.querySelector("#occasionFont");
@@ -205,6 +206,43 @@ function restoreSettings() {
   } finally {
     isRestoringSettings = false;
   }
+}
+
+function resetSettings() {
+  localStorage.removeItem(storageKey);
+  isRestoringSettings = true;
+
+  inputs.occasion.value = "";
+  inputs.title.value = "BINGO";
+  inputs.count.value = "12";
+  inputs.items.value = "";
+  inputs.freeText.value = "FREE";
+  inputs.includeInstructions.checked = true;
+  inputs.includeMasterList.checked = true;
+  inputs.includeMarkers.checked = false;
+  fontStyle.value = "editorial";
+  occasionFont.value = "bold";
+  occasionSize.value = "25";
+  titleSize.value = "98";
+  gridStyle.value = "crisp";
+  pageSize.value = "letter";
+  cardsPerPage.value = "1";
+  primaryColor.value = schemeColors.party[0];
+  highlightColor.value = schemeColors.party[1];
+  titleColor.value = schemeColors.party[2];
+  occasionColor.value = schemeColors.party[3];
+  document.querySelector('input[name="scheme"][value="party"]').checked = true;
+  document.body.dataset.scheme = "party";
+  document.body.dataset.customColors = "false";
+  freeImageData = "";
+  freeImageInput.value = "";
+  isRestoringSettings = false;
+
+  applyCurrentColors();
+  updateDesignSettings();
+  updateListHelp();
+  generateCards();
+  setStatus("Saved settings cleared. Paste a list to start again.");
 }
 
 function updateListHelp() {
@@ -736,6 +774,7 @@ function setPdfBusy(isBusy) {
   downloadPdfButton.disabled = isBusy;
   printButton.disabled = isBusy;
   form.querySelector("#generateButton").disabled = isBusy;
+  resetButton.disabled = isBusy;
   downloadPdfButton.textContent = isBusy ? "Making PDF..." : "Download PDF";
 }
 
@@ -1054,6 +1093,7 @@ printButton.addEventListener("click", () => {
 });
 
 downloadPdfButton.addEventListener("click", downloadPdf);
+resetButton.addEventListener("click", resetSettings);
 
 window.addEventListener("resize", updatePreviewScale);
 

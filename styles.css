@@ -247,7 +247,7 @@ textarea:focus {
 
 .actions {
   display: grid;
-  grid-template-columns: 1.15fr 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
 
@@ -396,6 +396,12 @@ button {
 #downloadPdfButton {
   background: var(--accent-2);
   color: #fff;
+}
+
+#resetButton {
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--accent-soft) 20%, #fff);
+  color: var(--muted);
 }
 
 button:disabled {
