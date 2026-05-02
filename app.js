@@ -870,6 +870,24 @@ function createExtraFrame(page) {
   return frame;
 }
 
+function updateHeadingPreview() {
+  const occasion = inputs.occasion.value.trim();
+  const title = inputs.title.value.trim() || "BINGO";
+  const markerOccasion = occasion || "Bingo";
+
+  cardsContainer.querySelectorAll(".occasion").forEach((heading) => {
+    heading.textContent = occasion;
+  });
+
+  cardsContainer.querySelectorAll(".bingo-card h3").forEach((heading) => {
+    heading.textContent = title;
+  });
+
+  extrasContainer.querySelectorAll(".marker-occasion").forEach((heading) => {
+    heading.textContent = markerOccasion;
+  });
+}
+
 function renderInstructions() {
   return instructionsTemplate.content.firstElementChild.cloneNode(true);
 }
@@ -1124,7 +1142,14 @@ cardsPerPage.addEventListener("change", generateCards);
   });
 });
 
-[inputs.occasion, inputs.title, inputs.count, inputs.freeText].forEach((control) => {
+[inputs.occasion, inputs.title].forEach((control) => {
+  control.addEventListener("input", () => {
+    updateHeadingPreview();
+    saveSettings();
+  });
+});
+
+[inputs.count, inputs.freeText].forEach((control) => {
   control.addEventListener("input", saveSettings);
 });
 
