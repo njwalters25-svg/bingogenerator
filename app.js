@@ -425,26 +425,32 @@ function getOccasionEffectStyles() {
     clean: {
       textShadow: "none",
       stroke: "0 transparent",
+      transform: "none",
     },
     "soft-shadow": {
-      textShadow: `0 3px 0 ${soft}, 0 8px 14px rgba(25, 23, 20, 0.2)`,
+      textShadow: `0 4px 0 ${soft}, 0 10px 16px rgba(25, 23, 20, 0.25)`,
       stroke: "0 transparent",
+      transform: "none",
     },
     outline: {
-      textShadow: "2px 2px 0 #fff, -2px 2px 0 #fff, 2px -2px 0 #fff, -2px -2px 0 #fff, 0 7px 12px rgba(25, 23, 20, 0.18)",
-      stroke: `2px ${highlight}`,
+      textShadow: "3px 3px 0 #fff, -3px 3px 0 #fff, 3px -3px 0 #fff, -3px -3px 0 #fff, 0 9px 14px rgba(25, 23, 20, 0.22)",
+      stroke: `3px ${highlight}`,
+      transform: "none",
     },
     "sticker-pop": {
-      textShadow: `2px 2px 0 #fff, -2px 2px 0 #fff, 2px -2px 0 #fff, -2px -2px 0 #fff, 5px 5px 0 ${primary}, 8px 8px 0 ${highlightLayer}, 0 10px 14px rgba(25, 23, 20, 0.2)`,
-      stroke: "1.5px #fff",
+      textShadow: `3px 3px 0 #fff, -3px 3px 0 #fff, 3px -3px 0 #fff, -3px -3px 0 #fff, 7px 7px 0 ${primary}, 11px 11px 0 ${highlight}, 0 14px 18px rgba(25, 23, 20, 0.24)`,
+      stroke: "2.5px #fff",
+      transform: "rotate(-2deg)",
     },
     "retro-layer": {
-      textShadow: `0 3px 0 ${highlightLayer}, 0 6px 0 ${primary}, 0 10px 14px rgba(25, 23, 20, 0.18)`,
+      textShadow: `0 4px 0 ${highlightLayer}, 0 8px 0 ${primary}, 0 13px 16px rgba(25, 23, 20, 0.22)`,
       stroke: "0 transparent",
+      transform: "none",
     },
     glow: {
-      textShadow: `0 0 2px #fff, 0 0 14px ${glow}, 0 5px 10px rgba(25, 23, 20, 0.16)`,
+      textShadow: `0 0 3px #fff, 0 0 20px ${glow}, 0 6px 12px rgba(25, 23, 20, 0.18)`,
       stroke: "0 transparent",
+      transform: "none",
     },
   };
 
@@ -457,6 +463,8 @@ function applyOccasionEffectToHeading(heading) {
   heading.style.webkitTextFillColor = occasionColor.value;
   heading.style.textShadow = effect.textShadow;
   heading.style.webkitTextStroke = effect.stroke;
+  heading.style.display = "inline-block";
+  heading.style.transform = effect.transform;
 }
 
 function updateOccasionEffects() {
