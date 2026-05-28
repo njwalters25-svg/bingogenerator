@@ -96,13 +96,19 @@ const occasionFontMaxSizes = {
 };
 
 const legacyOccasionFontMap = {
-  bold: "luckiest",
+  bold: "lilita",
   script: "pacifico",
-  serif: "lobster",
+  serif: "playfair",
   modern: "lilita",
-  playful: "cherry",
-  groovy: "cherry",
+  playful: "lilita",
+  groovy: "dm-serif",
   handwritten: "pacifico",
+  bungee: "libre",
+  cherry: "lilita",
+  ranchers: "dm-serif",
+  modak: "lilita",
+  fascinate: "libre",
+  bowlby: "libre",
 };
 
 const legacyTitleFontMap = {
@@ -353,7 +359,7 @@ function resetSettings() {
   inputs.includeMarkers.checked = false;
   fontStyle.value = "playfair";
   titleEffect.value = "clean";
-  occasionFont.value = "luckiest";
+  occasionFont.value = "playfair";
   occasionEffect.value = "clean";
   occasionSize.value = "25";
   titleSize.value = "98";
