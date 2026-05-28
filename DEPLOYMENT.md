@@ -44,10 +44,14 @@ In GitHub, open the repository, then go to **Settings > Secrets and variables > 
 
 Add these **Repository secrets**:
 
-- `CPANEL_HOST` - your cPanel server host, without `https://` and without `:2083`
+- `CPANEL_HOST` or `CPANEL_DOMAIN` - your cPanel server host, without `https://` and without `:2083`
 - `CPANEL_USERNAME` - your cPanel username, for example `simpxlow`
 - `CPANEL_API_TOKEN` - a cPanel API token created in cPanel
-- `CPANEL_REPOSITORY_ROOT` - the cPanel Git repository path, for example `/home/simpxlow/repositories/bingogenerator`
+- `CPANEL_REPOSITORY_ROOT` or `CPANEL_PATH` - the cPanel Git repository path, for example `/home/simpxlow/repositories/bingogenerator`
+
+If you already use the names `CPANEL_DOMAIN`, `CPANEL_PATH`, `CPANEL_USERNAME`, and `CPANEL_API_TOKEN`
+in another repository, you can use those same names here. For this workflow, `CPANEL_PATH` must be the
+cPanel Git repository path, not the public website folder.
 
 Optional **Repository variable**:
 

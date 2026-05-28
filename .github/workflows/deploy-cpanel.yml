@@ -12,20 +12,28 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
+      CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
       CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
       CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
       CPANEL_REPOSITORY_ROOT: ${{ secrets.CPANEL_REPOSITORY_ROOT }}
+      CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
       CPANEL_BRANCH: ${{ vars.CPANEL_BRANCH }}
 
     steps:
       - name: Check cPanel deployment secrets
         id: config
         run: |
-          if [ -n "${CPANEL_HOST}" ] && [ -n "${CPANEL_USERNAME}" ] && [ -n "${CPANEL_API_TOKEN}" ] && [ -n "${CPANEL_REPOSITORY_ROOT}" ]; then
+          host="${CPANEL_HOST:-${CPANEL_DOMAIN:-}}"
+          repository_root="${CPANEL_REPOSITORY_ROOT:-${CPANEL_PATH:-}}"
+
+          if [ -n "${host}" ] && [ -n "${CPANEL_USERNAME}" ] && [ -n "${CPANEL_API_TOKEN}" ] && [ -n "${repository_root}" ]; then
+            echo "host=${host}" >> "$GITHUB_OUTPUT"
+            echo "repository_root=${repository_root}" >> "$GITHUB_OUTPUT"
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
             echo "cPanel deploy skipped because one or more required repository secrets are not set yet."
+            echo "Required: CPANEL_API_TOKEN, CPANEL_USERNAME, plus CPANEL_HOST or CPANEL_DOMAIN, plus CPANEL_REPOSITORY_ROOT or CPANEL_PATH."
           fi
 
       - name: Update cPanel repository from GitHub
@@ -35,9 +43,9 @@ jobs:
           branch="${CPANEL_BRANCH:-main}"
 
           response="$(curl --silent --show-error --fail-with-body --get \
-            "https://${CPANEL_HOST}:2083/execute/VersionControl/update" \
+            "https://${{ steps.config.outputs.host }}:2083/execute/VersionControl/update" \
             --header "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-            --data-urlencode "repository_root=${CPANEL_REPOSITORY_ROOT}" \
+            --data-urlencode "repository_root=${{ steps.config.outputs.repository_root }}" \
             --data-urlencode "branch=${branch}")"
 
           echo "$response" | jq .
@@ -49,9 +57,9 @@ jobs:
           set -euo pipefail
 
           response="$(curl --silent --show-error --fail-with-body --get \
-            "https://${CPANEL_HOST}:2083/execute/VersionControlDeployment/create" \
+            "https://${{ steps.config.outputs.host }}:2083/execute/VersionControlDeployment/create" \
             --header "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-            --data-urlencode "repository_root=${CPANEL_REPOSITORY_ROOT}")"
+            --data-urlencode "repository_root=${{ steps.config.outputs.repository_root }}")"
 
           echo "$response" | jq .
           echo "$response" | jq -e '.result.status == 1'
