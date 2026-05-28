@@ -49,7 +49,7 @@ jobs:
             --data-urlencode "branch=${branch}")"
 
           echo "$response" | jq .
-          echo "$response" | jq -e '.result.status == 1'
+          echo "$response" | jq -e '.status == 1'
 
       - name: Deploy cPanel HEAD commit
         if: steps.config.outputs.ready == 'true'
@@ -62,4 +62,4 @@ jobs:
             --data-urlencode "repository_root=${{ steps.config.outputs.repository_root }}")"
 
           echo "$response" | jq .
-          echo "$response" | jq -e '.result.status == 1'
+          echo "$response" | jq -e '.status == 1'
