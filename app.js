@@ -17,6 +17,7 @@ const schemeGrid = document.querySelector("#schemeGrid");
 const fontStyle = document.querySelector("#fontStyle");
 const titleEffect = document.querySelector("#titleEffect");
 const occasionFont = document.querySelector("#occasionFont");
+const occasionEffect = document.querySelector("#occasionEffect");
 const occasionSize = document.querySelector("#occasionSize");
 const occasionSizeValue = document.querySelector("#occasionSizeValue");
 const titleSize = document.querySelector("#titleSize");
@@ -152,6 +153,7 @@ function getSettingsSnapshot() {
     fontStyle: fontStyle.value,
     titleEffect: titleEffect.value,
     occasionFont: occasionFont.value,
+    occasionEffect: occasionEffect.value,
     occasionSize: occasionSize.value,
     titleSize: titleSize.value,
     gridStyle: gridStyle.value,
@@ -195,6 +197,7 @@ function restoreSettings() {
     fontStyle.value = savedSettings.fontStyle || fontStyle.value;
     titleEffect.value = savedSettings.titleEffect || titleEffect.value;
     occasionFont.value = savedSettings.occasionFont || occasionFont.value;
+    occasionEffect.value = savedSettings.occasionEffect || occasionEffect.value;
     occasionSize.value = savedSettings.occasionSize || occasionSize.value;
     titleSize.value = savedSettings.titleSize || titleSize.value;
     gridStyle.value = savedSettings.gridStyle || gridStyle.value;
@@ -226,6 +229,7 @@ function resetSettings() {
   fontStyle.value = "editorial";
   titleEffect.value = "clean";
   occasionFont.value = "bold";
+  occasionEffect.value = "clean";
   occasionSize.value = "25";
   titleSize.value = "98";
   gridStyle.value = "crisp";
@@ -313,6 +317,7 @@ function updateDesignSettings() {
   document.body.dataset.font = fontStyle.value;
   document.body.dataset.titleEffect = titleEffect.value;
   document.body.dataset.occasionFont = occasionFont.value;
+  document.body.dataset.occasionEffect = occasionEffect.value;
   document.body.dataset.grid = gridStyle.value;
   document.body.dataset.page = pageSize.value;
   document.body.dataset.cardsPerPage = cardsPerPage.value;
@@ -332,6 +337,7 @@ function updateDesignSettings() {
   };
   printPageStyle.textContent = `@page { size: ${printSizes[pageSize.value][cardsPerPage.value]}; margin: 0; }`;
   updateTitleEffects();
+  updateOccasionEffects();
   updatePreviewScale();
   fitAllSquareText();
 }
@@ -360,6 +366,7 @@ function applyCurrentColors() {
     target.style.setProperty("--title-effect-stroke", highlightColor.value);
   });
   updateTitleEffects();
+  updateOccasionEffects();
 }
 
 function getTitleEffectStyles() {
@@ -405,6 +412,55 @@ function applyTitleEffectToHeading(heading) {
 
 function updateTitleEffects() {
   cardsContainer.querySelectorAll(".bingo-card h3").forEach(applyTitleEffectToHeading);
+}
+
+function getOccasionEffectStyles() {
+  const primary = primaryColor.value;
+  const highlight = highlightColor.value;
+  const soft = rgbString(hexToRgb(primary), 0.45);
+  const glow = rgbString(hexToRgb(highlight), 0.48);
+  const highlightLayer = rgbString(mixWithWhite(highlight, 0.22));
+
+  const effects = {
+    clean: {
+      textShadow: "none",
+      stroke: "0 transparent",
+    },
+    "soft-shadow": {
+      textShadow: `0 3px 0 ${soft}, 0 8px 14px rgba(25, 23, 20, 0.2)`,
+      stroke: "0 transparent",
+    },
+    outline: {
+      textShadow: "2px 2px 0 #fff, -2px 2px 0 #fff, 2px -2px 0 #fff, -2px -2px 0 #fff, 0 7px 12px rgba(25, 23, 20, 0.18)",
+      stroke: `2px ${highlight}`,
+    },
+    "sticker-pop": {
+      textShadow: `3px 3px 0 ${primary}, 5px 5px 0 ${highlightLayer}, 0 8px 12px rgba(25, 23, 20, 0.18)`,
+      stroke: "2px #fff",
+    },
+    "retro-layer": {
+      textShadow: `0 3px 0 ${highlightLayer}, 0 6px 0 ${primary}, 0 10px 14px rgba(25, 23, 20, 0.18)`,
+      stroke: "0 transparent",
+    },
+    glow: {
+      textShadow: `0 0 2px #fff, 0 0 14px ${glow}, 0 5px 10px rgba(25, 23, 20, 0.16)`,
+      stroke: "0 transparent",
+    },
+  };
+
+  return effects[occasionEffect.value] || effects.clean;
+}
+
+function applyOccasionEffectToHeading(heading) {
+  const effect = getOccasionEffectStyles();
+  heading.style.color = occasionColor.value;
+  heading.style.webkitTextFillColor = occasionColor.value;
+  heading.style.textShadow = effect.textShadow;
+  heading.style.webkitTextStroke = effect.stroke;
+}
+
+function updateOccasionEffects() {
+  cardsContainer.querySelectorAll(".occasion").forEach(applyOccasionEffectToHeading);
 }
 
 function resetTextFitClasses(square) {
@@ -921,7 +977,9 @@ function renderCards(cards) {
     frame.className = "card-frame";
 
     const card = cardTemplate.content.firstElementChild.cloneNode(true);
-    card.querySelector(".occasion").textContent = inputs.occasion.value.trim();
+    const occasionHeading = card.querySelector(".occasion");
+    occasionHeading.textContent = inputs.occasion.value.trim();
+    applyOccasionEffectToHeading(occasionHeading);
     const titleHeading = card.querySelector("h3");
     titleHeading.textContent = inputs.title.value.trim() || "BINGO";
     applyTitleEffectToHeading(titleHeading);
@@ -952,6 +1010,7 @@ function updateHeadingPreview() {
 
   cardsContainer.querySelectorAll(".occasion").forEach((heading) => {
     heading.textContent = occasion;
+    applyOccasionEffectToHeading(heading);
   });
 
   cardsContainer.querySelectorAll(".bingo-card h3").forEach((heading) => {
@@ -1219,7 +1278,7 @@ schemeGrid.addEventListener("change", (event) => {
   });
 });
 
-[fontStyle, titleEffect, occasionFont, gridStyle, pageSize, cardsPerPage].forEach((control) => {
+[fontStyle, titleEffect, occasionFont, occasionEffect, gridStyle, pageSize, cardsPerPage].forEach((control) => {
   control.addEventListener("change", () => {
     updateDesignSettings();
     saveSettings();
