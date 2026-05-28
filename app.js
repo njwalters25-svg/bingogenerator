@@ -130,90 +130,105 @@ const legacyTitleFontMap = {
 const headingFontStyles = {
   playfair: {
     family: "\"Playfair Display\", Georgia, \"Times New Roman\", serif",
+    weight: "900",
     lineHeight: "0.86",
     transform: "uppercase",
     letterSpacing: "0.01em",
   },
   cormorant: {
     family: "\"Cormorant Garamond\", Georgia, \"Times New Roman\", serif",
+    weight: "700",
     lineHeight: "0.82",
     transform: "uppercase",
     letterSpacing: "0.03em",
   },
   libre: {
     family: "\"Libre Baskerville\", Georgia, \"Times New Roman\", serif",
+    weight: "700",
     lineHeight: "0.9",
     transform: "uppercase",
     letterSpacing: "0.02em",
   },
   cinzel: {
     family: "\"Cinzel\", Georgia, \"Times New Roman\", serif",
+    weight: "900",
     lineHeight: "0.9",
     transform: "uppercase",
     letterSpacing: "0.04em",
   },
   merriweather: {
     family: "\"Merriweather\", Georgia, \"Times New Roman\", serif",
+    weight: "900",
     lineHeight: "0.9",
     transform: "uppercase",
     letterSpacing: "0.01em",
   },
   "dm-serif": {
     family: "\"DM Serif Display\", Georgia, \"Times New Roman\", serif",
+    weight: "400",
     lineHeight: "0.86",
     transform: "uppercase",
     letterSpacing: "0.01em",
   },
   bowlby: {
     family: "\"Bowlby One SC\", Impact, sans-serif",
+    weight: "400",
     lineHeight: "0.88",
     transform: "uppercase",
     letterSpacing: "0",
   },
   luckiest: {
     family: "\"Luckiest Guy\", \"Arial Rounded MT Bold\", Arial, sans-serif",
+    weight: "400",
     lineHeight: "0.9",
     transform: "none",
     letterSpacing: "0.01em",
   },
   lilita: {
     family: "\"Lilita One\", \"Arial Rounded MT Bold\", Arial, sans-serif",
+    weight: "400",
     lineHeight: "0.9",
     transform: "none",
     letterSpacing: "0.01em",
   },
   ranchers: {
     family: "\"Ranchers\", \"Cooper Black\", Georgia, serif",
+    weight: "400",
     lineHeight: "0.88",
     transform: "uppercase",
     letterSpacing: "0.03em",
   },
   cherry: {
     family: "\"Cherry Bomb One\", \"Cooper Black\", \"Arial Rounded MT Bold\", Georgia, serif",
+    weight: "400",
     lineHeight: "0.92",
     transform: "none",
     letterSpacing: "0",
   },
   fascinate: {
     family: "\"Fascinate Inline\", \"Cooper Black\", Georgia, serif",
+    weight: "400",
     lineHeight: "0.9",
     transform: "uppercase",
     letterSpacing: "0.01em",
   },
   modak: {
     family: "\"Modak\", \"Arial Rounded MT Bold\", Arial, sans-serif",
+    weight: "400",
     lineHeight: "0.9",
     transform: "none",
     letterSpacing: "0",
   },
   lobster: {
     family: "\"Lobster\", \"Brush Script MT\", Georgia, serif",
+    weight: "400",
     lineHeight: "0.95",
     transform: "none",
     letterSpacing: "0",
   },
   pacifico: {
     family: "\"Pacifico\", \"Brush Script MT\", \"Segoe Script\", cursive",
+    weight: "400",
     lineHeight: "1.05",
     transform: "none",
     letterSpacing: "0",
@@ -537,6 +552,7 @@ function applyTitleEffectToHeading(heading) {
   const effect = getTitleEffectStyles();
   const font = headingFontStyles[fontStyle.value] || headingFontStyles.bowlby;
   heading.style.fontFamily = font.family;
+  heading.style.fontWeight = font.weight;
   heading.style.lineHeight = font.lineHeight;
   heading.style.letterSpacing = font.letterSpacing;
   heading.style.textTransform = font.transform;
@@ -597,6 +613,7 @@ function applyOccasionEffectToHeading(heading) {
   const effect = getOccasionEffectStyles();
   const font = headingFontStyles[occasionFont.value] || headingFontStyles.luckiest;
   heading.style.fontFamily = font.family;
+  heading.style.fontWeight = font.weight;
   heading.style.lineHeight = font.lineHeight;
   heading.style.letterSpacing = font.letterSpacing;
   heading.style.textTransform = font.transform;

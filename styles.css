@@ -559,7 +559,7 @@ button:disabled {
   max-width: 100%;
   font-family: var(--occasion-font);
   font-size: var(--occasion-size);
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1.2;
   letter-spacing: var(--occasion-letter-spacing);
   text-transform: var(--occasion-transform);
