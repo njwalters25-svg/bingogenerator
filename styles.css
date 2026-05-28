@@ -1081,43 +1081,43 @@ body[data-scheme="halloween"] {
   --card: #ffffff;
 }
 
+body[data-font="playfair"] {
+  --header-font: "Playfair Display", Georgia, "Times New Roman", serif;
+  --title-line-height: 0.86;
+}
+
+body[data-font="cormorant"] {
+  --header-font: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --title-line-height: 0.82;
+}
+
+body[data-font="libre"] {
+  --header-font: "Libre Baskerville", Georgia, "Times New Roman", serif;
+  --title-line-height: 0.9;
+}
+
+body[data-font="cinzel"] {
+  --header-font: "Cinzel", Georgia, "Times New Roman", serif;
+  --title-line-height: 0.9;
+}
+
+body[data-font="merriweather"] {
+  --header-font: "Merriweather", Georgia, "Times New Roman", serif;
+  --title-line-height: 0.9;
+}
+
+body[data-font="dm-serif"] {
+  --header-font: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --title-line-height: 0.86;
+}
+
 body[data-font="bowlby"] {
   --header-font: "Bowlby One SC", Impact, sans-serif;
   --title-line-height: 0.88;
 }
 
-body[data-font="luckiest"] {
-  --header-font: "Luckiest Guy", "Arial Rounded MT Bold", Arial, sans-serif;
-  --title-line-height: 0.9;
-}
-
 body[data-font="lilita"] {
   --header-font: "Lilita One", "Arial Rounded MT Bold", Arial, sans-serif;
-  --title-line-height: 0.9;
-}
-
-body[data-font="bungee"] {
-  --header-font: "Bungee Shade", Impact, sans-serif;
-  --title-line-height: 0.9;
-}
-
-body[data-font="ranchers"] {
-  --header-font: "Ranchers", "Cooper Black", Georgia, serif;
-  --title-line-height: 0.88;
-}
-
-body[data-font="cherry"] {
-  --header-font: "Cherry Bomb One", "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
-  --title-line-height: 0.92;
-}
-
-body[data-font="fascinate"] {
-  --header-font: "Fascinate Inline", "Cooper Black", Georgia, serif;
-  --title-line-height: 0.9;
-}
-
-body[data-font="modak"] {
-  --header-font: "Modak", "Arial Rounded MT Bold", Arial, sans-serif;
   --title-line-height: 0.9;
 }
 

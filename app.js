@@ -106,17 +106,58 @@ const legacyOccasionFontMap = {
 };
 
 const legacyTitleFontMap = {
-  editorial: "bowlby",
+  editorial: "playfair",
   modern: "bowlby",
   retro: "ranchers",
-  elegant: "lobster",
-  fun: "luckiest",
+  elegant: "playfair",
+  fun: "lilita",
   kids: "lilita",
-  groovy: "cherry",
-  handmade: "cherry",
+  groovy: "dm-serif",
+  handmade: "dm-serif",
+  luckiest: "lilita",
+  bungee: "cinzel",
+  cherry: "dm-serif",
+  fascinate: "cinzel",
+  modak: "lilita",
 };
 
 const headingFontStyles = {
+  playfair: {
+    family: "\"Playfair Display\", Georgia, \"Times New Roman\", serif",
+    lineHeight: "0.86",
+    transform: "uppercase",
+    letterSpacing: "0.01em",
+  },
+  cormorant: {
+    family: "\"Cormorant Garamond\", Georgia, \"Times New Roman\", serif",
+    lineHeight: "0.82",
+    transform: "uppercase",
+    letterSpacing: "0.03em",
+  },
+  libre: {
+    family: "\"Libre Baskerville\", Georgia, \"Times New Roman\", serif",
+    lineHeight: "0.9",
+    transform: "uppercase",
+    letterSpacing: "0.02em",
+  },
+  cinzel: {
+    family: "\"Cinzel\", Georgia, \"Times New Roman\", serif",
+    lineHeight: "0.9",
+    transform: "uppercase",
+    letterSpacing: "0.04em",
+  },
+  merriweather: {
+    family: "\"Merriweather\", Georgia, \"Times New Roman\", serif",
+    lineHeight: "0.9",
+    transform: "uppercase",
+    letterSpacing: "0.01em",
+  },
+  "dm-serif": {
+    family: "\"DM Serif Display\", Georgia, \"Times New Roman\", serif",
+    lineHeight: "0.86",
+    transform: "uppercase",
+    letterSpacing: "0.01em",
+  },
   bowlby: {
     family: "\"Bowlby One SC\", Impact, sans-serif",
     lineHeight: "0.88",
@@ -133,12 +174,6 @@ const headingFontStyles = {
     family: "\"Lilita One\", \"Arial Rounded MT Bold\", Arial, sans-serif",
     lineHeight: "0.9",
     transform: "none",
-    letterSpacing: "0.01em",
-  },
-  bungee: {
-    family: "\"Bungee Shade\", Impact, sans-serif",
-    lineHeight: "0.9",
-    transform: "uppercase",
     letterSpacing: "0.01em",
   },
   ranchers: {
@@ -316,7 +351,7 @@ function resetSettings() {
   inputs.includeInstructions.checked = true;
   inputs.includeMasterList.checked = true;
   inputs.includeMarkers.checked = false;
-  fontStyle.value = "bowlby";
+  fontStyle.value = "playfair";
   titleEffect.value = "clean";
   occasionFont.value = "luckiest";
   occasionEffect.value = "clean";
