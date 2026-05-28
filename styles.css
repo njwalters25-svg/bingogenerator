@@ -1081,43 +1081,49 @@ body[data-scheme="halloween"] {
   --card: #ffffff;
 }
 
-body[data-font="modern"] {
-  --header-font: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-  --body-font: Arial, Helvetica, sans-serif;
-}
-
-body[data-font="retro"] {
-  --header-font: "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
-  --body-font: "Trebuchet MS", Arial, sans-serif;
-}
-
-body[data-font="elegant"] {
-  --header-font: Didot, "Bodoni 72", Georgia, serif;
-  --body-font: Optima, Candara, "Segoe UI", sans-serif;
-}
-
-body[data-font="fun"] {
-  --header-font: "Chewy", "Cooper Black", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
-  --title-line-height: 0.86;
-  --body-font: "Trebuchet MS", Arial, sans-serif;
-}
-
-body[data-font="kids"] {
-  --header-font: "Arial Rounded MT Bold", "Chalkboard SE", "Comic Sans MS", Arial, sans-serif;
+body[data-font="bowlby"] {
+  --header-font: "Bowlby One SC", Impact, sans-serif;
   --title-line-height: 0.88;
-  --body-font: "Trebuchet MS", Arial, sans-serif;
 }
 
-body[data-font="groovy"] {
+body[data-font="luckiest"] {
+  --header-font: "Luckiest Guy", "Arial Rounded MT Bold", Arial, sans-serif;
+  --title-line-height: 0.9;
+}
+
+body[data-font="lilita"] {
+  --header-font: "Lilita One", "Arial Rounded MT Bold", Arial, sans-serif;
+  --title-line-height: 0.9;
+}
+
+body[data-font="bungee"] {
+  --header-font: "Bungee Shade", Impact, sans-serif;
+  --title-line-height: 0.9;
+}
+
+body[data-font="ranchers"] {
+  --header-font: "Ranchers", "Cooper Black", Georgia, serif;
+  --title-line-height: 0.88;
+}
+
+body[data-font="cherry"] {
   --header-font: "Cherry Bomb One", "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
-  --title-line-height: 0.9;
-  --body-font: "Trebuchet MS", Arial, sans-serif;
+  --title-line-height: 0.92;
 }
 
-body[data-font="handmade"] {
-  --header-font: "Marker Felt", "Comic Sans MS", "Trebuchet MS", sans-serif;
+body[data-font="fascinate"] {
+  --header-font: "Fascinate Inline", "Cooper Black", Georgia, serif;
   --title-line-height: 0.9;
-  --body-font: "Trebuchet MS", Arial, sans-serif;
+}
+
+body[data-font="modak"] {
+  --header-font: "Modak", "Arial Rounded MT Bold", Arial, sans-serif;
+  --title-line-height: 0.9;
+}
+
+body[data-font="lobster"] {
+  --header-font: "Lobster", "Brush Script MT", Georgia, serif;
+  --title-line-height: 0.95;
 }
 
 body[data-title-effect="soft-shadow"] {

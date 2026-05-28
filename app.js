@@ -105,6 +105,80 @@ const legacyOccasionFontMap = {
   handwritten: "pacifico",
 };
 
+const legacyTitleFontMap = {
+  editorial: "bowlby",
+  modern: "bowlby",
+  retro: "ranchers",
+  elegant: "lobster",
+  fun: "luckiest",
+  kids: "lilita",
+  groovy: "cherry",
+  handmade: "cherry",
+};
+
+const headingFontStyles = {
+  bowlby: {
+    family: "\"Bowlby One SC\", Impact, sans-serif",
+    lineHeight: "0.88",
+    transform: "uppercase",
+    letterSpacing: "0",
+  },
+  luckiest: {
+    family: "\"Luckiest Guy\", \"Arial Rounded MT Bold\", Arial, sans-serif",
+    lineHeight: "0.9",
+    transform: "none",
+    letterSpacing: "0.01em",
+  },
+  lilita: {
+    family: "\"Lilita One\", \"Arial Rounded MT Bold\", Arial, sans-serif",
+    lineHeight: "0.9",
+    transform: "none",
+    letterSpacing: "0.01em",
+  },
+  bungee: {
+    family: "\"Bungee Shade\", Impact, sans-serif",
+    lineHeight: "0.9",
+    transform: "uppercase",
+    letterSpacing: "0.01em",
+  },
+  ranchers: {
+    family: "\"Ranchers\", \"Cooper Black\", Georgia, serif",
+    lineHeight: "0.88",
+    transform: "uppercase",
+    letterSpacing: "0.03em",
+  },
+  cherry: {
+    family: "\"Cherry Bomb One\", \"Cooper Black\", \"Arial Rounded MT Bold\", Georgia, serif",
+    lineHeight: "0.92",
+    transform: "none",
+    letterSpacing: "0",
+  },
+  fascinate: {
+    family: "\"Fascinate Inline\", \"Cooper Black\", Georgia, serif",
+    lineHeight: "0.9",
+    transform: "uppercase",
+    letterSpacing: "0.01em",
+  },
+  modak: {
+    family: "\"Modak\", \"Arial Rounded MT Bold\", Arial, sans-serif",
+    lineHeight: "0.9",
+    transform: "none",
+    letterSpacing: "0",
+  },
+  lobster: {
+    family: "\"Lobster\", \"Brush Script MT\", Georgia, serif",
+    lineHeight: "0.95",
+    transform: "none",
+    letterSpacing: "0",
+  },
+  pacifico: {
+    family: "\"Pacifico\", \"Brush Script MT\", \"Segoe Script\", cursive",
+    lineHeight: "1.05",
+    transform: "none",
+    letterSpacing: "0",
+  },
+};
+
 function parseItems(value) {
   return [...new Set(
     value
@@ -210,7 +284,7 @@ function restoreSettings() {
     inputs.includeInstructions.checked = savedSettings.includeInstructions ?? inputs.includeInstructions.checked;
     inputs.includeMasterList.checked = savedSettings.includeMasterList ?? inputs.includeMasterList.checked;
     inputs.includeMarkers.checked = savedSettings.includeMarkers ?? inputs.includeMarkers.checked;
-    fontStyle.value = savedSettings.fontStyle || fontStyle.value;
+    fontStyle.value = legacyTitleFontMap[savedSettings.fontStyle] || savedSettings.fontStyle || fontStyle.value;
     titleEffect.value = "clean";
     occasionFont.value = legacyOccasionFontMap[savedSettings.occasionFont] || savedSettings.occasionFont || occasionFont.value;
     occasionEffect.value = savedSettings.occasionEffect || occasionEffect.value;
@@ -242,7 +316,7 @@ function resetSettings() {
   inputs.includeInstructions.checked = true;
   inputs.includeMasterList.checked = true;
   inputs.includeMarkers.checked = false;
-  fontStyle.value = "editorial";
+  fontStyle.value = "bowlby";
   titleEffect.value = "clean";
   occasionFont.value = "luckiest";
   occasionEffect.value = "clean";
@@ -420,6 +494,11 @@ function getTitleEffectStyles() {
 
 function applyTitleEffectToHeading(heading) {
   const effect = getTitleEffectStyles();
+  const font = headingFontStyles[fontStyle.value] || headingFontStyles.bowlby;
+  heading.style.fontFamily = font.family;
+  heading.style.lineHeight = font.lineHeight;
+  heading.style.letterSpacing = font.letterSpacing;
+  heading.style.textTransform = font.transform;
   heading.style.color = titleColor.value;
   heading.style.webkitTextFillColor = titleColor.value;
   heading.style.textShadow = effect.textShadow;
@@ -475,6 +554,11 @@ function getOccasionEffectStyles() {
 
 function applyOccasionEffectToHeading(heading) {
   const effect = getOccasionEffectStyles();
+  const font = headingFontStyles[occasionFont.value] || headingFontStyles.luckiest;
+  heading.style.fontFamily = font.family;
+  heading.style.lineHeight = font.lineHeight;
+  heading.style.letterSpacing = font.letterSpacing;
+  heading.style.textTransform = font.transform;
   heading.style.color = occasionColor.value;
   heading.style.webkitTextFillColor = occasionColor.value;
   heading.style.textShadow = effect.textShadow;
