@@ -23,6 +23,11 @@
   --title-shadow: none;
   --title-stroke-width: 0;
   --title-stroke-color: transparent;
+  --title-effect-soft: rgba(19, 123, 128, 0.35);
+  --title-effect-glow: rgba(19, 123, 128, 0.42);
+  --title-effect-highlight: rgb(102, 169, 173);
+  --title-effect-accent: rgb(231, 87, 77);
+  --title-effect-stroke: #137b80;
   --occasion-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --occasion-size: 25px;
   --occasion-transform: uppercase;
@@ -1107,13 +1112,13 @@ body[data-font="handmade"] {
 
 body[data-title-effect="soft-shadow"] {
   --title-shadow:
-    0 3px 0 color-mix(in srgb, var(--accent-2) 28%, transparent),
+    0 3px 0 var(--title-effect-soft),
     0 9px 16px rgba(25, 23, 20, 0.18);
 }
 
 body[data-title-effect="outline"] {
   --title-stroke-width: 2px;
-  --title-stroke-color: color-mix(in srgb, var(--accent-2) 82%, #111);
+  --title-stroke-color: var(--title-effect-stroke);
   --title-shadow:
     2px 2px 0 #fff,
     -2px 2px 0 #fff,
@@ -1124,16 +1129,16 @@ body[data-title-effect="outline"] {
 
 body[data-title-effect="retro-layer"] {
   --title-shadow:
-    0 2px 0 color-mix(in srgb, var(--accent-2) 80%, #fff),
-    0 5px 0 color-mix(in srgb, var(--accent-soft) 88%, #fff),
-    0 8px 0 color-mix(in srgb, var(--accent) 55%, #111),
+    0 2px 0 var(--title-effect-highlight),
+    0 5px 0 #ffe8d9,
+    0 8px 0 var(--title-effect-accent),
     0 12px 16px rgba(25, 23, 20, 0.14);
 }
 
 body[data-title-effect="glow"] {
   --title-shadow:
-    0 0 0.5px color-mix(in srgb, var(--accent-2) 80%, #fff),
-    0 0 10px color-mix(in srgb, var(--accent-2) 40%, transparent),
+    0 0 1px var(--title-effect-highlight),
+    0 0 12px var(--title-effect-glow),
     0 4px 10px rgba(25, 23, 20, 0.12);
 }
 

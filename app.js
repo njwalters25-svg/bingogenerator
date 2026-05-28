@@ -341,12 +341,22 @@ function updateCustomColors() {
 }
 
 function applyCurrentColors() {
+  const highlightSoft = rgbString(hexToRgb(highlightColor.value), 0.35);
+  const highlightGlow = rgbString(hexToRgb(highlightColor.value), 0.42);
+  const highlightLayer = rgbString(mixWithWhite(highlightColor.value, 0.35));
+  const accentLayer = rgbString(mixWithWhite(primaryColor.value, 0.14));
+
   const colorTargets = [document.documentElement, document.body];
   colorTargets.forEach((target) => {
     target.style.setProperty("--accent", primaryColor.value);
     target.style.setProperty("--accent-2", highlightColor.value);
     target.style.setProperty("--title-color", titleColor.value);
     target.style.setProperty("--occasion-color", occasionColor.value);
+    target.style.setProperty("--title-effect-soft", highlightSoft);
+    target.style.setProperty("--title-effect-glow", highlightGlow);
+    target.style.setProperty("--title-effect-highlight", highlightLayer);
+    target.style.setProperty("--title-effect-accent", accentLayer);
+    target.style.setProperty("--title-effect-stroke", highlightColor.value);
   });
 }
 
@@ -509,6 +519,12 @@ function hexToRgb(hex) {
     ? clean.split("").map((letter) => letter + letter).join("")
     : clean, 16);
   return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+}
+
+function rgbString(rgb, alpha = 1) {
+  return alpha === 1
+    ? `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
+    : `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
 }
 
 function mixWithWhite(hex, amount = 0.85) {
