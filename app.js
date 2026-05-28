@@ -195,7 +195,7 @@ function restoreSettings() {
     inputs.includeMasterList.checked = savedSettings.includeMasterList ?? inputs.includeMasterList.checked;
     inputs.includeMarkers.checked = savedSettings.includeMarkers ?? inputs.includeMarkers.checked;
     fontStyle.value = savedSettings.fontStyle || fontStyle.value;
-    titleEffect.value = savedSettings.titleEffect || titleEffect.value;
+    titleEffect.value = "clean";
     occasionFont.value = savedSettings.occasionFont || occasionFont.value;
     occasionEffect.value = savedSettings.occasionEffect || occasionEffect.value;
     occasionSize.value = savedSettings.occasionSize || occasionSize.value;
@@ -435,8 +435,8 @@ function getOccasionEffectStyles() {
       stroke: `2px ${highlight}`,
     },
     "sticker-pop": {
-      textShadow: `3px 3px 0 ${primary}, 5px 5px 0 ${highlightLayer}, 0 8px 12px rgba(25, 23, 20, 0.18)`,
-      stroke: "2px #fff",
+      textShadow: `2px 2px 0 #fff, -2px 2px 0 #fff, 2px -2px 0 #fff, -2px -2px 0 #fff, 5px 5px 0 ${primary}, 8px 8px 0 ${highlightLayer}, 0 10px 14px rgba(25, 23, 20, 0.2)`,
+      stroke: "1.5px #fff",
     },
     "retro-layer": {
       textShadow: `0 3px 0 ${highlightLayer}, 0 6px 0 ${primary}, 0 10px 14px rgba(25, 23, 20, 0.18)`,
