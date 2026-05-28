@@ -32,6 +32,36 @@ deployment:
     - /bin/cp robots.txt $DEPLOYPATH
 ```
 
+## Automatic Deploys with GitHub Actions
+
+This repo includes an optional GitHub Actions workflow at `.github/workflows/deploy-cpanel.yml`.
+When it is configured, every push to `main` will ask cPanel to:
+
+1. Update the cPanel-managed repository from GitHub.
+2. Deploy the HEAD commit using `.cpanel.yml`.
+
+In GitHub, open the repository, then go to **Settings > Secrets and variables > Actions**.
+
+Add these **Repository secrets**:
+
+- `CPANEL_HOST` - your cPanel server host, without `https://` and without `:2083`
+- `CPANEL_USERNAME` - your cPanel username, for example `simpxlow`
+- `CPANEL_API_TOKEN` - a cPanel API token created in cPanel
+- `CPANEL_REPOSITORY_ROOT` - the cPanel Git repository path, for example `/home/simpxlow/repositories/bingogenerator`
+
+Optional **Repository variable**:
+
+- `CPANEL_BRANCH` - defaults to `main`, so you only need this if your deployed branch changes.
+
+To create the API token in cPanel:
+
+1. Open **Manage API Tokens**.
+2. Create a new token called something like `github-bingo-deploy`.
+3. Copy it immediately and paste it into the GitHub secret `CPANEL_API_TOKEN`.
+
+Keep using `.cpanel.yml` for the actual file-copy instructions. The workflow simply replaces the manual
+**Update from Remote** and **Deploy HEAD Commit** clicks.
+
 ## Access Control Choices
 
 Best simple setup:

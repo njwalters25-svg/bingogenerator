@@ -1,0 +1,57 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Update cPanel repo and deploy
+    runs-on: ubuntu-latest
+    env:
+      CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
+      CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
+      CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
+      CPANEL_REPOSITORY_ROOT: ${{ secrets.CPANEL_REPOSITORY_ROOT }}
+      CPANEL_BRANCH: ${{ vars.CPANEL_BRANCH }}
+
+    steps:
+      - name: Check cPanel deployment secrets
+        id: config
+        run: |
+          if [ -n "${CPANEL_HOST}" ] && [ -n "${CPANEL_USERNAME}" ] && [ -n "${CPANEL_API_TOKEN}" ] && [ -n "${CPANEL_REPOSITORY_ROOT}" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "cPanel deploy skipped because one or more required repository secrets are not set yet."
+          fi
+
+      - name: Update cPanel repository from GitHub
+        if: steps.config.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          branch="${CPANEL_BRANCH:-main}"
+
+          response="$(curl --silent --show-error --fail-with-body --get \
+            "https://${CPANEL_HOST}:2083/execute/VersionControl/update" \
+            --header "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+            --data-urlencode "repository_root=${CPANEL_REPOSITORY_ROOT}" \
+            --data-urlencode "branch=${branch}")"
+
+          echo "$response" | jq .
+          echo "$response" | jq -e '.result.status == 1'
+
+      - name: Deploy cPanel HEAD commit
+        if: steps.config.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+
+          response="$(curl --silent --show-error --fail-with-body --get \
+            "https://${CPANEL_HOST}:2083/execute/VersionControlDeployment/create" \
+            --header "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+            --data-urlencode "repository_root=${CPANEL_REPOSITORY_ROOT}")"
+
+          echo "$response" | jq .
+          echo "$response" | jq -e '.result.status == 1'
