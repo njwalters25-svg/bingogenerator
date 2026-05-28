@@ -1152,40 +1152,64 @@ body[data-title-effect="glow"] {
     0 4px 10px rgba(25, 23, 20, 0.12);
 }
 
-body[data-occasion-font="script"] {
-  --occasion-font: "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive;
+body[data-occasion-font="luckiest"] {
+  --occasion-font: "Luckiest Guy", "Arial Rounded MT Bold", Arial, sans-serif;
   --occasion-transform: none;
-  --occasion-letter-spacing: 0;
+  --occasion-letter-spacing: 0.02em;
 }
 
-body[data-occasion-font="serif"] {
-  --occasion-font: Georgia, "Times New Roman", serif;
-  --occasion-transform: none;
-  --occasion-letter-spacing: 0.01em;
-}
-
-body[data-occasion-font="modern"] {
-  --occasion-font: Arial, Helvetica, sans-serif;
+body[data-occasion-font="bungee"] {
+  --occasion-font: "Bungee Shade", Impact, sans-serif;
   --occasion-transform: uppercase;
   --occasion-letter-spacing: 0.02em;
 }
 
-body[data-occasion-font="playful"] {
-  --occasion-font: "Arial Rounded MT Bold", "Chalkboard SE", "Comic Sans MS", Arial, sans-serif;
-  --occasion-transform: none;
-  --occasion-letter-spacing: 0.01em;
-}
-
-body[data-occasion-font="groovy"] {
+body[data-occasion-font="cherry"] {
   --occasion-font: "Cherry Bomb One", "Cooper Black", "Arial Rounded MT Bold", Georgia, serif;
   --occasion-transform: none;
   --occasion-letter-spacing: 0;
 }
 
-body[data-occasion-font="handwritten"] {
-  --occasion-font: "Marker Felt", "Noteworthy", "Comic Sans MS", cursive;
+body[data-occasion-font="ranchers"] {
+  --occasion-font: "Ranchers", "Cooper Black", Georgia, serif;
+  --occasion-transform: uppercase;
+  --occasion-letter-spacing: 0.04em;
+}
+
+body[data-occasion-font="lilita"] {
+  --occasion-font: "Lilita One", "Arial Rounded MT Bold", Arial, sans-serif;
+  --occasion-transform: none;
+  --occasion-letter-spacing: 0.02em;
+}
+
+body[data-occasion-font="modak"] {
+  --occasion-font: "Modak", "Arial Rounded MT Bold", Arial, sans-serif;
   --occasion-transform: none;
   --occasion-letter-spacing: 0;
+}
+
+body[data-occasion-font="fascinate"] {
+  --occasion-font: "Fascinate Inline", "Cooper Black", Georgia, serif;
+  --occasion-transform: uppercase;
+  --occasion-letter-spacing: 0.02em;
+}
+
+body[data-occasion-font="pacifico"] {
+  --occasion-font: "Pacifico", "Brush Script MT", "Segoe Script", cursive;
+  --occasion-transform: none;
+  --occasion-letter-spacing: 0;
+}
+
+body[data-occasion-font="lobster"] {
+  --occasion-font: "Lobster", "Brush Script MT", Georgia, serif;
+  --occasion-transform: none;
+  --occasion-letter-spacing: 0;
+}
+
+body[data-occasion-font="bowlby"] {
+  --occasion-font: "Bowlby One SC", Impact, sans-serif;
+  --occasion-transform: uppercase;
+  --occasion-letter-spacing: 0.01em;
 }
 
 body[data-grid="rounded"] .square {
@@ -1277,9 +1301,10 @@ body[data-cards-per-page="2"] .occasion {
   line-height: 1.05;
 }
 
-body[data-cards-per-page="2"][data-occasion-font="script"] .occasion,
-body[data-cards-per-page="2"][data-occasion-font="groovy"] .occasion,
-body[data-cards-per-page="2"][data-occasion-font="handwritten"] .occasion {
+body[data-cards-per-page="2"][data-occasion-font="cherry"] .occasion,
+body[data-cards-per-page="2"][data-occasion-font="modak"] .occasion,
+body[data-cards-per-page="2"][data-occasion-font="pacifico"] .occasion,
+body[data-cards-per-page="2"][data-occasion-font="lobster"] .occasion {
   font-size: min(calc(var(--occasion-size) * 0.95), 56px);
   line-height: 0.98;
 }

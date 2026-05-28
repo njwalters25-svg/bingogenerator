@@ -70,23 +70,39 @@ const schemeColors = {
 };
 const occasionFontMaxSizes = {
   1: {
-    bold: 48,
-    script: 65,
-    serif: 62,
-    modern: 54,
-    playful: 58,
-    groovy: 64,
-    handwritten: 58,
+    luckiest: 58,
+    bungee: 56,
+    cherry: 64,
+    ranchers: 62,
+    lilita: 60,
+    modak: 62,
+    fascinate: 58,
+    pacifico: 68,
+    lobster: 68,
+    bowlby: 54,
   },
   2: {
-    bold: 46,
-    script: 64,
-    serif: 56,
-    modern: 50,
-    playful: 54,
-    groovy: 60,
-    handwritten: 54,
+    luckiest: 52,
+    bungee: 50,
+    cherry: 60,
+    ranchers: 56,
+    lilita: 54,
+    modak: 56,
+    fascinate: 52,
+    pacifico: 62,
+    lobster: 62,
+    bowlby: 48,
   },
+};
+
+const legacyOccasionFontMap = {
+  bold: "luckiest",
+  script: "pacifico",
+  serif: "lobster",
+  modern: "lilita",
+  playful: "cherry",
+  groovy: "cherry",
+  handwritten: "pacifico",
 };
 
 function parseItems(value) {
@@ -196,7 +212,7 @@ function restoreSettings() {
     inputs.includeMarkers.checked = savedSettings.includeMarkers ?? inputs.includeMarkers.checked;
     fontStyle.value = savedSettings.fontStyle || fontStyle.value;
     titleEffect.value = "clean";
-    occasionFont.value = savedSettings.occasionFont || occasionFont.value;
+    occasionFont.value = legacyOccasionFontMap[savedSettings.occasionFont] || savedSettings.occasionFont || occasionFont.value;
     occasionEffect.value = savedSettings.occasionEffect || occasionEffect.value;
     occasionSize.value = savedSettings.occasionSize || occasionSize.value;
     titleSize.value = savedSettings.titleSize || titleSize.value;
@@ -228,7 +244,7 @@ function resetSettings() {
   inputs.includeMarkers.checked = false;
   fontStyle.value = "editorial";
   titleEffect.value = "clean";
-  occasionFont.value = "bold";
+  occasionFont.value = "luckiest";
   occasionEffect.value = "clean";
   occasionSize.value = "25";
   titleSize.value = "98";
