@@ -438,9 +438,9 @@ function getOccasionEffectStyles() {
       transform: "none",
     },
     "sticker-pop": {
-      textShadow: `3px 3px 0 #fff, -3px 3px 0 #fff, 3px -3px 0 #fff, -3px -3px 0 #fff, 7px 7px 0 ${primary}, 11px 11px 0 ${highlight}, 0 14px 18px rgba(25, 23, 20, 0.24)`,
-      stroke: "2.5px #fff",
-      transform: "rotate(-2deg)",
+      textShadow: `3px 3px 0 #fff, -3px 3px 0 #fff, 3px -3px 0 #fff, -3px -3px 0 #fff, 5px 6px 0 ${primary}, 0 9px 14px rgba(25, 23, 20, 0.18)`,
+      stroke: "2px #fff",
+      transform: "none",
     },
     "retro-layer": {
       textShadow: `0 4px 0 ${highlightLayer}, 0 8px 0 ${primary}, 0 13px 16px rgba(25, 23, 20, 0.22)`,
