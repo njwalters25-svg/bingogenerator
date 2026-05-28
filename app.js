@@ -15,6 +15,7 @@ const downloadPdfButton = document.querySelector("#downloadPdfButton");
 const resetButton = document.querySelector("#resetButton");
 const schemeGrid = document.querySelector("#schemeGrid");
 const fontStyle = document.querySelector("#fontStyle");
+const titleEffect = document.querySelector("#titleEffect");
 const occasionFont = document.querySelector("#occasionFont");
 const occasionSize = document.querySelector("#occasionSize");
 const occasionSizeValue = document.querySelector("#occasionSizeValue");
@@ -149,6 +150,7 @@ function getSettingsSnapshot() {
     includeMasterList: inputs.includeMasterList.checked,
     includeMarkers: inputs.includeMarkers.checked,
     fontStyle: fontStyle.value,
+    titleEffect: titleEffect.value,
     occasionFont: occasionFont.value,
     occasionSize: occasionSize.value,
     titleSize: titleSize.value,
@@ -191,6 +193,7 @@ function restoreSettings() {
     inputs.includeMasterList.checked = savedSettings.includeMasterList ?? inputs.includeMasterList.checked;
     inputs.includeMarkers.checked = savedSettings.includeMarkers ?? inputs.includeMarkers.checked;
     fontStyle.value = savedSettings.fontStyle || fontStyle.value;
+    titleEffect.value = savedSettings.titleEffect || titleEffect.value;
     occasionFont.value = savedSettings.occasionFont || occasionFont.value;
     occasionSize.value = savedSettings.occasionSize || occasionSize.value;
     titleSize.value = savedSettings.titleSize || titleSize.value;
@@ -221,6 +224,7 @@ function resetSettings() {
   inputs.includeMasterList.checked = true;
   inputs.includeMarkers.checked = false;
   fontStyle.value = "editorial";
+  titleEffect.value = "clean";
   occasionFont.value = "bold";
   occasionSize.value = "25";
   titleSize.value = "98";
@@ -307,6 +311,7 @@ function updateDesignSettings() {
   }
 
   document.body.dataset.font = fontStyle.value;
+  document.body.dataset.titleEffect = titleEffect.value;
   document.body.dataset.occasionFont = occasionFont.value;
   document.body.dataset.grid = gridStyle.value;
   document.body.dataset.page = pageSize.value;
@@ -1148,7 +1153,7 @@ schemeGrid.addEventListener("change", (event) => {
   });
 });
 
-[fontStyle, occasionFont, gridStyle, pageSize, cardsPerPage].forEach((control) => {
+[fontStyle, titleEffect, occasionFont, gridStyle, pageSize, cardsPerPage].forEach((control) => {
   control.addEventListener("change", () => {
     updateDesignSettings();
     saveSettings();
