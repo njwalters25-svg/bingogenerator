@@ -331,6 +331,7 @@ function updateDesignSettings() {
     },
   };
   printPageStyle.textContent = `@page { size: ${printSizes[pageSize.value][cardsPerPage.value]}; margin: 0; }`;
+  updateTitleEffects();
   updatePreviewScale();
   fitAllSquareText();
 }
@@ -358,6 +359,52 @@ function applyCurrentColors() {
     target.style.setProperty("--title-effect-accent", accentLayer);
     target.style.setProperty("--title-effect-stroke", highlightColor.value);
   });
+  updateTitleEffects();
+}
+
+function getTitleEffectStyles() {
+  const highlight = highlightColor.value;
+  const soft = rgbString(hexToRgb(highlight), 0.5);
+  const glow = rgbString(hexToRgb(highlight), 0.5);
+  const highlightLayer = rgbString(mixWithWhite(highlight, 0.28));
+  const accentLayer = rgbString(mixWithWhite(primaryColor.value, 0.08));
+
+  const effects = {
+    clean: {
+      textShadow: "none",
+      stroke: "0 transparent",
+    },
+    "soft-shadow": {
+      textShadow: `0 4px 0 ${soft}, 0 12px 18px rgba(25, 23, 20, 0.25)`,
+      stroke: "0 transparent",
+    },
+    outline: {
+      textShadow: "3px 3px 0 #fff, -3px 3px 0 #fff, 3px -3px 0 #fff, -3px -3px 0 #fff, 0 10px 16px rgba(25, 23, 20, 0.22)",
+      stroke: `3px ${highlight}`,
+    },
+    "retro-layer": {
+      textShadow: `0 3px 0 ${highlightLayer}, 0 7px 0 #ffe8d9, 0 11px 0 ${accentLayer}, 0 16px 18px rgba(25, 23, 20, 0.22)`,
+      stroke: "0 transparent",
+    },
+    glow: {
+      textShadow: `0 0 2px ${highlightLayer}, 0 0 18px ${glow}, 0 6px 12px rgba(25, 23, 20, 0.18)`,
+      stroke: "0 transparent",
+    },
+  };
+
+  return effects[titleEffect.value] || effects.clean;
+}
+
+function applyTitleEffectToHeading(heading) {
+  const effect = getTitleEffectStyles();
+  heading.style.color = titleColor.value;
+  heading.style.webkitTextFillColor = titleColor.value;
+  heading.style.textShadow = effect.textShadow;
+  heading.style.webkitTextStroke = effect.stroke;
+}
+
+function updateTitleEffects() {
+  cardsContainer.querySelectorAll(".bingo-card h3").forEach(applyTitleEffectToHeading);
 }
 
 function resetTextFitClasses(square) {
@@ -875,7 +922,9 @@ function renderCards(cards) {
 
     const card = cardTemplate.content.firstElementChild.cloneNode(true);
     card.querySelector(".occasion").textContent = inputs.occasion.value.trim();
-    card.querySelector("h3").textContent = inputs.title.value.trim() || "BINGO";
+    const titleHeading = card.querySelector("h3");
+    titleHeading.textContent = inputs.title.value.trim() || "BINGO";
+    applyTitleEffectToHeading(titleHeading);
     card.querySelector("footer").textContent = storeFooter;
 
     const grid = card.querySelector(".bingo-grid");
@@ -907,6 +956,7 @@ function updateHeadingPreview() {
 
   cardsContainer.querySelectorAll(".bingo-card h3").forEach((heading) => {
     heading.textContent = title;
+    applyTitleEffectToHeading(heading);
   });
 
   extrasContainer.querySelectorAll(".marker-occasion").forEach((heading) => {
