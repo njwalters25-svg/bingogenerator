@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Cherry+Bomb+One&family=Chewy&family=Cinzel:wght@700;900&family=Cormorant+Garamond:wght@700&family=DM+Serif+Display&family=Fascinate+Inline&family=Libre+Baskerville:wght@700&family=Lilita+One&family=Lobster&family=Luckiest+Guy&family=Merriweather:wght@900&family=Modak&family=Pacifico&family=Playfair+Display:wght@800;900&family=Ranchers&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260528-fontweights" />
+    <link rel="stylesheet" href="styles.css?v=20260604-phase1" />
     <style id="printPageStyle">@page { size: 8.5in 11in; margin: 0; }</style>
     <style>
       .scheme-grid {
@@ -297,12 +297,13 @@
           </fieldset>
 
           <div class="actions full-span">
-            <button id="generateButton" type="submit">Generate cards</button>
+            <button id="generateButton" type="submit">Generate bingo set</button>
             <button id="downloadPdfButton" type="button">Download PDF</button>
             <button id="printButton" type="button">Print or save PDF</button>
-            <button id="resetButton" type="button">Clear saved settings</button>
+            <button id="resetButton" type="button">Clear project</button>
           </div>
 
+          <div id="generatedSetNotice" class="generated-set-notice full-span" aria-live="polite"></div>
           <p class="print-help full-span">Use “Download PDF” for a ready-made file, or “Print or save PDF” if you prefer your browser print window.</p>
           <details class="help-panel full-span">
             <summary>Quick tips</summary>
@@ -311,7 +312,7 @@
               <li>Around 75 items gives good variety when making lots of cards.</li>
               <li>Shorten very long titles before printing if they look too small.</li>
               <li>If Download PDF does not work, use Print or save PDF instead.</li>
-              <li>Your settings are saved in this browser. Use Clear saved settings to start again.</li>
+              <li>Your draft and current generated set are saved in this browser. Use Clear project to start again.</li>
             </ul>
           </details>
           <ul id="qualityWarnings" class="quality-warnings full-span" aria-live="polite"></ul>
@@ -391,6 +392,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="app.js?v=20260528-fontweights"></script>
+    <script src="app.js?v=20260604-phase1"></script>
   </body>
 </html>

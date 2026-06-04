@@ -231,6 +231,22 @@ fieldset {
   display: grid;
 }
 
+.generated-set-notice {
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 38%, var(--line));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent-2) 7%, #fff);
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.generated-set-notice.has-draft-changes {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: color-mix(in srgb, var(--accent-soft) 42%, #fff);
+}
+
 legend {
   padding: 0 6px;
 }

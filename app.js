@@ -30,12 +30,16 @@ const primaryColor = document.querySelector("#primaryColor");
 const highlightColor = document.querySelector("#highlightColor");
 const titleColor = document.querySelector("#titleColor");
 const occasionColor = document.querySelector("#occasionColor");
+const generateButton = document.querySelector("#generateButton");
+const generatedSetNotice = document.querySelector("#generatedSetNotice");
 
 let freeImageData = "";
 let isRestoringSettings = false;
 let currentCards = [];
+let generatedSet = null;
 
 const storageKey = "allOccasionsBingoSettings";
+const generatedSetStorageKey = "allOccasionsBingoGeneratedSet";
 
 const inputs = {
   occasion: document.querySelector("#occasionInput"),
@@ -281,6 +285,78 @@ function makeUniqueCards(items, count) {
   return cards;
 }
 
+function getRequestedCardCount() {
+  return Math.min(Math.max(Number(inputs.count.value) || 1, 1), 100);
+}
+
+function getGenerationDraft() {
+  return {
+    sourceItems: parseItems(inputs.items.value),
+    requestedCount: getRequestedCardCount(),
+  };
+}
+
+function hasGenerationDraftChanges() {
+  if (!generatedSet) {
+    return false;
+  }
+
+  const draft = getGenerationDraft();
+  return draft.requestedCount !== generatedSet.requestedCount
+    || JSON.stringify(draft.sourceItems) !== JSON.stringify(generatedSet.sourceItems);
+}
+
+function saveGeneratedSet() {
+  try {
+    if (generatedSet) {
+      localStorage.setItem(generatedSetStorageKey, JSON.stringify(generatedSet));
+    } else {
+      localStorage.removeItem(generatedSetStorageKey);
+    }
+  } catch {
+    // The current set remains usable for this session if browser storage is unavailable.
+  }
+}
+
+function restoreGeneratedSet() {
+  try {
+    const savedSet = JSON.parse(localStorage.getItem(generatedSetStorageKey));
+    const hasValidCards = Array.isArray(savedSet?.cards)
+      && savedSet.cards.length > 0
+      && savedSet.cards.every((card) => Array.isArray(card) && card.length === 25);
+    const hasValidItems = Array.isArray(savedSet?.sourceItems) && savedSet.sourceItems.length >= 24;
+
+    if (hasValidCards && hasValidItems) {
+      generatedSet = savedSet;
+      currentCards = savedSet.cards;
+    }
+  } catch {
+    localStorage.removeItem(generatedSetStorageKey);
+  }
+}
+
+function updateGeneratedSetUi() {
+  const hasSet = Boolean(generatedSet?.cards?.length);
+  const hasDraftChanges = hasGenerationDraftChanges();
+
+  generateButton.textContent = hasSet ? "Generate new set" : "Generate bingo set";
+  downloadPdfButton.disabled = !hasSet;
+  printButton.disabled = !hasSet;
+  generatedSetNotice.classList.toggle("has-draft-changes", hasDraftChanges);
+
+  if (!hasSet) {
+    generatedSetNotice.textContent = "No generated set yet. Create your draft, then generate a fixed set when you are ready.";
+    return;
+  }
+
+  if (hasDraftChanges) {
+    generatedSetNotice.textContent = "Your song list or card count has changed. The current generated set is still unchanged and ready to reprint. Generate a new set to apply these draft changes.";
+    return;
+  }
+
+  generatedSetNotice.textContent = "Current generated set is fixed. Editing the design, previewing, printing, and downloading will not reshuffle these cards.";
+}
+
 function setStatus(message, isError = false) {
   statusMessage.textContent = message;
   statusMessage.classList.toggle("error", isError);
@@ -309,6 +385,7 @@ function getSettingsSnapshot() {
     highlightColor: highlightColor.value,
     titleColor: titleColor.value,
     occasionColor: occasionColor.value,
+    freeImageData,
   };
 }
 
@@ -353,6 +430,7 @@ function restoreSettings() {
     highlightColor.value = savedSettings.highlightColor || highlightColor.value;
     titleColor.value = savedSettings.titleColor || titleColor.value;
     occasionColor.value = savedSettings.occasionColor || occasionColor.value;
+    freeImageData = savedSettings.freeImageData || "";
   } catch {
     localStorage.removeItem(storageKey);
   } finally {
@@ -361,7 +439,13 @@ function restoreSettings() {
 }
 
 function resetSettings() {
+  if (generatedSet && !window.confirm("Clear this project? This will permanently remove the saved draft and current generated set from this browser.")) {
+    setStatus("Kept the current project.");
+    return;
+  }
+
   localStorage.removeItem(storageKey);
+  localStorage.removeItem(generatedSetStorageKey);
   isRestoringSettings = true;
 
   inputs.occasion.value = "";
@@ -389,14 +473,16 @@ function resetSettings() {
   document.body.dataset.scheme = "party";
   document.body.dataset.customColors = "false";
   freeImageData = "";
+  generatedSet = null;
+  currentCards = [];
   freeImageInput.value = "";
   isRestoringSettings = false;
 
   applyCurrentColors();
   updateDesignSettings();
   updateListHelp();
-  generateCards();
-  setStatus("Saved settings cleared. Paste a list to start again.");
+  renderCurrentSet();
+  setStatus("Project cleared. Paste a list to start again.");
 }
 
 function updateListHelp() {
@@ -1068,19 +1154,22 @@ function drawMarkersPdf(pdf, sizing, pageIndex) {
 function setPdfBusy(isBusy) {
   downloadPdfButton.disabled = isBusy;
   printButton.disabled = isBusy;
-  form.querySelector("#generateButton").disabled = isBusy;
+  generateButton.disabled = isBusy;
   resetButton.disabled = isBusy;
   downloadPdfButton.textContent = isBusy ? "Making PDF..." : "Download PDF";
+  if (!isBusy) {
+    updateGeneratedSetUi();
+  }
 }
 
 async function downloadPdf() {
-  generateCards();
-  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
   if (currentCards.length === 0) {
-    setStatus("Add at least 24 unique list items before downloading a PDF.", true);
+    setStatus("Generate a bingo set before downloading a PDF.", true);
     return;
   }
+
+  renderCurrentSet();
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
   if (!window.html2canvas || !window.jspdf?.jsPDF) {
     setStatus("The PDF maker is still loading. Please try again in a moment.", true);
@@ -1186,6 +1275,10 @@ function updateHeadingPreview() {
 
   extrasContainer.querySelectorAll(".marker-occasion").forEach((heading) => {
     heading.textContent = markerOccasion;
+  });
+
+  extrasContainer.querySelectorAll(".marker-bingo").forEach((heading) => {
+    heading.textContent = title;
   });
 }
 
@@ -1365,18 +1458,31 @@ function updatePreviewScale() {
   });
 }
 
-function generateCards() {
-  const items = parseItems(inputs.items.value);
-  updateListHelp();
-  const requestedCount = Math.min(Math.max(Number(inputs.count.value) || 1, 1), 100);
-  inputs.count.value = requestedCount;
-
-  if (items.length < 24) {
+function renderCurrentSet() {
+  if (!generatedSet?.cards?.length) {
     currentCards = [];
     cardsContainer.replaceChildren();
     extrasContainer.replaceChildren();
     renderHelpfulChecks([]);
     cardTotal.textContent = "0 cards";
+    updateGeneratedSetUi();
+    return;
+  }
+
+  currentCards = generatedSet.cards;
+  renderCards(currentCards);
+  renderExtras(generatedSet.sourceItems);
+  renderHelpfulChecks(getHelpfulChecks(generatedSet.sourceItems, currentCards.length));
+  updateGeneratedSetUi();
+}
+
+function generateNewSet() {
+  const items = parseItems(inputs.items.value);
+  updateListHelp();
+  const requestedCount = getRequestedCardCount();
+  inputs.count.value = requestedCount;
+
+  if (items.length < 24) {
     setStatus(items.length === 0
       ? "Paste your bingo list to get started."
       : "Add at least 24 unique list items for a 5 x 5 card with one free square.",
@@ -1384,11 +1490,22 @@ function generateCards() {
     return;
   }
 
+  if (generatedSet && !window.confirm("Generate a new bingo set? This will replace the current fixed card arrangement.")) {
+    setStatus("Kept the current generated set.");
+    return;
+  }
+
   const cards = makeUniqueCards(items, requestedCount);
+  generatedSet = {
+    id: globalThis.crypto?.randomUUID?.() || `set-${Date.now()}`,
+    createdAt: new Date().toISOString(),
+    requestedCount,
+    sourceItems: items,
+    cards,
+  };
   currentCards = cards;
-  renderCards(cards);
-  renderExtras(items);
-  renderHelpfulChecks(getHelpfulChecks(items, requestedCount));
+  saveGeneratedSet();
+  renderCurrentSet();
 
   const note = cards.length === requestedCount
     ? `Generated ${cards.length} unique card${cards.length === 1 ? "" : "s"} from ${items.length} items.`
@@ -1399,26 +1516,29 @@ function generateCards() {
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
-  generateCards();
+  generateNewSet();
 });
 
 inputs.items.addEventListener("input", () => {
   updateListHelp();
   saveSettings();
+  updateGeneratedSetUi();
 });
 
 freeImageInput.addEventListener("change", () => {
   const file = freeImageInput.files[0];
   if (!file) {
     freeImageData = "";
-    generateCards();
+    saveSettings();
+    renderCurrentSet();
     return;
   }
 
   const reader = new FileReader();
   reader.addEventListener("load", () => {
     freeImageData = reader.result;
-    generateCards();
+    saveSettings();
+    renderCurrentSet();
   });
   reader.readAsDataURL(file);
 });
@@ -1451,10 +1571,13 @@ schemeGrid.addEventListener("change", (event) => {
   });
 });
 
-cardsPerPage.addEventListener("change", generateCards);
+cardsPerPage.addEventListener("change", renderCurrentSet);
 
 [inputs.includeInstructions, inputs.includeMasterList, inputs.includeMarkers].forEach((control) => {
-  control.addEventListener("change", generateCards);
+  control.addEventListener("change", () => {
+    saveSettings();
+    renderCurrentSet();
+  });
 });
 
 [occasionSize, titleSize].forEach((control) => {
@@ -1479,12 +1602,19 @@ cardsPerPage.addEventListener("change", generateCards);
 });
 
 [inputs.count].forEach((control) => {
-  control.addEventListener("input", saveSettings);
+  control.addEventListener("input", () => {
+    saveSettings();
+    updateGeneratedSetUi();
+  });
 });
 
 printButton.addEventListener("click", () => {
+  if (currentCards.length === 0) {
+    setStatus("Generate a bingo set before printing.", true);
+    return;
+  }
   updateDesignSettings();
-  generateCards();
+  renderCurrentSet();
   requestAnimationFrame(() => window.print());
 });
 
@@ -1495,7 +1625,13 @@ window.addEventListener("resize", updatePreviewScale);
 
 document.body.dataset.scheme = "party";
 restoreSettings();
+restoreGeneratedSet();
 applyCurrentColors();
 updateDesignSettings();
 updateListHelp();
-generateCards();
+renderCurrentSet();
+if (generatedSet) {
+  setStatus("Restored your fixed generated set. Reprinting and design edits will not reshuffle it.");
+} else {
+  setStatus("Paste your bingo list, customise the design, then generate a fixed bingo set.");
+}
