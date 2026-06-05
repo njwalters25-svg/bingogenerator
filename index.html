@@ -11,18 +11,6 @@
     <link rel="stylesheet" href="styles.css?v=20260604-phase1" />
     <style id="printPageStyle">@page { size: 8.5in 11in; margin: 0; }</style>
     <style>
-      .scheme-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-
-      @media (max-width: 620px) {
-        .scheme-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
       body[data-cards-per-page="2"] .square.free {
         font-size: 11.5px;
         line-height: 1.02;
@@ -96,86 +84,25 @@
           </fieldset>
 
           <fieldset class="full-span">
-            <legend>Color scheme</legend>
-            <p class="fieldset-hint">Pick a palette, then fine-tune any color below.</p>
-            <div class="scheme-grid" id="schemeGrid">
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="party" checked />
-                <span class="swatch party"></span>
-                Fiesta
-              </label>
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="primary" />
-                <span class="swatch primary"></span>
-                Primary
-              </label>
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="pastel" />
-                <span class="swatch pastel"></span>
-                Pastel Party
-              </label>
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="kids" />
-                <span class="swatch kids"></span>
-                Playful
-              </label>
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="teen" />
-                <span class="swatch teen"></span>
-                Neon Night
-              </label>
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="masculine" />
-                <span class="swatch masculine"></span>
-                Heritage
-              </label>
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="feminine" />
-                <span class="swatch feminine"></span>
-                Blush
-              </label>
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="earth" />
-                <span class="swatch earth"></span>
-                Meadow
-              </label>
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="coastal" />
-                <span class="swatch coastal"></span>
-                Seaside
-              </label>
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="luxury" />
-                <span class="swatch luxury"></span>
-                Luxe Noir
-              </label>
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="christmas" />
-                <span class="swatch christmas"></span>
-                Christmas
-              </label>
-              <label class="scheme-option">
-                <input type="radio" name="scheme" value="halloween" />
-                <span class="swatch halloween"></span>
-                Halloween
-              </label>
-            </div>
+            <legend>Colours</legend>
+            <p class="fieldset-hint">Start with a bright party look, or fine-tune the colours for your event.</p>
+            <button id="resetColorsButton" class="secondary-button color-reset-button" type="button">Reset to bright default</button>
             <div class="custom-colors">
               <label>
                 Primary
-                <input id="primaryColor" type="color" value="#e33c2f" />
+                <input id="primaryColor" type="color" value="#ff4d5a" />
               </label>
               <label>
                 Highlight
-                <input id="highlightColor" type="color" value="#137b80" />
+                <input id="highlightColor" type="color" value="#2c7be5" />
               </label>
               <label>
                 Title
-                <input id="titleColor" type="color" value="#a8221b" />
+                <input id="titleColor" type="color" value="#111111" />
               </label>
               <label>
                 Occasion
-                <input id="occasionColor" type="color" value="#a8221b" />
+                <input id="occasionColor" type="color" value="#7c3aed" />
               </label>
             </div>
           </fieldset>
@@ -185,6 +112,38 @@
             <p class="fieldset-hint">Adjust the heading, card style, and print layout. The small footer link is added automatically.</p>
             <p class="fieldset-hint">If your heading wraps onto two lines, reduce the size slider until it fits.</p>
             <div class="design-grid">
+              <label>
+                Occasion font
+                <select id="occasionFont">
+                  <option value="playfair">Playfair Display</option>
+                  <option value="cormorant">Cormorant Garamond</option>
+                  <option value="dm-serif">DM Serif Display</option>
+                  <option value="libre">Libre Baskerville</option>
+                  <option value="lilita">Lilita One</option>
+                  <option value="pacifico">Pacifico</option>
+                  <option value="lobster" selected>Lobster</option>
+                  <option value="luckiest">Luckiest Guy</option>
+                </select>
+              </label>
+
+              <label>
+                Occasion effect
+                <select id="occasionEffect">
+                  <option value="clean">Clean</option>
+                  <option value="soft-shadow">Soft shadow</option>
+                  <option value="outline" selected>Outline</option>
+                  <option value="sticker-pop">Sticker pop</option>
+                  <option value="retro-layer">Retro layer</option>
+                  <option value="glow">Glow</option>
+                </select>
+              </label>
+
+              <label class="slider-control">
+                Occasion size
+                <span><output id="occasionSizeValue">58</output>px</span>
+                <input id="occasionSize" type="range" min="16" max="72" value="58" />
+              </label>
+
               <label>
                 BINGO font
                 <select id="fontStyle">
@@ -215,38 +174,6 @@
                 BINGO size
                 <span><output id="titleSizeValue">98</output>px</span>
                 <input id="titleSize" type="range" min="58" max="170" value="98" />
-              </label>
-
-              <label>
-                Occasion font
-                <select id="occasionFont">
-                  <option value="playfair">Playfair Display</option>
-                  <option value="cormorant">Cormorant Garamond</option>
-                  <option value="dm-serif">DM Serif Display</option>
-                  <option value="libre">Libre Baskerville</option>
-                  <option value="lilita">Lilita One</option>
-                  <option value="pacifico">Pacifico</option>
-                  <option value="lobster">Lobster</option>
-                  <option value="luckiest">Luckiest Guy</option>
-                </select>
-              </label>
-
-              <label>
-                Occasion effect
-                <select id="occasionEffect">
-                  <option value="clean">Clean</option>
-                  <option value="soft-shadow">Soft shadow</option>
-                  <option value="outline">Outline</option>
-                  <option value="sticker-pop">Sticker pop</option>
-                  <option value="retro-layer">Retro layer</option>
-                  <option value="glow">Glow</option>
-                </select>
-              </label>
-
-              <label class="slider-control">
-                Occasion size
-                <span><output id="occasionSizeValue">25</output>px</span>
-                <input id="occasionSize" type="range" min="16" max="72" value="25" />
               </label>
 
               <label>

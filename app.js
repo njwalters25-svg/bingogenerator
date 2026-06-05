@@ -13,7 +13,7 @@ const freeImageInput = document.querySelector("#freeImage");
 const printButton = document.querySelector("#printButton");
 const downloadPdfButton = document.querySelector("#downloadPdfButton");
 const resetButton = document.querySelector("#resetButton");
-const schemeGrid = document.querySelector("#schemeGrid");
+const resetColorsButton = document.querySelector("#resetColorsButton");
 const fontStyle = document.querySelector("#fontStyle");
 const titleEffect = document.querySelector("#titleEffect");
 const occasionFont = document.querySelector("#occasionFont");
@@ -58,19 +58,11 @@ const pageDimensions = {
   letter: [816, 1056],
   a4: [794, 1123],
 };
-const schemeColors = {
-  party: ["#d94841", "#178f88", "#7a2f82", "#d94841"],
-  primary: ["#d62828", "#1d4ed8", "#111827", "#d62828"],
-  pastel: ["#f4a6c1", "#8ddad5", "#8e6cc8", "#d7833f"],
-  kids: ["#ff6b35", "#00b4d8", "#53389e", "#0f8a5f"],
-  teen: ["#ff2aa1", "#00b4ff", "#7c3aed", "#111827"],
-  masculine: ["#243447", "#2f6f73", "#8c3f2b", "#c9932b"],
-  feminine: ["#d65a87", "#8e5aa8", "#9b2f67", "#c06c84"],
-  earth: ["#6f4e37", "#6c8f4e", "#2f5d50", "#b85c38"],
-  coastal: ["#0e7490", "#f4a261", "#275f75", "#2a9d8f"],
-  luxury: ["#111827", "#b08d57", "#7f1d1d", "#111827"],
-  christmas: ["#b91c1c", "#166534", "#7f1212", "#d4af37"],
-  halloween: ["#111111", "#f97316", "#7e22ce", "#111111"],
+const defaultColors = {
+  primary: "#ff4d5a",
+  highlight: "#2c7be5",
+  title: "#111111",
+  occasion: "#7c3aed",
 };
 const occasionFontMaxSizes = {
   1: {
@@ -458,19 +450,14 @@ function resetSettings() {
   inputs.includeMarkers.checked = false;
   fontStyle.value = "playfair";
   titleEffect.value = "clean";
-  occasionFont.value = "playfair";
-  occasionEffect.value = "clean";
-  occasionSize.value = "25";
+  occasionFont.value = "lobster";
+  occasionEffect.value = "outline";
+  occasionSize.value = "58";
   titleSize.value = "98";
   gridStyle.value = "crisp";
   pageSize.value = "letter";
   cardsPerPage.value = "1";
-  primaryColor.value = schemeColors.party[0];
-  highlightColor.value = schemeColors.party[1];
-  titleColor.value = schemeColors.party[2];
-  occasionColor.value = schemeColors.party[3];
-  document.querySelector('input[name="scheme"][value="party"]').checked = true;
-  document.body.dataset.scheme = "party";
+  resetColorsToDefault();
   document.body.dataset.customColors = "false";
   freeImageData = "";
   generatedSet = null;
@@ -483,6 +470,13 @@ function resetSettings() {
   updateListHelp();
   renderCurrentSet();
   setStatus("Project cleared. Paste a list to start again.");
+}
+
+function resetColorsToDefault() {
+  primaryColor.value = defaultColors.primary;
+  highlightColor.value = defaultColors.highlight;
+  titleColor.value = defaultColors.title;
+  occasionColor.value = defaultColors.occasion;
 }
 
 function updateListHelp() {
@@ -1543,18 +1537,11 @@ freeImageInput.addEventListener("change", () => {
   reader.readAsDataURL(file);
 });
 
-schemeGrid.addEventListener("change", (event) => {
-  if (event.target.name === "scheme") {
-    document.body.dataset.scheme = event.target.value;
-    const [primary, highlight, title, occasion] = schemeColors[event.target.value];
-    primaryColor.value = primary;
-    highlightColor.value = highlight;
-    titleColor.value = title;
-    occasionColor.value = occasion;
-    document.body.dataset.customColors = "false";
-    applyCurrentColors();
-    saveSettings();
-  }
+resetColorsButton.addEventListener("click", () => {
+  resetColorsToDefault();
+  document.body.dataset.customColors = "false";
+  applyCurrentColors();
+  saveSettings();
 });
 
 [primaryColor, highlightColor, titleColor, occasionColor].forEach((control) => {
@@ -1623,7 +1610,6 @@ resetButton.addEventListener("click", resetSettings);
 
 window.addEventListener("resize", updatePreviewScale);
 
-document.body.dataset.scheme = "party";
 restoreSettings();
 restoreGeneratedSet();
 applyCurrentColors();

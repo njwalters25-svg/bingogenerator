@@ -3,12 +3,12 @@
   --panel: #fffaf1;
   --ink: #191714;
   --muted: #70685f;
-  --accent: #e33c2f;
-  --accent-2: #137b80;
-  --accent-strong: #9f241b;
-  --accent-soft: #ffe2cf;
-  --title-color: #a8221b;
-  --occasion-color: #a8221b;
+  --accent: #ff4d5a;
+  --accent-2: #2c7be5;
+  --accent-strong: #b52132;
+  --accent-soft: #e8f1ff;
+  --title-color: #111111;
+  --occasion-color: #7c3aed;
   --line: #ded4c5;
   --card: #ffffff;
   --cell-bg: #fff;
@@ -29,9 +29,9 @@
   --title-effect-accent: rgb(231, 87, 77);
   --title-effect-stroke: #137b80;
   --occasion-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --occasion-size: 25px;
-  --occasion-transform: uppercase;
-  --occasion-letter-spacing: 0.05em;
+  --occasion-size: 58px;
+  --occasion-transform: none;
+  --occasion-letter-spacing: 0;
   --body-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --shadow: 0 18px 45px rgba(37, 27, 18, 0.13);
   color-scheme: light;
@@ -296,7 +296,6 @@ textarea:focus {
 }
 
 .free-square-controls,
-.scheme-grid,
 .custom-colors,
 .design-grid,
 .extras-grid {
@@ -333,6 +332,14 @@ textarea:focus {
   grid-template-columns: repeat(4, 1fr);
 }
 
+.color-reset-button {
+  width: 100%;
+  margin-top: 4px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+}
+
 input[type="color"] {
   min-height: 42px;
   padding: 5px;
@@ -358,79 +365,6 @@ input[type="range"] {
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 850;
-}
-
-.scheme-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 42px;
-  padding: 8px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: #fff;
-  cursor: pointer;
-}
-
-.scheme-option input {
-  width: auto;
-  min-height: auto;
-}
-
-.swatch {
-  flex: 0 0 auto;
-  width: 42px;
-  height: 24px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.party {
-  background: linear-gradient(135deg, #d94841 0 25%, #178f88 25% 50%, #f2b84b 50% 75%, #7a2f82 75%);
-}
-
-.primary {
-  background: linear-gradient(135deg, #d62828 0 25%, #1d4ed8 25% 50%, #f7c948 50% 75%, #111827 75%);
-}
-
-.pastel {
-  background: linear-gradient(135deg, #f4a6c1 0 25%, #8ddad5 25% 50%, #b9a3e3 50% 75%, #f7c873 75%);
-}
-
-.kids {
-  background: linear-gradient(135deg, #ff6b35 0 25%, #00b4d8 25% 50%, #ffd166 50% 75%, #7bd389 75%);
-}
-
-.teen {
-  background: linear-gradient(135deg, #ff2aa1 0 25%, #00b4ff 25% 50%, #7c3aed 50% 75%, #111827 75%);
-}
-
-.masculine {
-  background: linear-gradient(135deg, #243447 0 25%, #2f6f73 25% 50%, #c9932b 50% 75%, #8c3f2b 75%);
-}
-
-.feminine {
-  background: linear-gradient(135deg, #d65a87 0 25%, #f4a7b9 25% 50%, #8e5aa8 50% 75%, #c8a2c8 75%);
-}
-
-.earth {
-  background: linear-gradient(135deg, #6f4e37 0 25%, #6c8f4e 25% 50%, #d08c60 50% 75%, #2f5d50 75%);
-}
-
-.coastal {
-  background: linear-gradient(135deg, #0e7490 0 25%, #7cc7c5 25% 50%, #f4a261 50% 75%, #275f75 75%);
-}
-
-.luxury {
-  background: linear-gradient(135deg, #111827 0 25%, #b08d57 25% 50%, #7f1d1d 50% 75%, #f3ead7 75%);
-}
-
-.christmas {
-  background: linear-gradient(135deg, #b91c1c 0 25%, #166534 25% 50%, #d4af37 50% 75%, #f8fafc 75%);
-}
-
-.halloween {
-  background: linear-gradient(135deg, #111111 0 25%, #f97316 25% 50%, #7e22ce 50% 75%, #facc15 75%);
 }
 
 button {
@@ -949,152 +883,9 @@ button:disabled {
   transform: none;
 }
 
-body[data-scheme="primary"] {
-  --bg: #f3f6fb;
-  --panel: #ffffff;
-  --ink: #151515;
-  --muted: #646a73;
-  --accent: #e21d2f;
-  --accent-2: #1266d6;
-  --accent-strong: #a51220;
-  --accent-soft: #fff2bd;
-  --line: #d9dce3;
-  --card: #ffffff;
-}
-
-body[data-scheme="pastel"] {
-  --bg: #faf4f9;
-  --panel: #ffffff;
-  --ink: #201820;
-  --muted: #766b76;
-  --accent: #d65f98;
-  --accent-2: #4da8a1;
-  --accent-strong: #9b2f67;
-  --accent-soft: #fce4ef;
-  --line: #ead9e4;
-  --card: #ffffff;
-}
-
-body[data-scheme="kids"] {
-  --bg: #f7fbff;
-  --panel: #ffffff;
-  --ink: #16191f;
-  --muted: #67707b;
-  --accent: #ff6f3c;
-  --accent-2: #2ec4b6;
-  --accent-strong: #c43d16;
-  --accent-soft: #fff0bf;
-  --line: #dbe7eb;
-  --card: #ffffff;
-}
-
-body[data-scheme="teen"] {
-  --bg: #f5f3ff;
-  --panel: #ffffff;
-  --ink: #17111f;
-  --muted: #6d6479;
-  --accent: #cc1d85;
-  --accent-2: #0076d6;
-  --accent-strong: #8a0f59;
-  --accent-soft: #f0e7ff;
-  --line: #ded7ef;
-  --card: #ffffff;
-}
-
-body[data-scheme="masculine"] {
-  --bg: #eef1f4;
-  --panel: #ffffff;
-  --ink: #171b22;
-  --muted: #606977;
-  --accent: #1f2937;
-  --accent-2: #2f6f73;
-  --accent-strong: #111827;
-  --accent-soft: #f3e4c7;
-  --line: #d8dde5;
-  --card: #ffffff;
-}
-
 body[data-custom-colors="true"] {
   --accent-strong: color-mix(in srgb, var(--accent) 72%, #000);
   --accent-soft: color-mix(in srgb, var(--accent-2) 18%, #fff);
-}
-
-body[data-scheme="feminine"] {
-  --bg: #fbf2f6;
-  --panel: #ffffff;
-  --ink: #25151d;
-  --muted: #75636d;
-  --accent: #c7356f;
-  --accent-2: #7d4f9f;
-  --accent-strong: #8f1f4f;
-  --accent-soft: #fde4ec;
-  --line: #ead7df;
-  --card: #ffffff;
-}
-
-body[data-scheme="earth"] {
-  --bg: #f4f1ea;
-  --panel: #ffffff;
-  --ink: #211b15;
-  --muted: #74685c;
-  --accent: #7b4f2f;
-  --accent-2: #597d45;
-  --accent-strong: #4b2c18;
-  --accent-soft: #f5e5d2;
-  --line: #dfd5c8;
-  --card: #ffffff;
-}
-
-body[data-scheme="coastal"] {
-  --bg: #eff7f3;
-  --panel: #ffffff;
-  --ink: #12231e;
-  --muted: #5d6d67;
-  --accent: #0f6b8f;
-  --accent-2: #f4a261;
-  --accent-strong: #0a4860;
-  --accent-soft: #dff4f7;
-  --line: #cbded7;
-  --card: #ffffff;
-}
-
-body[data-scheme="luxury"] {
-  --bg: #f4f2ed;
-  --panel: #ffffff;
-  --ink: #141414;
-  --muted: #6d665b;
-  --accent: #111827;
-  --accent-2: #b08d57;
-  --accent-strong: #05070b;
-  --accent-soft: #f4ead8;
-  --line: #ddd5c8;
-  --card: #ffffff;
-}
-
-body[data-scheme="christmas"] {
-  --bg: #f5f7f2;
-  --panel: #ffffff;
-  --ink: #181d16;
-  --muted: #677060;
-  --accent: #b91c1c;
-  --accent-2: #166534;
-  --accent-strong: #7f1212;
-  --accent-soft: #f5ead0;
-  --line: #d9dfd3;
-  --card: #ffffff;
-}
-
-body[data-scheme="halloween"] {
-  --bg: #f8f0f4;
-  --panel: #ffffff;
-  --ink: #17120f;
-  --muted: #71665e;
-  --accent: #111111;
-  --accent-2: #f97316;
-  --accent-strong: #000000;
-  --accent-soft: #f4e3ff;
-  --line: #e0d5ce;
-  --card: #ffffff;
 }
 
 body[data-font="playfair"] {
@@ -1395,7 +1186,6 @@ body[data-cards-per-page="2"] .bingo-card footer {
 
   .form-grid,
   .free-square-controls,
-  .scheme-grid,
   .custom-colors,
   .design-grid,
   .extras-grid,
