@@ -584,11 +584,14 @@ function applyCurrentColors() {
   const highlightGlow = rgbString(hexToRgb(highlightColor.value), 0.42);
   const highlightLayer = rgbString(mixWithWhite(highlightColor.value, 0.35));
   const accentLayer = rgbString(mixWithWhite(primaryColor.value, 0.14));
+  const accentSoft = rgbString(mixWithWhite(highlightColor.value, 0.86));
 
   const colorTargets = [document.documentElement, document.body];
   colorTargets.forEach((target) => {
     target.style.setProperty("--accent", primaryColor.value);
     target.style.setProperty("--accent-2", highlightColor.value);
+    target.style.setProperty("--accent-strong", primaryColor.value);
+    target.style.setProperty("--accent-soft", accentSoft);
     target.style.setProperty("--title-color", titleColor.value);
     target.style.setProperty("--occasion-color", occasionColor.value);
     target.style.setProperty("--title-effect-soft", highlightSoft);
@@ -1217,7 +1220,8 @@ async function downloadPdf() {
     setStatus(`Downloaded ${sheets.length} PDF page${sheets.length === 1 ? "" : "s"}.`);
   } catch (error) {
     console.error(error);
-    setStatus("The PDF could not be created. Please use Print or save PDF instead.", true);
+    const reason = error?.message ? ` (${error.message})` : "";
+    setStatus(`The PDF could not be created${reason}. Please use Print or save PDF instead.`, true);
   } finally {
     exportArea.remove();
     setPdfBusy(false);

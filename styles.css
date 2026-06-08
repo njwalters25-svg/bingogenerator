@@ -178,14 +178,14 @@ fieldset {
   padding: 11px 12px;
   border-left: 4px solid var(--accent-2);
   border-radius: 4px;
-  background: color-mix(in srgb, var(--accent-soft) 20%, #fff);
+  background: #fff;
 }
 
 .print-help {
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 6px;
-  background: color-mix(in srgb, var(--accent-soft) 24%, #fff);
+  background: #fff;
 }
 
 .help-panel {
@@ -218,9 +218,9 @@ fieldset {
   gap: 7px;
   margin: 0;
   padding: 12px 14px 12px 30px;
-  border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+  border: 1px solid var(--accent);
   border-radius: 6px;
-  background: color-mix(in srgb, var(--accent-soft) 30%, #fff);
+  background: var(--accent-soft);
   color: var(--ink);
   font-size: 0.82rem;
   font-weight: 700;
@@ -233,9 +233,9 @@ fieldset {
 
 .generated-set-notice {
   padding: 12px 14px;
-  border: 1px solid color-mix(in srgb, var(--accent-2) 38%, var(--line));
+  border: 1px solid var(--accent-2);
   border-radius: 6px;
-  background: color-mix(in srgb, var(--accent-2) 7%, #fff);
+  background: #fff;
   color: var(--ink);
   font-size: 0.82rem;
   font-weight: 700;
@@ -243,8 +243,8 @@ fieldset {
 }
 
 .generated-set-notice.has-draft-changes {
-  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
-  background: color-mix(in srgb, var(--accent-soft) 42%, #fff);
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 legend {
@@ -288,7 +288,7 @@ input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  box-shadow: 0 0 0 3px rgba(255, 77, 90, 0.18);
 }
 
 .full-span {
@@ -394,7 +394,7 @@ button {
 
 #resetButton {
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--accent-soft) 20%, #fff);
+  background: #fff;
   color: var(--muted);
 }
 
@@ -586,7 +586,7 @@ button:disabled {
   border: 2px solid var(--accent-2);
   background:
     radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.65), transparent 35%),
-    color-mix(in srgb, var(--accent-2) 16%, #fff);
+    var(--accent-soft);
   color: var(--accent-2);
   font-size: 21px;
   font-weight: 900;
@@ -702,7 +702,7 @@ button:disabled {
   padding: 20px;
   border: 2px solid var(--accent-2);
   border-radius: 8px;
-  background: color-mix(in srgb, var(--accent-soft) 35%, #fff);
+  background: #fff;
 }
 
 .instructions-page section p {
@@ -817,7 +817,7 @@ button:disabled {
   aspect-ratio: 1;
   border: 2px dashed var(--accent-2);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent-soft) 38%, #fff);
+  background: var(--accent-soft);
   color: var(--accent-strong);
   padding: 12px;
   text-align: center;
@@ -855,10 +855,10 @@ button:disabled {
 }
 
 .pdf-export-area {
-  position: fixed;
+  position: absolute;
   top: 0;
-  left: -1400px;
-  z-index: -1;
+  left: -10000px;
+  z-index: 0;
   display: grid;
   gap: 0;
   background: #fff;
@@ -884,8 +884,8 @@ button:disabled {
 }
 
 body[data-custom-colors="true"] {
-  --accent-strong: color-mix(in srgb, var(--accent) 72%, #000);
-  --accent-soft: color-mix(in srgb, var(--accent-2) 18%, #fff);
+  --accent-strong: var(--accent);
+  --accent-soft: #fff;
 }
 
 body[data-font="playfair"] {
@@ -1018,13 +1018,12 @@ body[data-grid="rounded"] .square {
 }
 
 body[data-grid="checker"] .square:nth-child(even) {
-  background: color-mix(in srgb, var(--accent-soft) 38%, #fff);
+  background: var(--accent-soft);
 }
 
 body[data-grid="luxe"] .square {
   border-width: 2px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.9), color-mix(in srgb, var(--accent-soft) 26%, #fff));
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), var(--accent-soft));
 }
 
 body[data-page="a4"] {
