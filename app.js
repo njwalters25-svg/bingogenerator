@@ -232,9 +232,15 @@ const headingFontStyles = {
 };
 
 function parseItems(value) {
+  const lines = value
+    .replace(/\r\n?/g, "\n")
+    .split("\n")
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const items = lines.length > 1 ? lines : value.split(",");
+
   return [...new Set(
-    value
-      .split(/\n|,/)
+    items
       .map((item) => item.trim())
       .filter(Boolean)
   )];
@@ -482,7 +488,7 @@ function resetColorsToDefault() {
 function updateListHelp() {
   const itemCount = parseItems(inputs.items.value).length;
   if (itemCount === 0) {
-    listHelp.textContent = "Paste one item per line. Commas also work, but one per line is easiest to check.";
+    listHelp.textContent = "Paste one item per line. Commas only split the list if everything is pasted on one line.";
   } else if (itemCount < 24) {
     listHelp.textContent = `${itemCount} unique item${itemCount === 1 ? "" : "s"} added. Add at least 24 for a full card with one free square.`;
   } else if (itemCount < 50) {
