@@ -1113,8 +1113,13 @@ body[data-cards-per-page="2"] .card-header h3 {
 }
 
 body[data-cards-per-page="2"] .bingo-grid {
+  align-self: start;
+  width: 100%;
+  aspect-ratio: 1;
   gap: 8px;
-  padding: 14px 0 10px;
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  margin: 14px 0 10px;
+  padding: 0;
 }
 
 body[data-cards-per-page="2"] .square {
