@@ -97,19 +97,13 @@ end;
 $$;
 
 drop trigger if exists profiles_set_updated_at on public.profiles;
-create trigger profiles_set_updated_at
-before update on public.profiles
-for each row execute function public.set_updated_at();
+create trigger profiles_set_updated_at before update on public.profiles for each row execute procedure public.set_updated_at();
 
 drop trigger if exists projects_set_updated_at on public.projects;
-create trigger projects_set_updated_at
-before update on public.projects
-for each row execute function public.set_updated_at();
+create trigger projects_set_updated_at before update on public.projects for each row execute procedure public.set_updated_at();
 
 drop trigger if exists etsy_products_set_updated_at on public.etsy_products;
-create trigger etsy_products_set_updated_at
-before update on public.etsy_products
-for each row execute function public.set_updated_at();
+create trigger etsy_products_set_updated_at before update on public.etsy_products for each row execute procedure public.set_updated_at();
 
 create or replace function public.handle_new_user()
 returns trigger
@@ -133,9 +127,7 @@ end;
 $$;
 
 drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
-after insert on auth.users
-for each row execute function public.handle_new_user();
+create trigger on_auth_user_created after insert on auth.users for each row execute procedure public.handle_new_user();
 
 alter table public.profiles enable row level security;
 alter table public.projects enable row level security;
