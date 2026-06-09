@@ -441,11 +441,7 @@ async function loadCreditBalance(user) {
     return;
   }
 
-  const { data, error } = await supabaseClient
-    .from("credit_balances")
-    .select("credits_remaining")
-    .eq("user_id", user.id)
-    .maybeSingle();
+  const { data, error } = await supabaseClient.rpc("get_my_credit_balance");
 
   if (error) {
     console.error(error);
@@ -454,7 +450,7 @@ async function loadCreditBalance(user) {
     return;
   }
 
-  updateAccountPanel(user, data?.credits_remaining ?? 0);
+  updateAccountPanel(user, Number(data) || 0);
 }
 
 async function handleAuthSession(session) {
