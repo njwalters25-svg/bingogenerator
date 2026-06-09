@@ -388,6 +388,10 @@ function setAccountMessage(message, isError = false) {
   accountMessage.classList.toggle("error", isError);
 }
 
+function setAuthState(state) {
+  document.body.dataset.authState = state;
+}
+
 function getMagicLinkRedirectUrl() {
   if (window.location.protocol === "http:" || window.location.protocol === "https:") {
     return `${window.location.origin}${window.location.pathname}`;
@@ -409,6 +413,7 @@ function updateAccountPanel(user, creditsRemaining = null) {
     creditBadge.textContent = "Credits: -";
     loginForm.hidden = true;
     logoutButton.hidden = true;
+    setAuthState("signed-in");
     return;
   }
 
@@ -418,6 +423,7 @@ function updateAccountPanel(user, creditsRemaining = null) {
     creditBadge.textContent = "Credits: -";
     loginForm.hidden = false;
     logoutButton.hidden = true;
+    setAuthState("signed-out");
     return;
   }
 
@@ -426,6 +432,7 @@ function updateAccountPanel(user, creditsRemaining = null) {
   creditBadge.textContent = creditsRemaining === null ? "Credits: -" : `Credits: ${creditsRemaining}`;
   loginForm.hidden = true;
   logoutButton.hidden = false;
+  setAuthState("signed-in");
 }
 
 async function loadCreditBalance(user) {
@@ -469,6 +476,7 @@ async function initAuth() {
     return;
   }
 
+  setAuthState("loading");
   const { data, error } = await supabaseClient.auth.getSession();
   if (error) {
     console.error(error);

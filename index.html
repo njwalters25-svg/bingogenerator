@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Cherry+Bomb+One&family=Chewy&family=Cinzel:wght@700;900&family=Cormorant+Garamond:wght@700&family=DM+Serif+Display&family=Fascinate+Inline&family=Libre+Baskerville:wght@700&family=Lilita+One&family=Lobster&family=Luckiest+Guy&family=Merriweather:wght@900&family=Modak&family=Pacifico&family=Playfair+Display:wght@800;900&family=Ranchers&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260609-auth2" />
+    <link rel="stylesheet" href="styles.css?v=20260609-lock" />
     <style id="printPageStyle">@page { size: 8.5in 11in; margin: 0; }</style>
     <style>
       body[data-cards-per-page="2"] .square.free {
@@ -35,7 +35,7 @@
       }
     </style>
   </head>
-  <body>
+  <body data-auth-state="loading">
     <main class="app-shell">
       <section class="controls" aria-label="Bingo card settings">
         <div class="brand-panel">
@@ -65,7 +65,7 @@
           <p id="accountMessage" class="account-message" role="status"></p>
         </section>
 
-        <form id="bingoForm" class="form-grid">
+        <form id="bingoForm" class="form-grid app-only">
           <label>
             Occasion line
             <input id="occasionInput" type="text" placeholder="e.g. Sarah's 40th Birthday" maxlength="60" />
@@ -267,7 +267,16 @@
         </form>
       </section>
 
-      <section class="output" aria-label="Generated bingo cards">
+      <section id="lockedPanel" class="output locked-panel" aria-label="Sign-in required">
+        <div>
+          <p class="eyebrow">Access required</p>
+          <h2>Sign in to open the bingo generator</h2>
+          <p>Enter the email used for your purchase and use the secure magic link to access your editable bingo maker.</p>
+          <p>Your browser will usually keep you signed in, so you should not need a new link every time.</p>
+        </div>
+      </section>
+
+      <section class="output app-only" aria-label="Generated bingo cards">
         <div class="output-toolbar">
           <div>
             <p class="eyebrow">Preview</p>
@@ -346,6 +355,6 @@
         anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkbGloanVjeGVybmxid2tuZGNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NTc0NDAsImV4cCI6MjA5NjIzMzQ0MH0.dlbkCbpin2GhnJQgZurgUa0KZqeZx7P3pDukd1ZMFYk",
       };
     </script>
-    <script src="app.js?v=20260609-auth2"></script>
+    <script src="app.js?v=20260609-lock"></script>
   </body>
 </html>

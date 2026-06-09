@@ -52,6 +52,15 @@ body {
   color: var(--ink);
 }
 
+body[data-auth-state="signed-out"] .app-only,
+body[data-auth-state="loading"] .app-only {
+  display: none !important;
+}
+
+body[data-auth-state="signed-in"] .locked-panel {
+  display: none !important;
+}
+
 button,
 input,
 output,
@@ -503,6 +512,35 @@ button:disabled {
   min-width: 0;
   padding: 20px;
   border-radius: 8px;
+}
+
+.locked-panel {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - 48px);
+  padding: 42px;
+}
+
+.locked-panel > div {
+  display: grid;
+  gap: 12px;
+  max-width: 620px;
+  text-align: center;
+}
+
+.locked-panel h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(2rem, 5vw, 4.4rem);
+  line-height: 0.95;
+}
+
+.locked-panel p:not(.eyebrow) {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.45;
 }
 
 .output-toolbar {
