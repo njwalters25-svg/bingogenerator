@@ -580,8 +580,8 @@ function resetSettings() {
   inputs.includeMarkers.checked = false;
   fontStyle.value = "playfair";
   titleEffect.value = "clean";
-  occasionFont.value = "lobster";
-  occasionEffect.value = "outline";
+  occasionFont.value = "luckiest";
+  occasionEffect.value = "soft-shadow";
   occasionSize.value = "58";
   titleSize.value = "98";
   gridStyle.value = "crisp";

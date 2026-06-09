@@ -543,7 +543,7 @@ button:disabled {
   width: var(--screen-page-width);
   height: var(--screen-page-height);
   padding: var(--page-padding);
-  border: 2px solid var(--accent-strong);
+  border: 2px solid transparent;
   border-radius: 0;
   background: var(--card);
   box-shadow: 0 10px 28px rgba(29, 24, 18, 0.14);
@@ -701,7 +701,7 @@ button:disabled {
   width: var(--screen-page-width);
   height: var(--screen-page-height);
   padding: 54px 58px 38px;
-  border: 2px solid var(--accent-strong);
+  border: 2px solid transparent;
   background: #fff;
   box-shadow: 0 10px 28px rgba(29, 24, 18, 0.14);
   transform: scale(var(--preview-scale));
