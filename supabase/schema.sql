@@ -79,12 +79,14 @@ create table if not exists public.etsy_orders (
 create or replace view public.credit_balances
 with (security_invoker = true) as
 select
-  coalesce(user_id::text, lower(email)) as account_key,
-  user_id,
-  lower(email) as email,
+  coalesce(public.credit_ledger.user_id, public.profiles.id)::text as account_key,
+  coalesce(public.credit_ledger.user_id, public.profiles.id) as user_id,
+  lower(public.credit_ledger.email) as email,
   coalesce(sum(amount), 0)::integer as credits_remaining
 from public.credit_ledger
-group by user_id, lower(email);
+left join public.profiles
+  on lower(public.profiles.email) = lower(public.credit_ledger.email)
+group by coalesce(public.credit_ledger.user_id, public.profiles.id), lower(public.credit_ledger.email);
 
 create or replace function public.set_updated_at()
 returns trigger
@@ -185,6 +187,12 @@ create policy "Users can read own credit ledger"
 on public.credit_ledger for select
 to authenticated
 using (auth.uid() = user_id);
+
+drop policy if exists "Users can read credit ledger matching email" on public.credit_ledger;
+create policy "Users can read credit ledger matching email"
+on public.credit_ledger for select
+to authenticated
+using (lower(email) = lower(coalesce(auth.jwt() ->> 'email', '')));
 
 drop policy if exists "Users can read active Etsy products" on public.etsy_products;
 create policy "Users can read active Etsy products"
