@@ -23,6 +23,7 @@ const occasionSizeValue = document.querySelector("#occasionSizeValue");
 const titleSize = document.querySelector("#titleSize");
 const titleSizeValue = document.querySelector("#titleSizeValue");
 const gridStyle = document.querySelector("#gridStyle");
+const squareTextStyle = document.querySelector("#squareTextStyle");
 const pageSize = document.querySelector("#pageSize");
 const cardsPerPage = document.querySelector("#cardsPerPage");
 const printPageStyle = document.querySelector("#printPageStyle");
@@ -512,6 +513,7 @@ function getSettingsSnapshot() {
     occasionSize: occasionSize.value,
     titleSize: titleSize.value,
     gridStyle: gridStyle.value,
+    squareTextStyle: squareTextStyle.value,
     pageSize: pageSize.value,
     cardsPerPage: cardsPerPage.value,
     primaryColor: primaryColor.value,
@@ -557,6 +559,7 @@ function restoreSettings() {
     occasionSize.value = savedSettings.occasionSize || occasionSize.value;
     titleSize.value = savedSettings.titleSize || titleSize.value;
     gridStyle.value = savedSettings.gridStyle || gridStyle.value;
+    squareTextStyle.value = savedSettings.squareTextStyle || squareTextStyle.value;
     pageSize.value = savedSettings.pageSize || pageSize.value;
     cardsPerPage.value = savedSettings.cardsPerPage || cardsPerPage.value;
     primaryColor.value = savedSettings.primaryColor || primaryColor.value;
@@ -596,6 +599,7 @@ function resetSettings() {
   occasionSize.value = "58";
   titleSize.value = "98";
   gridStyle.value = "crisp";
+  squareTextStyle.value = "clear";
   pageSize.value = "letter";
   cardsPerPage.value = "1";
   resetColorsToDefault();
@@ -686,6 +690,7 @@ function updateDesignSettings() {
   document.body.dataset.occasionFont = occasionFont.value;
   document.body.dataset.occasionEffect = occasionEffect.value;
   document.body.dataset.grid = gridStyle.value;
+  document.body.dataset.squareText = squareTextStyle.value;
   document.body.dataset.page = pageSize.value;
   document.body.dataset.cardsPerPage = cardsPerPage.value;
   occasionSizeValue.value = occasionSize.value;
@@ -1753,13 +1758,14 @@ resetColorsButton.addEventListener("click", () => {
   });
 });
 
-[fontStyle, titleEffect, occasionFont, occasionEffect, gridStyle, pageSize, cardsPerPage].forEach((control) => {
+[fontStyle, titleEffect, occasionFont, occasionEffect, gridStyle, squareTextStyle, pageSize, cardsPerPage].forEach((control) => {
   control.addEventListener("change", () => {
     updateDesignSettings();
     saveSettings();
   });
 });
 
+squareTextStyle.addEventListener("change", renderCurrentSet);
 cardsPerPage.addEventListener("change", renderCurrentSet);
 
 [inputs.includeInstructions, inputs.includeMasterList, inputs.includeMarkers].forEach((control) => {
