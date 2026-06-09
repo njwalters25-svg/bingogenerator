@@ -76,6 +76,7 @@ Best simple setup:
 
 More controlled later:
 
-- Add a small backend for access codes.
-- Keep old codes valid for existing buyers.
-- Only do this if the product sells enough to justify the admin and development.
+- Add Supabase magic-link accounts.
+- Add credit-based generation through Supabase Edge Functions.
+- Use Make.com to add credits from Etsy purchases.
+- See `docs/SUPABASE_SETUP.md` for the planned setup.
