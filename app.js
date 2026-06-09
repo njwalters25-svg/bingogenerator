@@ -703,6 +703,7 @@ function updateDesignSettings() {
   updateTitleEffects();
   updateOccasionEffects();
   updatePreviewScale();
+  fitAllHeadingText();
   fitAllSquareText();
 }
 
@@ -848,6 +849,25 @@ function applyOccasionEffectToHeading(heading) {
 
 function updateOccasionEffects() {
   cardsContainer.querySelectorAll(".occasion").forEach(applyOccasionEffectToHeading);
+}
+
+function fitHeadingText(heading, minimumSize) {
+  heading.style.fontSize = "";
+  const baseSize = Number.parseFloat(getComputedStyle(heading).fontSize);
+  let size = baseSize;
+
+  while (size > minimumSize && (heading.scrollWidth > heading.clientWidth || heading.scrollHeight > heading.clientHeight)) {
+    size -= 1;
+    heading.style.fontSize = `${size}px`;
+  }
+}
+
+function fitAllHeadingText() {
+  requestAnimationFrame(() => {
+    const isTwoUp = cardsPerPage.value === "2";
+    cardsContainer.querySelectorAll(".occasion").forEach((heading) => fitHeadingText(heading, isTwoUp ? 16 : 22));
+    cardsContainer.querySelectorAll(".bingo-card h3").forEach((heading) => fitHeadingText(heading, isTwoUp ? 24 : 36));
+  });
 }
 
 function resetTextFitClasses(square) {
@@ -1383,6 +1403,7 @@ function renderCards(cards) {
   });
 
   cardTotal.textContent = `${cards.length} card${cards.length === 1 ? "" : "s"}`;
+  fitAllHeadingText();
   fitAllSquareText();
   updatePreviewScale();
 }
@@ -1416,6 +1437,8 @@ function updateHeadingPreview() {
   extrasContainer.querySelectorAll(".marker-bingo").forEach((heading) => {
     heading.textContent = title;
   });
+
+  fitAllHeadingText();
 }
 
 function updateFreeSquarePreview() {
@@ -1580,17 +1603,19 @@ function updatePreviewScale() {
   requestAnimationFrame(() => {
     document.querySelectorAll(".card-frame").forEach((frame) => {
       const availableWidth = frame.clientWidth;
-      const scale = availableWidth > 0 ? availableWidth / cardWidth : 1;
+      const scale = availableWidth > 0 ? Math.min(1, availableWidth / cardWidth) : 1;
       frame.style.setProperty("--preview-scale", scale.toFixed(4));
       frame.style.height = `${cardHeight * scale}px`;
     });
 
     document.querySelectorAll(".extra-frame").forEach((frame) => {
       const availableWidth = frame.clientWidth;
-      const scale = availableWidth > 0 ? availableWidth / extraWidth : 1;
+      const scale = availableWidth > 0 ? Math.min(1, availableWidth / extraWidth) : 1;
       frame.style.setProperty("--preview-scale", scale.toFixed(4));
       frame.style.height = `${extraHeight * scale}px`;
     });
+
+    fitAllHeadingText();
   });
 }
 

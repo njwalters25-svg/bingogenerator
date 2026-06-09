@@ -561,7 +561,7 @@ button:disabled {
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 430px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
   gap: 26px;
   align-items: start;
 }
@@ -571,6 +571,7 @@ button:disabled {
   --preview-scale: 0.5;
   overflow: hidden;
   width: 100%;
+  contain: paint;
 }
 
 .bingo-card {
@@ -617,6 +618,7 @@ button:disabled {
   z-index: 1;
   margin: 0;
   max-width: 100%;
+  overflow: hidden;
   font-family: var(--occasion-font);
   font-size: var(--occasion-size);
   font-weight: 700;
@@ -624,6 +626,7 @@ button:disabled {
   letter-spacing: var(--occasion-letter-spacing);
   text-transform: var(--occasion-transform);
   color: var(--occasion-color);
+  white-space: nowrap;
 }
 
 .card-header h3 {
@@ -631,6 +634,7 @@ button:disabled {
   z-index: 1;
   margin: 0;
   max-width: 100%;
+  overflow: hidden;
   overflow-wrap: anywhere;
   font-family: var(--header-font);
   font-size: var(--title-size);
