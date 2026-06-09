@@ -32,14 +32,32 @@ const titleColor = document.querySelector("#titleColor");
 const occasionColor = document.querySelector("#occasionColor");
 const generateButton = document.querySelector("#generateButton");
 const generatedSetNotice = document.querySelector("#generatedSetNotice");
+const loginForm = document.querySelector("#loginForm");
+const loginEmail = document.querySelector("#loginEmail");
+const loginButton = document.querySelector("#loginButton");
+const logoutButton = document.querySelector("#logoutButton");
+const accountStatus = document.querySelector("#accountStatus");
+const accountMessage = document.querySelector("#accountMessage");
+const creditBadge = document.querySelector("#creditBadge");
 
 let freeImageData = "";
 let isRestoringSettings = false;
 let currentCards = [];
 let generatedSet = null;
+let currentUser = null;
 
 const storageKey = "allOccasionsBingoSettings";
 const generatedSetStorageKey = "allOccasionsBingoGeneratedSet";
+const supabaseConfig = window.BINGO_SUPABASE_CONFIG || {};
+const supabaseClient = window.supabase && supabaseConfig.url && supabaseConfig.anonKey
+  ? window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey, {
+    auth: {
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      persistSession: true,
+    },
+  })
+  : null;
 
 const inputs = {
   occasion: document.querySelector("#occasionInput"),
@@ -54,6 +72,7 @@ const inputs = {
 
 const centerIndex = 12;
 const storeFooter = "alloccasionprints.etsy.com";
+const liveSiteUrl = "https://bingogenerator.alloccasionsprintables.com/";
 const pageDimensions = {
   letter: [816, 1056],
   a4: [794, 1123],
@@ -358,6 +377,111 @@ function updateGeneratedSetUi() {
 function setStatus(message, isError = false) {
   statusMessage.textContent = message;
   statusMessage.classList.toggle("error", isError);
+}
+
+function setAccountMessage(message, isError = false) {
+  if (!accountMessage) {
+    return;
+  }
+
+  accountMessage.textContent = message;
+  accountMessage.classList.toggle("error", isError);
+}
+
+function getMagicLinkRedirectUrl() {
+  if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+    return `${window.location.origin}${window.location.pathname}`;
+  }
+
+  return liveSiteUrl;
+}
+
+function updateAccountPanel(user, creditsRemaining = null) {
+  currentUser = user || null;
+
+  if (!accountStatus || !loginForm || !logoutButton || !creditBadge) {
+    return;
+  }
+
+  if (!supabaseClient) {
+    accountStatus.textContent = "Customer accounts are not connected yet.";
+    accountStatus.classList.remove("signed-in");
+    creditBadge.textContent = "Credits: -";
+    loginForm.hidden = true;
+    logoutButton.hidden = true;
+    return;
+  }
+
+  if (!user) {
+    accountStatus.textContent = "Enter your purchase email to receive a secure login link.";
+    accountStatus.classList.remove("signed-in");
+    creditBadge.textContent = "Credits: -";
+    loginForm.hidden = false;
+    logoutButton.hidden = true;
+    return;
+  }
+
+  accountStatus.textContent = `Signed in as ${user.email}.`;
+  accountStatus.classList.add("signed-in");
+  creditBadge.textContent = creditsRemaining === null ? "Credits: -" : `Credits: ${creditsRemaining}`;
+  loginForm.hidden = true;
+  logoutButton.hidden = false;
+}
+
+async function loadCreditBalance(user) {
+  if (!supabaseClient || !user) {
+    updateAccountPanel(null);
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("credit_balances")
+    .select("credits_remaining")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+    updateAccountPanel(user, null);
+    setAccountMessage("Signed in. Credits could not be checked yet.", true);
+    return;
+  }
+
+  updateAccountPanel(user, data?.credits_remaining ?? 0);
+}
+
+async function handleAuthSession(session) {
+  const user = session?.user || null;
+  setAccountMessage("");
+
+  if (!user) {
+    updateAccountPanel(null);
+    return;
+  }
+
+  updateAccountPanel(user, null);
+  await loadCreditBalance(user);
+}
+
+async function initAuth() {
+  if (!supabaseClient) {
+    updateAccountPanel(null);
+    return;
+  }
+
+  const { data, error } = await supabaseClient.auth.getSession();
+  if (error) {
+    console.error(error);
+    setAccountMessage("Could not check sign-in status. Please refresh and try again.", true);
+    updateAccountPanel(null);
+    return;
+  }
+
+  await handleAuthSession(data.session);
+
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    handleAuthSession(session);
+  });
 }
 
 function getSettingsSnapshot() {
@@ -1523,6 +1647,63 @@ form.addEventListener("submit", (event) => {
   generateNewSet();
 });
 
+loginForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  if (!supabaseClient) {
+    setAccountMessage("Customer accounts are not connected yet.", true);
+    return;
+  }
+
+  const email = loginEmail.value.trim();
+  if (!email) {
+    setAccountMessage("Enter your email address first.", true);
+    loginEmail.focus();
+    return;
+  }
+
+  loginButton.disabled = true;
+  loginButton.textContent = "Sending...";
+  setAccountMessage("");
+
+  const { error } = await supabaseClient.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: getMagicLinkRedirectUrl(),
+    },
+  });
+
+  loginButton.disabled = false;
+  loginButton.textContent = "Send magic link";
+
+  if (error) {
+    console.error(error);
+    setAccountMessage(`The login link could not be sent. ${error.message}`, true);
+    return;
+  }
+
+  setAccountMessage("Check your email for the secure login link.");
+});
+
+logoutButton?.addEventListener("click", async () => {
+  if (!supabaseClient) {
+    return;
+  }
+
+  logoutButton.disabled = true;
+  const { error } = await supabaseClient.auth.signOut();
+  logoutButton.disabled = false;
+
+  if (error) {
+    console.error(error);
+    setAccountMessage(`Could not sign out. ${error.message}`, true);
+    return;
+  }
+
+  updateAccountPanel(null);
+  setAccountMessage("Signed out.");
+});
+
 inputs.items.addEventListener("input", () => {
   updateListHelp();
   saveSettings();
@@ -1626,6 +1807,7 @@ applyCurrentColors();
 updateDesignSettings();
 updateListHelp();
 renderCurrentSet();
+initAuth();
 if (generatedSet) {
   setStatus("Restored your fixed generated set. Reprinting and design edits will not reshuffle it.");
 } else {

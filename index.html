@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Cherry+Bomb+One&family=Chewy&family=Cinzel:wght@700;900&family=Cormorant+Garamond:wght@700&family=DM+Serif+Display&family=Fascinate+Inline&family=Libre+Baskerville:wght@700&family=Lilita+One&family=Lobster&family=Luckiest+Guy&family=Merriweather:wght@900&family=Modak&family=Pacifico&family=Playfair+Display:wght@800;900&family=Ranchers&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260608-pdf" />
+    <link rel="stylesheet" href="styles.css?v=20260609-auth" />
     <style id="printPageStyle">@page { size: 8.5in 11in; margin: 0; }</style>
     <style>
       body[data-cards-per-page="2"] .square.free {
@@ -44,6 +44,26 @@
           <p>Create printable bingo cards from your own list. Paste songs, phrases, names, or prompts, then print at home or save as a PDF.</p>
           <p class="usage-note">For personal use only. Your list and uploaded centre image stay in this browser while you create your cards.</p>
         </div>
+
+        <section id="accountPanel" class="account-panel" aria-label="Customer access">
+          <div class="account-heading">
+            <div>
+              <p class="eyebrow">Customer access</p>
+              <h2>Sign in with email</h2>
+            </div>
+            <span id="creditBadge" class="credit-badge">Credits: -</span>
+          </div>
+          <p id="accountStatus" class="account-status">Enter your purchase email to receive a secure login link.</p>
+          <form id="loginForm" class="login-form">
+            <label>
+              Email address
+              <input id="loginEmail" type="email" autocomplete="email" placeholder="you@example.com" />
+            </label>
+            <button id="loginButton" type="submit">Send magic link</button>
+          </form>
+          <button id="logoutButton" class="secondary-button" type="button" hidden>Sign out</button>
+          <p id="accountMessage" class="account-message" role="status"></p>
+        </section>
 
         <form id="bingoForm" class="form-grid">
           <label>
@@ -319,6 +339,13 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="app.js?v=20260608-pdf"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+    <script>
+      window.BINGO_SUPABASE_CONFIG = {
+        url: "https://idlihjucxernlbwkndca.supabase.co",
+        anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkbGloanVjeGVybmxid2tuZGNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NTc0NDAsImV4cCI6MjA5NjIzMzQ0MH0.dlbkCbpin2GhnJQgZurgUa0KZqeZx7P3pDukd1ZMFYk",
+      };
+    </script>
+    <script src="app.js?v=20260609-auth"></script>
   </body>
 </html>
