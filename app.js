@@ -389,7 +389,14 @@ function setAccountMessage(message, isError = false) {
 }
 
 function setAuthState(state) {
+  const previousState = document.body.dataset.authState;
   document.body.dataset.authState = state;
+  if (state === "signed-in" && previousState !== "signed-in") {
+    requestAnimationFrame(() => {
+      updatePreviewScale();
+      fitAllSquareText();
+    });
+  }
 }
 
 function getMagicLinkRedirectUrl() {
@@ -1576,14 +1583,14 @@ function updatePreviewScale() {
   requestAnimationFrame(() => {
     document.querySelectorAll(".card-frame").forEach((frame) => {
       const availableWidth = frame.clientWidth;
-      const scale = availableWidth > 0 ? Math.min(1, availableWidth / cardWidth) : 1;
+      const scale = availableWidth > 0 ? Math.min(1, availableWidth / cardWidth) : Number(frame.style.getPropertyValue("--preview-scale")) || 0.5;
       frame.style.setProperty("--preview-scale", scale.toFixed(4));
       frame.style.height = `${cardHeight * scale}px`;
     });
 
     document.querySelectorAll(".extra-frame").forEach((frame) => {
       const availableWidth = frame.clientWidth;
-      const scale = availableWidth > 0 ? Math.min(1, availableWidth / extraWidth) : 1;
+      const scale = availableWidth > 0 ? Math.min(1, availableWidth / extraWidth) : Number(frame.style.getPropertyValue("--preview-scale")) || 0.5;
       frame.style.setProperty("--preview-scale", scale.toFixed(4));
       frame.style.height = `${extraHeight * scale}px`;
     });
