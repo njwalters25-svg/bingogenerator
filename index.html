@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Cherry+Bomb+One&family=Chewy&family=Cinzel:wght@700;900&family=Cormorant+Garamond:wght@700&family=DM+Serif+Display&family=Fascinate+Inline&family=Libre+Baskerville:wght@700&family=Lilita+One&family=Lobster&family=Luckiest+Guy&family=Merriweather:wght@900&family=Modak&family=Pacifico&family=Playfair+Display:wght@800;900&family=Ranchers&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260610-matched-rules" />
+    <link rel="stylesheet" href="styles.css?v=20260610-saved-sets" />
     <style id="printPageStyle">@page { size: 8.5in 11in; margin: 0; }</style>
     <style>
       body[data-cards-per-page="2"] .square.free {
@@ -63,6 +63,18 @@
           </form>
           <button id="logoutButton" class="secondary-button" type="button" hidden>Sign out</button>
           <p id="accountMessage" class="account-message" role="status"></p>
+        </section>
+
+        <section id="savedSetsPanel" class="saved-sets-panel app-only" aria-label="Saved generated sets">
+          <div class="saved-sets-heading">
+            <div>
+              <p class="eyebrow">Saved sets</p>
+              <h2>Reprint later</h2>
+            </div>
+            <button id="refreshSavedSetsButton" class="small-button" type="button">Refresh</button>
+          </div>
+          <p id="savedSetsStatus" class="saved-sets-status">Generated sets are saved to your account automatically.</p>
+          <div id="savedSetsList" class="saved-sets-list" aria-live="polite"></div>
         </section>
 
         <form id="bingoForm" class="form-grid app-only">
@@ -376,6 +388,6 @@
         anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkbGloanVjeGVybmxid2tuZGNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NTc0NDAsImV4cCI6MjA5NjIzMzQ0MH0.dlbkCbpin2GhnJQgZurgUa0KZqeZx7P3pDukd1ZMFYk",
       };
     </script>
-    <script src="app.js?v=20260610-matched-rules"></script>
+    <script src="app.js?v=20260610-saved-sets"></script>
   </body>
 </html>

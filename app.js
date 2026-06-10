@@ -40,12 +40,17 @@ const logoutButton = document.querySelector("#logoutButton");
 const accountStatus = document.querySelector("#accountStatus");
 const accountMessage = document.querySelector("#accountMessage");
 const creditBadge = document.querySelector("#creditBadge");
+const savedSetsPanel = document.querySelector("#savedSetsPanel");
+const savedSetsList = document.querySelector("#savedSetsList");
+const savedSetsStatus = document.querySelector("#savedSetsStatus");
+const refreshSavedSetsButton = document.querySelector("#refreshSavedSetsButton");
 
 let freeImageData = "";
 let isRestoringSettings = false;
 let currentCards = [];
 let generatedSet = null;
 let currentUser = null;
+let savedSets = [];
 
 const storageKey = "allOccasionsBingoSettings";
 const generatedSetStorageKey = "allOccasionsBingoGeneratedSet";
@@ -372,7 +377,7 @@ function updateGeneratedSetUi() {
     return;
   }
 
-  generatedSetNotice.textContent = "Current generated set is fixed. Editing the design, previewing, printing, and downloading will not reshuffle these cards.";
+  generatedSetNotice.textContent = "Current generated set is fixed and saved. Editing the design, previewing, printing, and downloading will not use another credit or reshuffle these cards.";
 }
 
 function setStatus(message, isError = false) {
@@ -461,17 +466,138 @@ async function loadCreditBalance(user) {
   updateAccountPanel(user, Number(data) || 0);
 }
 
+function formatSavedSetDate(value) {
+  if (!value) {
+    return "Saved set";
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
+
+function getSavedSetTitle(set) {
+  const snapshot = set.generation_snapshot || {};
+  const occasion = snapshot.occasion?.trim();
+  const title = snapshot.title?.trim() || "BINGO";
+  return occasion ? `${occasion} ${title}` : title;
+}
+
+function renderSavedSets() {
+  if (!savedSetsList || !savedSetsStatus) {
+    return;
+  }
+
+  savedSetsList.replaceChildren();
+
+  if (!currentUser) {
+    savedSetsStatus.textContent = "Sign in to see saved generated sets.";
+    return;
+  }
+
+  if (savedSets.length === 0) {
+    savedSetsStatus.textContent = "Generated sets will appear here automatically after you use a credit.";
+    return;
+  }
+
+  savedSetsStatus.textContent = "Reopen a saved set to print or download again without using another credit.";
+  savedSets.forEach((set) => {
+    const card = document.createElement("article");
+    card.className = "saved-set-card";
+
+    const title = document.createElement("strong");
+    title.textContent = getSavedSetTitle(set);
+
+    const meta = document.createElement("span");
+    const itemCount = Array.isArray(set.source_items) ? set.source_items.length : 0;
+    const cardCount = Array.isArray(set.cards) ? set.cards.length : set.requested_count;
+    meta.textContent = `${cardCount} card${cardCount === 1 ? "" : "s"} from ${itemCount} item${itemCount === 1 ? "" : "s"} · ${formatSavedSetDate(set.created_at)}`;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.savedSetId = set.id;
+    button.textContent = "Reopen set";
+
+    card.append(title, meta, button);
+    savedSetsList.append(card);
+  });
+}
+
+async function loadSavedSets(user) {
+  if (!supabaseClient || !user) {
+    savedSets = [];
+    renderSavedSets();
+    return;
+  }
+
+  savedSetsStatus.textContent = "Checking saved sets...";
+  const { data, error } = await supabaseClient
+    .from("generated_sets")
+    .select("id, source_items, requested_count, cards, generation_snapshot, created_at")
+    .order("created_at", { ascending: false })
+    .limit(12);
+
+  if (error) {
+    console.error(error);
+    savedSets = [];
+    savedSetsStatus.textContent = "Saved sets could not be loaded yet. Please refresh and try again.";
+    savedSetsList.replaceChildren();
+    return;
+  }
+
+  savedSets = (data || []).filter((set) => (
+    Array.isArray(set.source_items)
+    && Array.isArray(set.cards)
+    && set.cards.every((card) => Array.isArray(card) && card.length === 25)
+  ));
+  renderSavedSets();
+}
+
+function reopenSavedSet(savedSetId) {
+  const savedSet = savedSets.find((set) => set.id === savedSetId);
+  if (!savedSet) {
+    setStatus("That saved set could not be found. Refresh saved sets and try again.", true);
+    return;
+  }
+
+  const snapshot = savedSet.generation_snapshot || {};
+  applySettingsSnapshot({
+    ...snapshot,
+    count: String(savedSet.requested_count || savedSet.cards.length),
+    items: snapshot.items || savedSet.source_items.join("\n"),
+  });
+  generatedSet = {
+    id: savedSet.id,
+    createdAt: savedSet.created_at,
+    requestedCount: savedSet.requested_count,
+    sourceItems: savedSet.source_items,
+    cards: savedSet.cards,
+  };
+  currentCards = savedSet.cards;
+  saveSettings();
+  saveGeneratedSet();
+  updateTheme();
+  updateListHelp();
+  renderCurrentSet();
+  setStatus("Reopened saved set. Printing, downloading, and design edits will not use another credit.");
+}
+
 async function handleAuthSession(session) {
   const user = session?.user || null;
   setAccountMessage("");
 
   if (!user) {
+    currentUser = null;
+    savedSets = [];
+    renderSavedSets();
     updateAccountPanel(null);
     return;
   }
 
   updateAccountPanel(user, null);
   await loadCreditBalance(user);
+  await loadSavedSets(user);
 }
 
 async function initAuth() {
@@ -536,40 +662,42 @@ function saveSettings() {
   }
 }
 
+function applySettingsSnapshot(savedSettings = {}) {
+  isRestoringSettings = true;
+  inputs.occasion.value = savedSettings.occasion ?? inputs.occasion.value;
+  inputs.title.value = savedSettings.title || inputs.title.value;
+  inputs.count.value = savedSettings.count || inputs.count.value;
+  inputs.items.value = savedSettings.items ?? inputs.items.value;
+  inputs.freeText.value = savedSettings.freeText || inputs.freeText.value;
+  inputs.includeInstructions.checked = savedSettings.includeInstructions ?? inputs.includeInstructions.checked;
+  inputs.includeMasterList.checked = savedSettings.includeMasterList ?? inputs.includeMasterList.checked;
+  inputs.includeMarkers.checked = savedSettings.includeMarkers ?? inputs.includeMarkers.checked;
+  fontStyle.value = legacyTitleFontMap[savedSettings.fontStyle] || savedSettings.fontStyle || fontStyle.value;
+  titleEffect.value = "clean";
+  occasionFont.value = legacyOccasionFontMap[savedSettings.occasionFont] || savedSettings.occasionFont || occasionFont.value;
+  occasionEffect.value = savedSettings.occasionEffect || occasionEffect.value;
+  occasionSize.value = savedSettings.occasionSize || occasionSize.value;
+  titleSize.value = savedSettings.titleSize || titleSize.value;
+  gridStyle.value = savedSettings.gridStyle || gridStyle.value;
+  squareTextStyle.value = savedSettings.squareTextStyle || squareTextStyle.value;
+  pageSize.value = savedSettings.pageSize || pageSize.value;
+  cardsPerPage.value = savedSettings.cardsPerPage || cardsPerPage.value;
+  primaryColor.value = savedSettings.primaryColor || primaryColor.value;
+  highlightColor.value = savedSettings.highlightColor || highlightColor.value;
+  titleColor.value = savedSettings.titleColor || titleColor.value;
+  occasionColor.value = savedSettings.occasionColor || occasionColor.value;
+  freeImageData = savedSettings.freeImageData || "";
+  isRestoringSettings = false;
+}
+
 function restoreSettings() {
   try {
     const savedSettings = JSON.parse(localStorage.getItem(storageKey));
-    if (!savedSettings) {
-      return;
+    if (savedSettings) {
+      applySettingsSnapshot(savedSettings);
     }
-
-    isRestoringSettings = true;
-    inputs.occasion.value = savedSettings.occasion ?? inputs.occasion.value;
-    inputs.title.value = savedSettings.title || inputs.title.value;
-    inputs.count.value = savedSettings.count || inputs.count.value;
-    inputs.items.value = savedSettings.items ?? inputs.items.value;
-    inputs.freeText.value = savedSettings.freeText || inputs.freeText.value;
-    inputs.includeInstructions.checked = savedSettings.includeInstructions ?? inputs.includeInstructions.checked;
-    inputs.includeMasterList.checked = savedSettings.includeMasterList ?? inputs.includeMasterList.checked;
-    inputs.includeMarkers.checked = savedSettings.includeMarkers ?? inputs.includeMarkers.checked;
-    fontStyle.value = legacyTitleFontMap[savedSettings.fontStyle] || savedSettings.fontStyle || fontStyle.value;
-    titleEffect.value = "clean";
-    occasionFont.value = legacyOccasionFontMap[savedSettings.occasionFont] || savedSettings.occasionFont || occasionFont.value;
-    occasionEffect.value = savedSettings.occasionEffect || occasionEffect.value;
-    occasionSize.value = savedSettings.occasionSize || occasionSize.value;
-    titleSize.value = savedSettings.titleSize || titleSize.value;
-    gridStyle.value = savedSettings.gridStyle || gridStyle.value;
-    squareTextStyle.value = savedSettings.squareTextStyle || squareTextStyle.value;
-    pageSize.value = savedSettings.pageSize || pageSize.value;
-    cardsPerPage.value = savedSettings.cardsPerPage || cardsPerPage.value;
-    primaryColor.value = savedSettings.primaryColor || primaryColor.value;
-    highlightColor.value = savedSettings.highlightColor || highlightColor.value;
-    titleColor.value = savedSettings.titleColor || titleColor.value;
-    occasionColor.value = savedSettings.occasionColor || occasionColor.value;
-    freeImageData = savedSettings.freeImageData || "";
   } catch {
     localStorage.removeItem(storageKey);
-  } finally {
     isRestoringSettings = false;
   }
 }
@@ -1663,15 +1791,7 @@ async function generateNewSet() {
   setGenerateBusy(true);
   setStatus("Using 1 credit and saving your generated set...");
 
-  const generationSnapshot = {
-    occasion: inputs.occasion.value,
-    title: inputs.title.value,
-    freeText: inputs.freeText.value,
-    fontStyle: fontStyle.value,
-    occasionFont: occasionFont.value,
-    pageSize: pageSize.value,
-    cardsPerPage: cardsPerPage.value,
-  };
+  const generationSnapshot = getSettingsSnapshot();
 
   const { data, error } = await supabaseClient.rpc("create_generated_set_with_credit", {
     p_generated_set_id: setId,
@@ -1705,6 +1825,7 @@ async function generateNewSet() {
     : `Used 1 credit and generated ${cards.length} unique cards before combinations ran out. Add more items for more variety.`;
   setStatus(note);
   updateAccountPanel(currentUser, Number(data?.credits_remaining) || 0);
+  await loadSavedSets(currentUser);
   saveSettings();
   setGenerateBusy(false);
 }
@@ -1769,6 +1890,26 @@ logoutButton?.addEventListener("click", async () => {
 
   updateAccountPanel(null);
   setAccountMessage("Signed out.");
+});
+
+refreshSavedSetsButton?.addEventListener("click", async () => {
+  if (!currentUser) {
+    setStatus("Sign in to refresh saved sets.", true);
+    return;
+  }
+
+  refreshSavedSetsButton.disabled = true;
+  await loadSavedSets(currentUser);
+  refreshSavedSetsButton.disabled = false;
+});
+
+savedSetsList?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-saved-set-id]");
+  if (!button) {
+    return;
+  }
+
+  reopenSavedSet(button.dataset.savedSetId);
 });
 
 inputs.items.addEventListener("input", () => {
