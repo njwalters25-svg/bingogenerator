@@ -54,6 +54,7 @@ let savedSets = [];
 
 const storageKey = "allOccasionsBingoSettings";
 const generatedSetStorageKey = "allOccasionsBingoGeneratedSet";
+const savedSetsStoragePrefix = "allOccasionsBingoSavedSets:";
 const supabaseConfig = window.BINGO_SUPABASE_CONFIG || {};
 const supabaseClient = window.supabase && supabaseConfig.url && supabaseConfig.anonKey
   ? window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey, {
@@ -524,28 +525,78 @@ function renderSavedSets() {
   });
 }
 
+function isValidSavedSet(set) {
+  return Boolean(set?.id)
+    && Array.isArray(set?.source_items)
+    && Array.isArray(set?.cards)
+    && set.cards.every((card) => Array.isArray(card) && card.length === 25);
+}
+
+function getSavedSetsStorageKey(user = currentUser) {
+  const userKey = (user?.email || user?.id || "").trim().toLowerCase();
+  return userKey ? `${savedSetsStoragePrefix}${userKey}` : "";
+}
+
+function mergeSavedSets(...groups) {
+  const merged = new Map();
+  groups.flat().filter(isValidSavedSet).forEach((set) => {
+    merged.set(set.id, set);
+  });
+
+  return [...merged.values()]
+    .sort((first, second) => new Date(second.created_at || 0) - new Date(first.created_at || 0))
+    .slice(0, 12);
+}
+
+function saveSavedSetsToBrowser(user = currentUser) {
+  const key = getSavedSetsStorageKey(user);
+  if (!key) {
+    return;
+  }
+
+  try {
+    localStorage.setItem(key, JSON.stringify(savedSets.filter(isValidSavedSet).slice(0, 12)));
+  } catch {
+    // Account saving still works through Supabase if browser storage is unavailable.
+  }
+}
+
+function restoreSavedSetsFromBrowser(user = currentUser) {
+  const key = getSavedSetsStorageKey(user);
+  if (!key) {
+    return [];
+  }
+
+  try {
+    return JSON.parse(localStorage.getItem(key) || "[]").filter(isValidSavedSet);
+  } catch {
+    localStorage.removeItem(key);
+    return [];
+  }
+}
+
 function addSavedSetToList(set) {
-  savedSets = [
-    set,
-    ...savedSets.filter((savedSet) => savedSet.id !== set.id),
-  ].slice(0, 12);
+  savedSets = mergeSavedSets([set], savedSets);
+  saveSavedSetsToBrowser();
   renderSavedSets();
 }
 
 async function loadSavedSets(user) {
   if (!supabaseClient || !user) {
-    savedSets = [];
+    savedSets = restoreSavedSetsFromBrowser(user);
     renderSavedSets();
     return;
   }
 
+  savedSets = restoreSavedSetsFromBrowser(user);
+  renderSavedSets();
   savedSetsStatus.textContent = "Checking saved sets...";
   const { data, error } = await supabaseClient.rpc("get_my_generated_sets");
 
   if (error) {
     console.error(error);
     if (savedSets.length > 0) {
-      savedSetsStatus.textContent = "Showing sets saved in this session. Older saved sets may appear after refreshing later.";
+      savedSetsStatus.textContent = "Showing saved sets from this browser. Older account saves may appear after refreshing later.";
       renderSavedSets();
       return;
     }
@@ -554,11 +605,8 @@ async function loadSavedSets(user) {
     return;
   }
 
-  savedSets = (data || []).filter((set) => (
-    Array.isArray(set.source_items)
-    && Array.isArray(set.cards)
-    && set.cards.every((card) => Array.isArray(card) && card.length === 25)
-  ));
+  savedSets = mergeSavedSets(data || [], savedSets);
+  saveSavedSetsToBrowser(user);
   renderSavedSets();
 }
 
@@ -711,7 +759,7 @@ function restoreSettings() {
 }
 
 function resetSettings() {
-  if (generatedSet && !window.confirm("Clear this project? This will permanently remove the saved draft and current generated set from this browser.")) {
+  if (generatedSet && !window.confirm("Clear this project? Your saved generated sets will stay in the Reprint later list.")) {
     setStatus("Kept the current project.");
     return;
   }
