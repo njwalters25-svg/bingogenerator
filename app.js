@@ -1305,6 +1305,14 @@ function setPdfBusy(isBusy) {
   }
 }
 
+function setGenerateBusy(isBusy) {
+  generateButton.disabled = isBusy;
+  downloadPdfButton.disabled = isBusy || currentCards.length === 0;
+  printButton.disabled = isBusy || currentCards.length === 0;
+  resetButton.disabled = isBusy;
+  generateButton.textContent = isBusy ? "Using 1 credit..." : (generatedSet ? "Generate new set" : "Generate bingo set");
+}
+
 async function downloadPdf() {
   if (currentCards.length === 0) {
     setStatus("Generate a bingo set before downloading a PDF.", true);
@@ -1620,7 +1628,7 @@ function renderCurrentSet() {
   updateGeneratedSetUi();
 }
 
-function generateNewSet() {
+async function generateNewSet() {
   const items = parseItems(inputs.items.value);
   updateListHelp();
   const requestedCount = getRequestedCardCount();
@@ -1634,14 +1642,55 @@ function generateNewSet() {
     return;
   }
 
+  if (!currentUser) {
+    setStatus("Sign in before generating a bingo set.", true);
+    return;
+  }
+
   if (generatedSet && !window.confirm("Generate a new bingo set? This will replace the current fixed card arrangement.")) {
     setStatus("Kept the current generated set.");
     return;
   }
 
   const cards = makeUniqueCards(items, requestedCount);
+  const setId = globalThis.crypto?.randomUUID?.();
+
+  if (!supabaseClient || !setId) {
+    setStatus("Credit checkout is not ready. Please refresh and try again.", true);
+    return;
+  }
+
+  setGenerateBusy(true);
+  setStatus("Using 1 credit and saving your generated set...");
+
+  const generationSnapshot = {
+    occasion: inputs.occasion.value,
+    title: inputs.title.value,
+    freeText: inputs.freeText.value,
+    fontStyle: fontStyle.value,
+    occasionFont: occasionFont.value,
+    pageSize: pageSize.value,
+    cardsPerPage: cardsPerPage.value,
+  };
+
+  const { data, error } = await supabaseClient.rpc("create_generated_set_with_credit", {
+    p_generated_set_id: setId,
+    p_project_id: null,
+    p_source_items: items,
+    p_requested_count: requestedCount,
+    p_cards: cards,
+    p_generation_snapshot: generationSnapshot,
+  });
+
+  if (error) {
+    console.error(error);
+    setGenerateBusy(false);
+    setStatus(error.message || "A credit could not be used. Please try again.", true);
+    return;
+  }
+
   generatedSet = {
-    id: globalThis.crypto?.randomUUID?.() || `set-${Date.now()}`,
+    id: setId,
     createdAt: new Date().toISOString(),
     requestedCount,
     sourceItems: items,
@@ -1652,10 +1701,12 @@ function generateNewSet() {
   renderCurrentSet();
 
   const note = cards.length === requestedCount
-    ? `Generated ${cards.length} unique card${cards.length === 1 ? "" : "s"} from ${items.length} items.`
-    : `Generated ${cards.length} unique cards before combinations ran out. Add more items for more variety.`;
+    ? `Used 1 credit and generated ${cards.length} unique card${cards.length === 1 ? "" : "s"} from ${items.length} items.`
+    : `Used 1 credit and generated ${cards.length} unique cards before combinations ran out. Add more items for more variety.`;
   setStatus(note);
+  updateAccountPanel(currentUser, Number(data?.credits_remaining) || 0);
   saveSettings();
+  setGenerateBusy(false);
 }
 
 form.addEventListener("submit", (event) => {
