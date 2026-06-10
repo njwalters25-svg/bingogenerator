@@ -524,6 +524,14 @@ function renderSavedSets() {
   });
 }
 
+function addSavedSetToList(set) {
+  savedSets = [
+    set,
+    ...savedSets.filter((savedSet) => savedSet.id !== set.id),
+  ].slice(0, 12);
+  renderSavedSets();
+}
+
 async function loadSavedSets(user) {
   if (!supabaseClient || !user) {
     savedSets = [];
@@ -536,9 +544,13 @@ async function loadSavedSets(user) {
 
   if (error) {
     console.error(error);
-    savedSets = [];
+    if (savedSets.length > 0) {
+      savedSetsStatus.textContent = "Showing sets saved in this session. To load older saved sets too, run the Supabase saved-sets SQL once, then refresh.";
+      renderSavedSets();
+      return;
+    }
+
     savedSetsStatus.textContent = "Saved sets could not be loaded yet. If you have just updated the app, run the Supabase saved-sets SQL once, then refresh.";
-    savedSetsList.replaceChildren();
     return;
   }
 
@@ -1812,6 +1824,14 @@ async function generateNewSet() {
     sourceItems: items,
     cards,
   };
+  addSavedSetToList({
+    id: setId,
+    source_items: items,
+    requested_count: requestedCount,
+    cards,
+    generation_snapshot: generationSnapshot,
+    created_at: generatedSet.createdAt,
+  });
   currentCards = cards;
   saveGeneratedSet();
   renderCurrentSet();
