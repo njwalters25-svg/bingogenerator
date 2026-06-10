@@ -269,6 +269,18 @@ fieldset {
   background: #fff;
 }
 
+.layout-hint {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 4px solid var(--accent-2);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .help-panel {
   margin: 0;
   padding: 12px 14px;
