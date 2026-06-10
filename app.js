@@ -362,13 +362,13 @@ function updateGeneratedSetUi() {
   const hasSet = Boolean(generatedSet?.cards?.length);
   const hasDraftChanges = hasGenerationDraftChanges();
 
-  generateButton.textContent = hasSet ? "Generate new set" : "Generate bingo set";
+  generateButton.textContent = hasSet ? "Generate new saved set" : "Generate and save set";
   downloadPdfButton.disabled = !hasSet;
   printButton.disabled = !hasSet;
   generatedSetNotice.classList.toggle("has-draft-changes", hasDraftChanges);
 
   if (!hasSet) {
-    generatedSetNotice.textContent = "No generated set yet. Create your draft, then generate a fixed set when you are ready.";
+    generatedSetNotice.textContent = "No generated set yet. Create your draft, then click Generate and save set when you are ready.";
     return;
   }
 
@@ -497,7 +497,7 @@ function renderSavedSets() {
   }
 
   if (savedSets.length === 0) {
-    savedSetsStatus.textContent = "Generated sets will appear here automatically after you use a credit.";
+    savedSetsStatus.textContent = "No separate save button needed. Click Generate and save set when you are ready.";
     return;
   }
 
@@ -537,7 +537,7 @@ async function loadSavedSets(user) {
   if (error) {
     console.error(error);
     savedSets = [];
-    savedSetsStatus.textContent = "Saved sets could not be loaded yet. Please refresh and try again.";
+    savedSetsStatus.textContent = "Saved sets could not be loaded yet. If you have just updated the app, run the Supabase saved-sets SQL once, then refresh.";
     savedSetsList.replaceChildren();
     return;
   }
@@ -1434,7 +1434,7 @@ function setGenerateBusy(isBusy) {
   downloadPdfButton.disabled = isBusy || currentCards.length === 0;
   printButton.disabled = isBusy || currentCards.length === 0;
   resetButton.disabled = isBusy;
-  generateButton.textContent = isBusy ? "Using 1 credit..." : (generatedSet ? "Generate new set" : "Generate bingo set");
+  generateButton.textContent = isBusy ? "Using 1 credit..." : (generatedSet ? "Generate new saved set" : "Generate and save set");
 }
 
 async function downloadPdf() {
