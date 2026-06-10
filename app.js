@@ -532,11 +532,7 @@ async function loadSavedSets(user) {
   }
 
   savedSetsStatus.textContent = "Checking saved sets...";
-  const { data, error } = await supabaseClient
-    .from("generated_sets")
-    .select("id, source_items, requested_count, cards, generation_snapshot, created_at")
-    .order("created_at", { ascending: false })
-    .limit(12);
+  const { data, error } = await supabaseClient.rpc("get_my_generated_sets");
 
   if (error) {
     console.error(error);
