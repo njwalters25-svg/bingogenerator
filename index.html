@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Cherry+Bomb+One&family=Chewy&family=Cinzel:wght@700;900&family=Cormorant+Garamond:wght@700&family=DM+Serif+Display&family=Fascinate+Inline&family=Libre+Baskerville:wght@700&family=Lilita+One&family=Lobster&family=Luckiest+Guy&family=Merriweather:wght@900&family=Modak&family=Pacifico&family=Playfair+Display:wght@800;900&family=Ranchers&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260610-layout-hint" />
+    <link rel="stylesheet" href="styles.css?v=20260610-control-panels" />
     <style id="printPageStyle">@page { size: 8.5in 11in; margin: 0; }</style>
     <style>
       body[data-cards-per-page="2"] .square.free {
@@ -88,170 +88,181 @@
             <p class="list-tip"><strong>Music bingo tip:</strong> If your songs are in Spotify or another music app, you can use a playlist export tool such as TuneMyMusic to export the list as a text file, then copy and paste it here. Shorten long titles and remove extra &ldquo;featuring&rdquo; details if you want cleaner, easier-to-read squares.</p>
           </label>
 
-          <fieldset class="full-span">
-            <legend>Free square</legend>
-            <p class="fieldset-hint">Use simple text, or upload an image/logo for the centre square.</p>
-            <div class="free-square-controls">
-              <label>
-                Text
-                <input id="freeText" type="text" value="FREE" maxlength="30" />
-              </label>
-              <label>
-                Image
-                <input id="freeImage" type="file" accept="image/*" />
-              </label>
+          <details class="control-section full-span">
+            <summary>Free square</summary>
+            <div class="section-body">
+              <p class="fieldset-hint">Use simple text, or upload an image/logo for the centre square.</p>
+              <div class="free-square-controls">
+                <label>
+                  Text
+                  <input id="freeText" type="text" value="FREE" maxlength="30" />
+                </label>
+                <label>
+                  Image
+                  <input id="freeImage" type="file" accept="image/*" />
+                </label>
+              </div>
             </div>
-          </fieldset>
+          </details>
 
-          <fieldset class="full-span">
-            <legend>Colours</legend>
-            <p class="fieldset-hint">Start with a bright party look, or fine-tune the colours for your event.</p>
-            <button id="resetColorsButton" class="secondary-button color-reset-button" type="button">Reset to default</button>
-            <div class="custom-colors">
-              <label>
-                Primary
-                <input id="primaryColor" type="color" value="#ff4d5a" />
-              </label>
-              <label>
-                Highlight
-                <input id="highlightColor" type="color" value="#2c7be5" />
-              </label>
-              <label>
-                Title
-                <input id="titleColor" type="color" value="#111111" />
-              </label>
-              <label>
-                Occasion
-                <input id="occasionColor" type="color" value="#7c3aed" />
-              </label>
+          <details class="control-section full-span">
+            <summary>Colours</summary>
+            <div class="section-body">
+              <p class="fieldset-hint">Start with a bright party look, or fine-tune the colours for your event.</p>
+              <button id="resetColorsButton" class="secondary-button color-reset-button" type="button">Reset to default</button>
+              <div class="custom-colors">
+                <label>
+                  Primary
+                  <input id="primaryColor" type="color" value="#ff4d5a" />
+                </label>
+                <label>
+                  Highlight
+                  <input id="highlightColor" type="color" value="#2c7be5" />
+                </label>
+                <label>
+                  Title
+                  <input id="titleColor" type="color" value="#111111" />
+                </label>
+                <label>
+                  Occasion
+                  <input id="occasionColor" type="color" value="#7c3aed" />
+                </label>
+              </div>
             </div>
-          </fieldset>
+          </details>
 
-          <fieldset class="full-span">
-            <legend>Design options</legend>
-            <p class="fieldset-hint">Adjust the heading, card style, and print layout. The small footer link is added automatically.</p>
-            <p class="fieldset-hint">If your heading wraps onto two lines, reduce the size slider until it fits.</p>
-            <div class="design-grid">
-              <label>
-                Occasion font
-                <select id="occasionFont">
-                  <option value="playfair">Playfair Display</option>
-                  <option value="cormorant">Cormorant Garamond</option>
-                  <option value="dm-serif">DM Serif Display</option>
-                  <option value="libre">Libre Baskerville</option>
-                  <option value="lilita">Lilita One</option>
-                  <option value="pacifico">Pacifico</option>
-                  <option value="lobster">Lobster</option>
-                  <option value="luckiest" selected>Luckiest Guy</option>
-                </select>
-              </label>
+          <details class="control-section full-span" open>
+            <summary>Design options</summary>
+            <div class="section-body">
+              <p class="fieldset-hint">Adjust the heading, card style, and print layout. The small footer link is added automatically.</p>
+              <p class="fieldset-hint">If your heading wraps onto two lines, reduce the size slider until it fits.</p>
+              <div class="design-grid">
+                <p class="control-subheading full-span">Occasion heading</p>
+                <label>
+                  Occasion font
+                  <select id="occasionFont">
+                    <option value="playfair">Playfair Display</option>
+                    <option value="cormorant">Cormorant Garamond</option>
+                    <option value="dm-serif">DM Serif Display</option>
+                    <option value="libre">Libre Baskerville</option>
+                    <option value="lilita">Lilita One</option>
+                    <option value="pacifico">Pacifico</option>
+                    <option value="lobster">Lobster</option>
+                    <option value="luckiest" selected>Luckiest Guy</option>
+                  </select>
+                </label>
 
-              <label>
-                Occasion effect
-                <select id="occasionEffect">
-                  <option value="clean">Clean</option>
-                  <option value="soft-shadow" selected>Soft shadow</option>
-                  <option value="outline">Outline</option>
-                  <option value="sticker-pop">Sticker pop</option>
-                  <option value="retro-layer">Retro layer</option>
-                  <option value="glow">Glow</option>
-                </select>
-              </label>
+                <label class="slider-control">
+                  Occasion size
+                  <span><output id="occasionSizeValue">58</output>px</span>
+                  <input id="occasionSize" type="range" min="16" max="72" value="58" />
+                </label>
 
-              <label class="slider-control">
-                Occasion size
-                <span><output id="occasionSizeValue">58</output>px</span>
-                <input id="occasionSize" type="range" min="16" max="72" value="58" />
-              </label>
+                <label class="full-span">
+                  Occasion effect
+                  <select id="occasionEffect">
+                    <option value="clean">Clean</option>
+                    <option value="soft-shadow" selected>Soft shadow</option>
+                    <option value="outline">Outline</option>
+                    <option value="sticker-pop">Sticker pop</option>
+                    <option value="retro-layer">Retro layer</option>
+                    <option value="glow">Glow</option>
+                  </select>
+                </label>
 
-              <label>
-                BINGO font
-                <select id="fontStyle">
-                  <option value="playfair">Playfair Display</option>
-                  <option value="cormorant">Cormorant Garamond</option>
-                  <option value="libre">Libre Baskerville</option>
-                  <option value="cinzel">Cinzel</option>
-                  <option value="merriweather">Merriweather</option>
-                  <option value="dm-serif">DM Serif Display</option>
-                  <option value="bowlby">Bowlby One SC</option>
-                  <option value="lilita">Lilita One</option>
-                  <option value="lobster">Lobster</option>
-                </select>
-              </label>
+                <p class="control-subheading full-span">BINGO heading</p>
+                <label>
+                  BINGO font
+                  <select id="fontStyle">
+                    <option value="playfair">Playfair Display</option>
+                    <option value="cormorant">Cormorant Garamond</option>
+                    <option value="libre">Libre Baskerville</option>
+                    <option value="cinzel">Cinzel</option>
+                    <option value="merriweather">Merriweather</option>
+                    <option value="dm-serif">DM Serif Display</option>
+                    <option value="bowlby">Bowlby One SC</option>
+                    <option value="lilita">Lilita One</option>
+                    <option value="lobster">Lobster</option>
+                  </select>
+                </label>
 
-              <label class="visually-hidden">
-                BINGO effect
-                <select id="titleEffect" tabindex="-1">
-                  <option value="clean">Clean</option>
-                  <option value="soft-shadow">Soft shadow</option>
-                  <option value="outline">Outline</option>
-                  <option value="retro-layer">Retro layer</option>
-                  <option value="glow">Glow</option>
-                </select>
-              </label>
+                <label class="visually-hidden">
+                  BINGO effect
+                  <select id="titleEffect" tabindex="-1">
+                    <option value="clean">Clean</option>
+                    <option value="soft-shadow">Soft shadow</option>
+                    <option value="outline">Outline</option>
+                    <option value="retro-layer">Retro layer</option>
+                    <option value="glow">Glow</option>
+                  </select>
+                </label>
 
-              <label class="slider-control">
-                BINGO size
-                <span><output id="titleSizeValue">98</output>px</span>
-                <input id="titleSize" type="range" min="58" max="170" value="98" />
-              </label>
+                <label class="slider-control">
+                  BINGO size
+                  <span><output id="titleSizeValue">98</output>px</span>
+                  <input id="titleSize" type="range" min="58" max="170" value="98" />
+                </label>
 
-              <label>
-                Square style
-                <select id="gridStyle">
-                  <option value="crisp">Crisp</option>
-                  <option value="rounded">Rounded</option>
-                  <option value="checker">Checker</option>
-                  <option value="luxe">Luxe</option>
-                </select>
-              </label>
+                <p class="control-subheading full-span">Card and print layout</p>
+                <label>
+                  Square style
+                  <select id="gridStyle">
+                    <option value="crisp">Crisp</option>
+                    <option value="rounded">Rounded</option>
+                    <option value="checker">Checker</option>
+                    <option value="luxe">Luxe</option>
+                  </select>
+                </label>
 
-              <label>
-                Square text
-                <select id="squareTextStyle">
-                  <option value="clear" selected>Clear</option>
-                  <option value="bold">Bold</option>
-                  <option value="compact">Compact</option>
-                </select>
-              </label>
+                <label>
+                  Square text
+                  <select id="squareTextStyle">
+                    <option value="clear" selected>Clear</option>
+                    <option value="bold">Bold</option>
+                    <option value="compact">Compact</option>
+                  </select>
+                </label>
 
-              <label>
-                PDF page
-                <select id="pageSize">
-                  <option value="letter">Letter</option>
-                  <option value="a4">A4</option>
-                </select>
-              </label>
+                <label>
+                  PDF page
+                  <select id="pageSize">
+                    <option value="letter">Letter</option>
+                    <option value="a4">A4</option>
+                  </select>
+                </label>
 
-              <label>
-                Cards per page
-                <select id="cardsPerPage">
-                  <option value="1">1 card</option>
-                  <option value="2">2 cards</option>
-                </select>
-              </label>
-              <p class="layout-hint full-span">Switching to 2 cards per page makes the cards smaller. Check the preview and reduce the occasion or BINGO size sliders if the heading feels too large.</p>
+                <label>
+                  Cards per page
+                  <select id="cardsPerPage">
+                    <option value="1">1 card</option>
+                    <option value="2">2 cards</option>
+                  </select>
+                </label>
+                <p class="layout-hint full-span">Switching to 2 cards per page makes the cards smaller. Check the preview and reduce the occasion or BINGO size sliders if the heading feels too large.</p>
+              </div>
             </div>
-          </fieldset>
+          </details>
 
-          <fieldset class="full-span">
-            <legend>Printable extras</legend>
-            <p class="fieldset-hint">Add helpful pages for hosting the game. These print after the bingo cards.</p>
-            <div class="extras-grid">
-              <label class="check-option">
-                <input id="includeInstructions" type="checkbox" checked />
-                Instructions
-              </label>
-              <label class="check-option">
-                <input id="includeMasterList" type="checkbox" checked />
-                Master checklist
-              </label>
-              <label class="check-option">
-                <input id="includeMarkers" type="checkbox" />
-                Bingo markers
-              </label>
+          <details class="control-section full-span">
+            <summary>Printable extras</summary>
+            <div class="section-body">
+              <p class="fieldset-hint">Add helpful pages for hosting the game. These print after the bingo cards.</p>
+              <div class="extras-grid">
+                <label class="check-option">
+                  <input id="includeInstructions" type="checkbox" checked />
+                  Instructions
+                </label>
+                <label class="check-option">
+                  <input id="includeMasterList" type="checkbox" checked />
+                  Master checklist
+                </label>
+                <label class="check-option">
+                  <input id="includeMarkers" type="checkbox" />
+                  Bingo markers
+                </label>
+              </div>
             </div>
-          </fieldset>
+          </details>
 
           <div class="actions full-span">
             <button id="generateButton" type="submit">Generate bingo set</button>
