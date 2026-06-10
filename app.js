@@ -362,7 +362,7 @@ function updateGeneratedSetUi() {
   const hasSet = Boolean(generatedSet?.cards?.length);
   const hasDraftChanges = hasGenerationDraftChanges();
 
-  generateButton.textContent = hasSet ? "Generate new saved set" : "Generate and save set";
+  generateButton.textContent = hasSet ? "Generate new set" : "Generate and save set";
   downloadPdfButton.disabled = !hasSet;
   printButton.disabled = !hasSet;
   generatedSetNotice.classList.toggle("has-draft-changes", hasDraftChanges);
@@ -545,12 +545,12 @@ async function loadSavedSets(user) {
   if (error) {
     console.error(error);
     if (savedSets.length > 0) {
-      savedSetsStatus.textContent = "Showing sets saved in this session. To load older saved sets too, run the Supabase saved-sets SQL once, then refresh.";
+      savedSetsStatus.textContent = "Showing sets saved in this session. Older saved sets may appear after refreshing later.";
       renderSavedSets();
       return;
     }
 
-    savedSetsStatus.textContent = "Saved sets could not be loaded yet. If you have just updated the app, run the Supabase saved-sets SQL once, then refresh.";
+    savedSetsStatus.textContent = "Saved sets are temporarily unavailable. New sets will still be saved after you generate them.";
     return;
   }
 
@@ -1446,7 +1446,7 @@ function setGenerateBusy(isBusy) {
   downloadPdfButton.disabled = isBusy || currentCards.length === 0;
   printButton.disabled = isBusy || currentCards.length === 0;
   resetButton.disabled = isBusy;
-  generateButton.textContent = isBusy ? "Using 1 credit..." : (generatedSet ? "Generate new saved set" : "Generate and save set");
+  generateButton.textContent = isBusy ? "Using 1 credit..." : (generatedSet ? "Generate new set" : "Generate and save set");
 }
 
 async function downloadPdf() {
