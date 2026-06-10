@@ -1160,7 +1160,7 @@ function drawBingoCardPdf(pdf, cardItems, x, y, width, height) {
     });
   });
 
-  setPdfColor(pdf, "setDrawColor", highlight);
+  setPdfColor(pdf, "setDrawColor", primary);
   pdf.setLineWidth(Math.max(1, 1.5 * scale));
   pdf.line(x + paddingX, footerY, x + width - paddingX, footerY);
   drawFittedText(pdf, storeFooter, x + paddingX, footerY + footerHeight * 0.18, width - paddingX * 2, footerHeight * 0.55, {
